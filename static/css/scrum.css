@@ -1,0 +1,18 @@
+.tasks { 
+  margin-top: 60px;
+}
+
+table .task-type{width: 25%;}
+
+table .black{color:#000;border-bottom-color:#000;}
+table .task-type.black{background-color:#929292;}
+table .task-type.blue{background-color:#ade6fe;}
+table .task-type.green{background-color:#cdeacd;}
+table .task-type.red{background-color:#f4c8c5;}
+table .task-type.yellow{background-color:#fff6d9;}
+table .task-type.orange{background-color:#fee9cc;}
+table .task-type.purple{background-color:#e2d5f0;}
+
+table td.wall{vertical-align: top;}
+
+.new-story {display: none;}

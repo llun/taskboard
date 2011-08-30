@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Scrum Board</title>
+
+    <link href="css/bootstrap-1.1.1.min.css" rel="stylesheet" />
+    <link href="css/scrum.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-1.6.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="scripts/jquery-ui-1.8.16.custom.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="scripts/scrum.js" type="text/javascript" charset="utf-8"></script>
+
+  </head>
+  
+  <body>
+    
+    <div class="topbar">
+      <div class="fill">
+        <div class="container">
+          <h3><a href="#">Scrum</a></h3>
+          <ul>
+            <li class="active"><a href="#">Board</a></li>
+            <li><a href="#">Burn down</a></li>
+            <li><a href="#">Backlogs</a></li>
+            <li><a href="#">History</a></li>
+            <li><a href="#">About</a></li>
+          </ul>
+          <ul class="nav secondary-nav">
+            <li id="user-menu" class="menu">
+              <a href="#" class="menu">Logout</a>
+              <ul class="menu-dropdown">
+                <li><a href="#">Profile</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="tasks">
+        
+        <div class="row">
+          
+          <div class="span4 columns">
+            <h4>Iteration1</h4>
+          </div>
+          
+          <div class="span4 offset8 columns">
+            <button id="new-story-button" class="btn info">New story</button>
+            <button class="btn danger">End iteration</button>
+          </div>
+          
+        </div>
+        
+        <table class="zebra-stripped">
+          <thead>
+            <tr>
+              <th class="black header task-type">Todo</th>
+              <th class="blue header task-type">In progress</th>
+              <th class="orange header task-type">Verify</th>
+              <th class="green header task-type">Done</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="wall">
+                
+                <div class="well">
+                  <p>
+                    <strong>Summary todo</strong> Todo description
+                  </p>
+                </div>
+                
+              </td>
+              
+              <td class="wall">
+                
+                <div class="well">
+                  <p>
+                    <strong>Summary todo</strong> Todo description
+                  </p>
+                </div>
+                
+              </td>
+              
+              <td class="wall">
+                
+                <div class="well">
+                  <p>
+                    <strong>Summary todo</strong> Todo description
+                  </p>
+                </div>
+                
+              </td>
+              
+              <td class="wall">
+                
+                <div class="well">
+                  <p>
+                    <strong>Summary todo</strong> Todo description
+                  </p>
+                </div>
+                
+                <div class="well">
+                  <p>
+                    <strong>Summary todo</strong> Todo description
+                  </p>
+                </div>
+                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="row">
+          
+          <div class="span16">
+            <p>
+              Scrum-board is @hybridknight &amp; @llun lab project.
+            </p>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- New task modal -->
+    <div id="new-story-modal" class="modal-backdrop new-story">
+      
+      <form class="modal">
+        <div class="modal-header">
+          <h3>New Story</h3>
+        </div>
+        <div class="modal-body">
+          
+          <div class="clearfix">
+            <label for="summary">Summary</label>
+            <div class="input">
+              <input class="xlarge" type="text" name="summary" id="summary">
+            </div>
+          </div>
+          
+          <div class="clearfix">
+            <label for="description">Description</label>
+            <div class="input">
+              <textarea class="xlarge" id="description" 
+                        name="description" rows="8" cols="30"></textarea>
+              <span class="help-block">
+                Optional
+              </span>
+            </div>
+          </div>
+          
+          <div class="clearfix">
+            <label for="owner">Owner</label>
+            <div class="input">
+              <div class="input-prepend">
+                <span class="add-on">@</span>
+                <input type="text" class="medium" id="owner" name="owner" id="owner">
+              </div>
+              <span class="help-block">
+                Optional
+              </span>
+            </div>
+          </div>
+          
+        </div>
+        <div class="modal-footer">
+          <a id="new-story-save-button" href="#" class="btn primary">Save</a>
+          <a id="new-story-cancel-button" href="#" class="btn seconday">Cancel</a>
+        </div>
+      </form>
+      
+    </div>
+    <!-- End new task modal -->
+    
+  </body>
+
+</html>
