@@ -113,33 +113,23 @@ var Iteration = function(name) {
   var _tasks = [];
  
   // Public methods
-  this.getTodo = function getTodo() {
-    return _todo;
-  }
+  this.getTodo = function getTodo() { return _todo; }
+  this.getWorking = function getWorking() { return _working; }
+  this.getReview = function getReview() { return _review; }
+  this.getDone = function getDone() { return _done; }
+  this.getTasks = function getTasks() { return _tasks; }
   
-  this.getWorking = function getWorking() {
-    return _working;
-  }
-  
-  this.getReview = function getReview() {
-    return _review;
-  }
-  
-  this.getDone = function getDone() {
-    return _done;
-  }
-  
-  this.getTasks = function getTasks() {
-    return _tasks;
-  }
-  
-  this.addTask = function addTask(task) {
+  this.createTask = function createTask(detail) {
     if (!_begin) {
       _begin = new Date().getTime();
     }
     
+    var task = Task.create(detail);
+    
     _tasks.push(task.id);
     _todo.push(_tasks.length);
+    
+    return task;
   }
   
   this.removeTask = function removeTask(task) {

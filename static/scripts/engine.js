@@ -4,8 +4,7 @@ var _ = {
   persistent: new MemoryPersistent()
 };
 
-$(document).ready(function() {
-  
+window.onload = function() {
   if ('onhashchange' in window) {
     window.onhashchange = function() {
       route(window.location.hash);
@@ -45,5 +44,4 @@ $(document).ready(function() {
   }
   
   _.init();
-  
-});
+}
