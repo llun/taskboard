@@ -13,11 +13,10 @@ _.table = {
   'task/save': function() {
     // Store it to local memory and render new task in todo
     var id = new Date().getTime();
+    var detail = $('#new-story-detail').val();
     
-    var task = {
-      id: id,
-      detail: $('#new-story-detail').val()
-    };
+    var task = _.iteration.createTask(detail);
+    console.log(task);
     
     // Clear form and close
     $('#new-story-detail').val('');
