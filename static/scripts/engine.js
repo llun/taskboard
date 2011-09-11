@@ -5,6 +5,9 @@ var _ = {
 };
 
 window.onload = function() {
+  // Reset hash after refresh.
+  window.location.hash = '';
+  
   if ('onhashchange' in window) {
     window.onhashchange = function() {
       route(window.location.hash);

@@ -16,3 +16,4 @@ table .task-type.purple{background-color:#e2d5f0;}
 table td.wall{vertical-align: top;}
 
 .new-story {display: none;}
+.new-story textarea {width:500px}
