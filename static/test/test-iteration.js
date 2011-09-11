@@ -12,7 +12,7 @@ TestIt('TestIteration', {
     this.iteration = iteration;
     this.task = task.id;
   },
-  
+
   'testCreateTask': function(test) {
     var iteration = this.iteration;
     var task = iteration.createTask('Second Task');
@@ -28,7 +28,7 @@ TestIt('TestIteration', {
     test.assert(_.persistent.get(task.id), 'Task should persist');
     
   },
-  
+
   'testRemoveTask': function(test) {
     var iteration = this.iteration;
     iteration.removeTask(this.task);
@@ -45,9 +45,18 @@ TestIt('TestIteration', {
     var task = persistent.get(this.task);
     test.assert(task === undefined, 'Task should be undefined');
   },
-  
+
   'testChangeTaskStatus': function(test) {
+    var iteration = this.iteration;
+    iteration.changeStatus(this.task, Task.status.REVIEW);
     
+    var todo = iteration.getTodo();
+    var review = iteration.getReview();
+    
+    test.assertEqual(0, todo.length,
+      'Iteration should not have todo. (' + todo.length + ')');
+    test.assertEqual(1, review.length,
+      'Iteration should have 1 review. (' + review.length + ')');
   }
-  
+
 });

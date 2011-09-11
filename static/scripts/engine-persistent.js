@@ -57,7 +57,8 @@ MemoryPersistent = function() {
    * @param {Number} id object id provide by persistent get
    */
   this.get = function get(id) {
-    return _objects[id];
+    var object = _objects[id];
+    return object;
   }
   
 }

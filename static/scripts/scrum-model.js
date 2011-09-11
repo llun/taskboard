@@ -8,6 +8,9 @@ var Task = function(detail) {
   var _detail = detail;
   var _responders = [];
   
+  // Public propoerties
+  this.status = Task.status.TODO;
+  
   // Private methods
   /**
    * Parse detail for responders. Responders should live in form +name.
@@ -86,7 +89,7 @@ Task.create = function(detail) {
   return task;
 }
 Task.get = function(id) {
-  _.persistent.get(id);
+  return _.persistent.get(id);
 }
 Task.save = function(task) {
   _.persistent.save(task);
@@ -96,9 +99,6 @@ Task.remove = function(id) {
 }
 
 var Iteration = function(name) {
-  
-  // Iteration name
-  this.name = name || 'New Iteration';
   
   // Begin time
   var _begin = null;
@@ -111,6 +111,33 @@ var Iteration = function(name) {
   
   // All tasks
   var _tasks = [];
+  
+  // Iteration name
+  this.name = name || 'New Iteration';
+ 
+  // Private methods
+  var _listFromTask = function _listFromTask(taskID) {
+    var task = Task.get(taskID);
+    var list = task.status == Task.status.TODO ? _todo : 
+               task.status == Task.status.WORKING ? _working : 
+               task.status == Task.status.REVIEW ? _review :
+               task.status == Task.status.DONE ? _done : null;
+    return list;
+  }
+  
+  var _taskIndexInList = function _taskIndexInList(list, taskID) {
+    var target = null;
+    
+    for (var key in list) {
+      var object = _tasks[list[key]];
+      if (object === taskID) {
+        target = key;
+        break;
+      }
+    }
+    
+    return target;
+  }
  
   // Public methods
   this.getTodo = function getTodo() { return _todo; }
@@ -119,6 +146,13 @@ var Iteration = function(name) {
   this.getDone = function getDone() { return _done; }
   this.getTasks = function getTasks() { return _tasks; }
   
+  /**
+   * Create task and add it to iteration
+   *
+   * @param {String} detail task detail
+   *
+   * @return {Object} task object
+   */
   this.createTask = function createTask(detail) {
     if (!_begin) {
       _begin = new Date().getTime();
@@ -132,7 +166,71 @@ var Iteration = function(name) {
     return task;
   }
   
-  this.removeTask = function removeTask(task) {
+  /**
+   * Remove task from iteration and persistent
+   *
+   * @param {String} taskID
+   */
+  this.removeTask = function removeTask(taskID) {
+    var list = _listFromTask(taskID);
+               
+    if (list) {
+      var target = _taskIndexInList(list, taskID);
+      
+      if (target) {
+        var position = list[target];
+        delete _tasks[position];
+        delete list[target];
+        
+        _tasks.length--;
+        list.length--;
+        
+        Task.remove(taskID);
+      }
+      
+    }
     
   }
+  
+  /**
+   * Change task to new status
+   *
+   * @param {String} taskID
+   * @param {String} status
+   */
+  this.changeStatus = function changeStatus(taskID, status) {
+    var list = _listFromTask(taskID);
+    
+    if (list) {
+      var target = _taskIndexInList(list, taskID);
+      
+      if (target) {
+        var task = Task.get(taskID);
+        var position = list[target];
+        
+        task.status = status;
+        delete list[target];
+        list.length--;
+        
+        Task.save(task);
+        
+        list = _listFromTask(taskID);
+        list.push(position);
+      }
+    }
+  }
+}
+
+// CRUD for Iteration
+Iteration.create = function create() {
+  
+}
+Iteration.get = function get(id) {
+  
+}
+Iteration.save = function save(iteration) {
+  
+}
+Iteration.remove = function remove(id) {
+  
 }

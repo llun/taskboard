@@ -32,6 +32,8 @@ _.table = {
 
 // View event binding
 _.init = function() {
+  _.iteration = new Iteration();
+  
   $('#user-menu').click(function(event) {
     $(this).toggleClass('open');
   });
