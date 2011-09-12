@@ -14,16 +14,14 @@
     <script src="scripts/scrum.js" type="text/javascript"></script>
     <script src="scripts/scrum-model.js" type="text/javascript"></script>
     
-    <script type="text/html" id="task" charset="utf-8">
+    <script type="text/html" id="task" charset="utf-8">    
       <div id="<%=id%>" class="task">
         <a href="#" class="close">x</a>
         <p>
-          <%=detail%>
+          <%=getDetail()%>
         </p>
-        
-        <p>
-          <strong>Responders:</strong> <%=responders%>
-        </p>
+      
+        <small><%=getResponders()%></small>
       </div>
     </td>
     </script>
@@ -82,28 +80,19 @@
           </thead>
           <tbody>
             <tr>
-              <td class="wall">
-                <!-- Task will live here -->
-                
-                <div class="task">
-                  <a href="#" class="close">x</a>
-                  <p>
-                    <strong>Sample Task</strong> Hello, world @llun
-                  </p>
-                  
-                  <small>@llun, @book</small>
-                </div>
-              </td>
-              
-              <td class="wall">
+              <td id="todo" class="wall">
                 <!-- Task will live here -->
               </td>
               
-              <td class="wall">                
+              <td id="working" class="wall">
                 <!-- Task will live here -->
               </td>
               
-              <td class="wall">
+              <td id="review" class="wall">                
+                <!-- Task will live here -->
+              </td>
+              
+              <td id="done" class="wall">
                 <!-- Task will live here -->
               </td>
             </tr>
@@ -126,7 +115,7 @@
     <!-- New task modal -->
     <div id="new-story-modal" class="modal-backdrop new-story">
       
-      <form class="modal form-stacked">
+      <form class="modal">
         <div class="modal-header">
           <h3>New Story</h3>
         </div>

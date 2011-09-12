@@ -16,7 +16,8 @@ _.table = {
     var detail = $('#new-story-detail').val();
     
     var task = _.iteration.createTask(detail);
-    console.log(task);
+    $('#todo').append(_.tmpl('task', task));
+    console.log(task.getResponders());
     
     // Clear form and close
     $('#new-story-detail').val('');

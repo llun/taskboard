@@ -6,9 +6,9 @@ var _ = {
   tmpl: function(template_id, object) {
     // Figure out if we're getting a template, or if we need to
     // load the template - and be sure to cache the result.
-    var fn = !/\W/.test(str) ?
-      _.cache[str] = _.cache[str] ||
-        _.tmpl(document.getElementById(str).innerHTML) :
+    var fn = !/\W/.test(template_id) ?
+      _.cache[template_id] = _.cache[template_id] ||
+        _.tmpl(document.getElementById(template_id).innerHTML) :
 
     // Generate a reusable function that will serve as a template
     // generator (and which will be cached).
@@ -19,7 +19,7 @@ var _ = {
       "with(obj){p.push('" +
 
       // Convert the template into pure JavaScript
-      str
+      template_id
         .replace(/[\r\t\n]/g, " ")
         .split("<%").join("\t")
         .replace(/((^|%>)[^\t]*)'/g, "$1\r")
@@ -30,7 +30,7 @@ var _ = {
     + "');}return p.join('');");
 
     // Provide some basic currying to the user
-    return data ? fn( data ) : fn;
+    return object ? fn( object ) : fn;
   }
 };
 
