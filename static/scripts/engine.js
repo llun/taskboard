@@ -27,7 +27,7 @@ var _ = {
         .split("\t").join("');")
         .split("%>").join("p.push('")
         .split("\r").join("\\'")
-    + "');}return p.join('');");
+        + "');}return p.join('');");
 
     // Provide some basic currying to the user
     return object ? fn( object ) : fn;
@@ -40,6 +40,8 @@ window.onload = function() {
   
   if ('onhashchange' in window) {
     window.onhashchange = function() {
+      // Reset state before by route to default
+      route('');
       route(window.location.hash);
     }
   } else {
@@ -47,6 +49,7 @@ window.onload = function() {
     setInterval(function() {
       if (window.location.hash != storedHash) {
         storedHash = window.location.hash;
+        route('');
         route(storedHash);
       }
     }, 100);
@@ -60,7 +63,7 @@ window.onload = function() {
     } else {
       var target = null;
       for (var key in _.table) {
-        var pattern = new RegExp('^' + key + '$', 'i');
+        var pattern = new RegExp('^' + key, 'i');
         if (pattern.test(path)) {
           target = _.table[key];
           break;
@@ -71,7 +74,7 @@ window.onload = function() {
         target = _.table[''];
       }
       
-      target();
+      target(hash);
 
     }
   }

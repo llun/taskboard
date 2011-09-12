@@ -84,8 +84,11 @@ Task.status = {
 
 // CRUD for Task
 Task.create = function(detail) {
-  var task = new Task(detail);
-  _.persistent.save(task);
+  var task = null;
+  if (detail.length > 0) {
+    task = new Task(detail);
+    _.persistent.save(task);
+  }
   return task;
 }
 Task.get = function(id) {
@@ -157,11 +160,12 @@ var Iteration = function(name) {
     if (!_begin) {
       _begin = new Date().getTime();
     }
-    
+
     var task = Task.create(detail);
-    
-    _tasks.push(task.id);
-    _todo.push(_tasks.length);
+    if (task) {
+      _tasks.push(task.id);
+      _todo.push(_tasks.length);
+    }
     
     return task;
   }

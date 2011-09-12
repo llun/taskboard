@@ -12,16 +12,22 @@ _.table = {
   },
   'task/save': function() {
     // Store it to local memory and render new task in todo
-    var id = new Date().getTime();
     var detail = $('#new-story-detail').val();
     
     var task = _.iteration.createTask(detail);
-    $('#todo').append(_.tmpl('task', task));
-    console.log(task.getResponders());
+    if (task) {
+      $('#todo').append(_.tmpl('task', task));
+
+      // Clear form and close
+      $('#new-story-detail').val('');
+      $('#new-story-modal').hide();
+    }
     
-    // Clear form and close
-    $('#new-story-detail').val('');
-    $('#new-story-modal').hide();
+  },
+  'task/remove': function(hash) {
+    var id = hash.substring('#task/remove'.length + 1);
+    _.iteration.removeTask(id);
+    $('#' + id).remove();
   },
   
   // Default state
