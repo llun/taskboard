@@ -51,14 +51,19 @@ _.init = function() {
     _.iteration = Iteration.get(current.key);
   }
   
-  $.each(_.iteration.todo, function (index, value) {
-    var task = Task.get(_.iteration.tasks[value]);
-    if (task) {
-      $('#todo').append(_.tmpl('task', task));
-      $('#' + task.id).attr('draggable', true);
-    } else {
-      console.log ('Task is not found: ' + _.iteration.tasks[value]);
-    }
+  var types = ['todo', 'working', 'review', 'done'];
+  $.each(types, function (index, type) {
+    
+    $.each(_.iteration[type], function (index, value) {
+      var task = Task.get(_.iteration.tasks[value]);
+      if (task) {
+        $('#' + type).append(_.tmpl('task', task));
+        $('#' + task.id).attr('draggable', true);
+      } else {
+        console.log ('Task is not found: ' + _.iteration.tasks[value]);
+      }
+    });
+    
   });
   
   // Bind drag & drop on wall
