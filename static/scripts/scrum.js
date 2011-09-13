@@ -1,17 +1,17 @@
 // Route table
 _.table = {
   'task/new': function() {
-    $('#new-story-modal').show();
+    $('#new-task-modal').show();
   },
   'task/cancel': function() {
     // Clear form and close
-    $('#new-story-detail').val('');
-    $('#new-story-modal').hide();
+    $('#new-task-detail').val('');
+    $('#new-task-modal').hide();
   },
   'task/save': function() {
     
     // Store it to local memory and render new task in todo
-    var detail = $('#new-story-detail').val();
+    var detail = $('#new-task-detail').val();
     
     var task = _.iteration.createTask(detail);
     if (task) {
@@ -19,8 +19,8 @@ _.table = {
       $('#' + task.id).attr('draggable', true);
 
       // Clear form and close
-      $('#new-story-detail').val('');
-      $('#new-story-modal').hide();
+      $('#new-task-detail').val('');
+      $('#new-task-modal').hide();
     }
     
   },
@@ -32,7 +32,7 @@ _.table = {
   
   // Default state
   '': function() {
-    $('#new-story-modal').hide();
+    $('#new-task-modal').hide();
   }
 }
 
@@ -107,7 +107,7 @@ _.init = function() {
     }
   });
   
-  $('#new-story-button').click(function(event) {
+  $('#new-task-button').click(function(event) {
     window.location.hash = 'task/new';
   });
   

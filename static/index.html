@@ -63,7 +63,7 @@
           </div>
           
           <div class="span4 offset8 columns">
-            <button id="new-story-button" class="btn primary">New story</button>
+            <button id="new-task-button" class="btn primary">New Task</button>
             <button class="btn danger">End iteration</button>
           </div>
           
@@ -113,11 +113,41 @@
     </div>
     
     <!-- New task modal -->
-    <div id="new-story-modal" class="modal-backdrop new-story">
+    <div id="new-task-modal" class="modal-backdrop new-task">
       
       <form class="modal">
         <div class="modal-header">
-          <h3>New Story</h3>
+          <h3>New Task</h3>
+        </div>
+        <div class="modal-body">
+          
+          <div class="clearfix">
+            <div class="input">
+              <textarea id="new-task-detail" 
+                        name="detail" rows="8" cols="45"></textarea>
+            </div>
+          </div>
+                    
+        </div>
+        <div class="modal-footer">
+          <a id="new-task-save-button" href="#task/save" class="btn primary">
+            Save
+          </a>
+          <a id="new-task-cancel-button" href="#task/cancel" class="btn seconday">
+            Cancel
+          </a>
+        </div>
+      </form>
+      
+    </div>
+    <!-- End new task modal -->
+    
+    <!-- Edit task modal -->
+    <div id="edit-task-modal" class="modal-backdrop edit-task">
+      
+      <form class="modal">
+        <div class="modal-header">
+          <h3>Edit Task</h3>
         </div>
         <div class="modal-body">
           

@@ -23,9 +23,13 @@ table .task-type.purple{background-color:#e2d5f0;}
 table td.wall{vertical-align: top; background-color: #EEE;}
 table td.wall.over{background-color: #CCC;}
 
-.new-story {display: none;}
-.new-story .input {margin-left: 0px}
-.new-story textarea {width:500px}
+.new-task {display: none;}
+.new-task .input {margin-left: 0px}
+.new-task textarea {width:500px}
+
+.edit-task {display: none;}
+.edit-task .input {margin-left: 0px}
+.edit-task textarea {width:500px}
 
 .task {
   background-image: none;
