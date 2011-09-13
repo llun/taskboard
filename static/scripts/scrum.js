@@ -110,4 +110,8 @@ _.init = function() {
   $('#new-story-button').click(function(event) {
     window.location.hash = 'task/new';
   });
+  
+  $('#user-menu').click(function(event) {
+    $(this).toggleClass('open');
+  });
 }
