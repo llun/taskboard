@@ -93,7 +93,16 @@ Task.create = function(detail) {
   return task;
 }
 Task.get = function(id) {
-  return _.persistent.get(id);
+  var task = null;
+  
+  var object = _.persistent.get(id);
+  if (object) {
+    task = new Task(object.detail);
+    task.id = object.id;
+    task.status = object.status;
+  }
+  
+  return task;
 }
 Task.save = function(task) {
   _.persistent.save(task);
@@ -105,16 +114,16 @@ Task.remove = function(id) {
 var Iteration = function(name) {
   
   // Begin time
-  var _begin = null;
+  this.begin = null;
   
   // Task state
-  var _todo = [];
-  var _working = [];
-  var _review = [];
-  var _done = [];
+  this.todo = [];
+  this.working = [];
+  this.review = [];
+  this.done = [];
   
   // All tasks
-  var _tasks = [];
+  this.tasks = [];
   
   // Iteration name
   this.name = name || 'New Iteration';
@@ -228,14 +237,35 @@ var Iteration = function(name) {
 
 // CRUD for Iteration
 Iteration.create = function create() {
-  
+  var iteration = new Iteration();
+  _.persistent.save(iteration);
+
+  return iteration;
 }
 Iteration.get = function get(id) {
+  var iteration = null;
   
+  var object = _.persistent.get(id);
+  if (object) {
+    iteration = new Iteration();
+    
+    iteration.begin = object.begin;
+
+    iteration.todo = object.todo;
+    iteration.working = object.working;
+    iteration.review = object.review;
+    iteration.done = object.done;
+
+    iteration.tasks = object.tasks;
+
+    iteration.name = object.name;
+  }
+  
+  return task;
 }
 Iteration.save = function save(iteration) {
-  
+  _.persistent.save(iteration);
 }
 Iteration.remove = function remove(id) {
-  
+  _.persistent.remove(id);
 }
