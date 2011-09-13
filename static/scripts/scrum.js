@@ -17,6 +17,15 @@ _.table = {
     var task = _.iteration.createTask(detail);
     if (task) {
       $('#todo').append(_.tmpl('task', task));
+      $('#' + task.id).attr('draggable', true)
+                      .bind('dragstart', function (ev) {
+                        var dt = ev.originalEvent.dataTransfer;
+                        dt.setData('task', task.id);
+                        console.log('dragstart');
+                      })
+                      .bind('dragend', function (ev) {
+                        console.log('dragend');
+                      });
 
       // Clear form and close
       $('#new-story-detail').val('');
@@ -47,5 +56,20 @@ _.init = function() {
   $('#new-story-button').click(function(event) {
     window.location.hash = 'task/new';
   });
+  
+  $('.wall').bind('dragenter', function (ev) {
+              console.log('enter');
+            })
+            .bind('dragover', function (ev) {
+              console.log('over');
+              return false;
+            })
+            .bind('dragleave', function (ev) {
+              console.log('leave');
+            })
+            .bind('drop', function (ev) {
+              console.log('drop');
+              return false;
+            });
   
 }

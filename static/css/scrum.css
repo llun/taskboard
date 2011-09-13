@@ -1,3 +1,10 @@
+[draggable] {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .tasks { 
   margin-top: 60px;
 }
@@ -13,7 +20,7 @@ table .task-type.yellow{background-color:#fff6d9;}
 table .task-type.orange{background-color:#fee9cc;}
 table .task-type.purple{background-color:#e2d5f0;}
 
-table td.wall{vertical-align: top;}
+table td.wall{vertical-align: top; background-color: #EEE;}
 
 .new-story {display: none;}
 .new-story .input {margin-left: 0px}
@@ -30,6 +37,7 @@ table td.wall{vertical-align: top;}
   box-shadow: none;
   margin-top: 5px;
   margin-bottom: 5px;
+  cursor: move;
 }
 .task h5 {line-height: 18px;}
 .task div {
