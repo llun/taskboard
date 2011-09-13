@@ -34,67 +34,43 @@ var _ = {
   }
 };
 
-(function() {
-  _.addEvent = (function () {
-    if (document.addEventListener) {
-      return function (el, type, fn) {
-        if (el && el.nodeName || el === window) {
-          el.addEventListener(type, fn, false);
-        } else if (el && el.length) {
-          for (var i = 0; i < el.length; i++) {
-            addEvent(el[i], type, fn);
-          }
-        }
-      };
-    } else {
-      return function (el, type, fn) {
-        if (el && el.nodeName || el === window) {
-          el.attachEvent('on' + type, function () { return fn.call(el, window.event); });
-        } else if (el && el.length) {
-          for (var i = 0; i < el.length; i++) {
-            addEvent(el[i], type, fn);
-          }
-        }
-      };
-    }
-  })();
+$(document).ready(function() {
+  _.init();
   
-  _.addEvent(window, 'load', function() {
-    // Reset hash after refresh.
-    window.location.hash = '';
+  // Reset hash after refresh.
+  window.location.hash = '';
+  
+  $(window).bind('hashchange', function() {
+    // Reset state by route to default
+    route('');
     
-    _.addEvent(window, 'hashchange', function() {
-      // Reset state before by route to default
-      route('');
-      route(window.location.hash);
-    });
-
-    var route = function route(hash) {
-      var path = hash.slice(1);
-
-      if (_.table[path]) {
-        _.table[path]();
-      } else {
-        var target = null;
-        for (var key in _.table) {
-          var pattern = new RegExp('^' + key, 'i');
-          if (pattern.test(path)) {
-            target = _.table[key];
-            break;
-          }
-        }
-
-        if (!target) {
-          target = _.table[''];
-        }
-
-        target(hash);
-
-      }
-    }
-
-    _.init();
+    // Route to new target
+    route(window.location.hash);
   });
   
-})();
+  var route = function route(hash) {
+    var path = hash.slice(1);
+
+    if (_.table[path]) {
+      _.table[path]();
+    } else {
+      var target = null;
+      for (var key in _.table) {
+        var pattern = new RegExp('^' + key, 'i');
+        if (pattern.test(path)) {
+          target = _.table[key];
+          break;
+        }
+      }
+
+      if (!target) {
+        target = _.table[''];
+      }
+
+      target(hash);
+
+    }
+  }
+});
+
 

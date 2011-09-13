@@ -1,5 +1,3 @@
-var tasks = {};
-
 // Route table
 _.table = {
   'task/new': function() {
@@ -11,21 +9,14 @@ _.table = {
     $('#new-story-modal').hide();
   },
   'task/save': function() {
+    
     // Store it to local memory and render new task in todo
     var detail = $('#new-story-detail').val();
     
     var task = _.iteration.createTask(detail);
     if (task) {
       $('#todo').append(_.tmpl('task', task));
-      $('#' + task.id).attr('draggable', true)
-                      .bind('dragstart', function (ev) {
-                        var dt = ev.originalEvent.dataTransfer;
-                        dt.setData('task', task.id);
-                        console.log('dragstart');
-                      })
-                      .bind('dragend', function (ev) {
-                        console.log('dragend');
-                      });
+      $('#' + task.id).attr('draggable', true);
 
       // Clear form and close
       $('#new-story-detail').val('');
@@ -47,29 +38,48 @@ _.table = {
 
 // View event binding
 _.init = function() {
+  _.persistent = new MemoryPersistent();
   _.iteration = new Iteration();
   
-  $('#user-menu').click(function(event) {
-    $(this).toggleClass('open');
+  $('.wall').bind({
+    dragenter: function (ev) {
+      $(this).addClass('over');
+    },
+    dragover: function (ev) {
+      if (ev.preventDefault) {
+        ev.preventDefault();
+      }
+      
+      ev.dataTransfer.dropEffect = 'move';
+      
+      return false;
+    },
+    dragleave: function (ev) {
+      $(this).removeClass('over');
+    },
+    drop: function (ev) {
+      $(this).removeClass('over');
+      
+      var dt = ev.originalEvent.dataTransfer;
+      var target = dt.getData('Text');
+      
+      $('#' + target).remove();
+      var task = Task.get(target);
+      $(this).append(_.tmpl('task', task));
+      $('#' + task.id).attr('draggable', true);
+      
+      return false;
+    }
+  });
+  
+  $('.task').live({
+    dragstart: function (ev) {
+      var dt = ev.originalEvent.dataTransfer;
+      dt.setData('Text', $(this).attr('id'));
+    }
   });
   
   $('#new-story-button').click(function(event) {
     window.location.hash = 'task/new';
   });
-  
-  $('.wall').bind('dragenter', function (ev) {
-              console.log('enter');
-            })
-            .bind('dragover', function (ev) {
-              console.log('over');
-              return false;
-            })
-            .bind('dragleave', function (ev) {
-              console.log('leave');
-            })
-            .bind('drop', function (ev) {
-              console.log('drop');
-              return false;
-            });
-  
 }
