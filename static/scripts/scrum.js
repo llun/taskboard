@@ -38,9 +38,30 @@ _.table = {
 
 // View event binding
 _.init = function() {
-  _.persistent = new MemoryPersistent();
-  _.iteration = new Iteration();
+  _.persistent = new LocalStoragePersistent();
   
+  // Load data
+  var current = _.persistent.get('current');
+  if (!current) {
+    _.iteration = Iteration.create();
+    
+    var current = {id: 'current', key: _.iteration.id};
+    _.persistent.save(current);
+  } else {
+    _.iteration = Iteration.get(current.key);
+  }
+  
+  $.each(_.iteration.todo, function (index, value) {
+    var task = Task.get(_.iteration.tasks[value]);
+    if (task) {
+      $('#todo').append(_.tmpl('task', task));
+      $('#' + task.id).attr('draggable', true);
+    } else {
+      console.log ('Task is not found: ' + _.iteration.tasks[value]);
+    }
+  });
+  
+  // Bind drag & drop on wall
   $('.wall').bind({
     dragenter: function (ev) {
       $(this).addClass('over');
@@ -49,8 +70,6 @@ _.init = function() {
       if (ev.preventDefault) {
         ev.preventDefault();
       }
-      
-      ev.dataTransfer.dropEffect = 'move';
       
       return false;
     },
@@ -72,6 +91,7 @@ _.init = function() {
     }
   });
   
+  // Bind drag & drop on task
   $('.task').live({
     dragstart: function (ev) {
       var dt = ev.originalEvent.dataTransfer;

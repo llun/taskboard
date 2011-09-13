@@ -176,9 +176,11 @@ var Iteration = function(name) {
 
     var task = Task.create(detail);
     if (task) {
-      _self.tasks.push(task.id);
       _self.todo.push(_self.tasks.length);
+      _self.tasks.push(task.id);
     }
+    
+    Iteration.save(_self);
     
     return task;
   }
@@ -206,6 +208,8 @@ var Iteration = function(name) {
       }
       
     }
+    
+    Iteration.save(_self);
     
   }
   
@@ -235,6 +239,8 @@ var Iteration = function(name) {
         list.push(position);
       }
     }
+    
+    Iteration.save(_self);
   }
 }
 
@@ -242,7 +248,7 @@ var Iteration = function(name) {
 Iteration.create = function create() {
   var iteration = new Iteration();
   _.persistent.save(iteration);
-
+  
   return iteration;
 }
 Iteration.get = function get(id) {
@@ -251,6 +257,7 @@ Iteration.get = function get(id) {
   var object = _.persistent.get(id);
   if (object) {
     iteration = new Iteration();
+    iteration.id = object.id;
     
     iteration.begin = object.begin;
 
@@ -264,7 +271,7 @@ Iteration.get = function get(id) {
     iteration.name = object.name;
   }
   
-  return task;
+  return iteration;
 }
 Iteration.save = function save(iteration) {
   _.persistent.save(iteration);
