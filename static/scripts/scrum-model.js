@@ -113,6 +113,8 @@ Task.remove = function(id) {
 
 var Iteration = function(name) {
   
+  var _self = this;
+  
   // Begin time
   this.begin = null;
   
@@ -131,10 +133,11 @@ var Iteration = function(name) {
   // Private methods
   var _listFromTask = function _listFromTask(taskID) {
     var task = Task.get(taskID);
-    var list = task.status == Task.status.TODO ? _todo : 
-               task.status == Task.status.WORKING ? _working : 
-               task.status == Task.status.REVIEW ? _review :
-               task.status == Task.status.DONE ? _done : null;
+    var list = task.status == Task.status.TODO ? _self.todo : 
+               task.status == Task.status.WORKING ? _self.working : 
+               task.status == Task.status.REVIEW ? _self.review :
+               task.status == Task.status.DONE ? _self.done : null;
+               
     return list;
   }
   
@@ -142,7 +145,7 @@ var Iteration = function(name) {
     var target = null;
     
     for (var key in list) {
-      var object = _tasks[list[key]];
+      var object = _self.tasks[list[key]];
       if (object === taskID) {
         target = key;
         break;
@@ -153,11 +156,11 @@ var Iteration = function(name) {
   }
  
   // Public methods
-  this.getTodo = function getTodo() { return _todo; }
-  this.getWorking = function getWorking() { return _working; }
-  this.getReview = function getReview() { return _review; }
-  this.getDone = function getDone() { return _done; }
-  this.getTasks = function getTasks() { return _tasks; }
+  this.getTodo = function getTodo() { return _self.todo; }
+  this.getWorking = function getWorking() { return _self.working; }
+  this.getReview = function getReview() { return _self.review; }
+  this.getDone = function getDone() { return _self.done; }
+  this.getTasks = function getTasks() { return _self.tasks; }
   
   /**
    * Create task and add it to iteration
@@ -167,14 +170,14 @@ var Iteration = function(name) {
    * @return {Object} task object
    */
   this.createTask = function createTask(detail) {
-    if (!_begin) {
-      _begin = new Date().getTime();
+    if (!_self.begin) {
+      _self.begin = new Date().getTime();
     }
 
     var task = Task.create(detail);
     if (task) {
-      _tasks.push(task.id);
-      _todo.push(_tasks.length);
+      _self.tasks.push(task.id);
+      _self.todo.push(_self.tasks.length);
     }
     
     return task;
@@ -193,10 +196,10 @@ var Iteration = function(name) {
       
       if (target) {
         var position = list[target];
-        delete _tasks[position];
+        delete _self.tasks[position];
         delete list[target];
         
-        _tasks.length--;
+        _self.tasks.length--;
         list.length--;
         
         Task.remove(taskID);
