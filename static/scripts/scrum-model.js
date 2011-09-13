@@ -5,10 +5,10 @@
  */
 var Task = function(detail) {
   // Private properties
-  var _detail = detail;
   var _responders = [];
   
   // Public propoerties
+  this.detail = detail;
   this.status = Task.status.TODO;
   
   // Private methods
@@ -39,7 +39,7 @@ var Task = function(detail) {
    * @return {String} detail string.
    */
   this.getDetail = function getDetail() {
-    return _detail;
+    return this.detail;
   }
   
   /**
@@ -49,7 +49,8 @@ var Task = function(detail) {
    */
   this.setDetail = function setDetail(detail) {
     _parseResponders(detail);
-    _detail = detail;
+    
+    this.detail = detail;
   }
   
   /**

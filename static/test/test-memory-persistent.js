@@ -27,7 +27,8 @@ TestIt('TestMemoryPersistent', {
     
     var objects = this.store.getObjects();
     var target = objects[this.fixture];
-    test.assert(second, target, 
+    
+    test.assertEqual(second, target, 
       'Second object and target object must be the same');
       
   },
@@ -47,7 +48,7 @@ TestIt('TestMemoryPersistent', {
   'testGetInvalidTask': function(test) {
     
     var task = this.store.get('noid');
-    test.assert(task === undefined, 'Task should return undefined');
+    test.assert(!task, 'Task should be null or undefined');
     
   },
   
