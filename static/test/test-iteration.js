@@ -48,15 +48,15 @@ TestIt('TestIteration', {
 
   'testChangeTaskStatus': function(test) {
     var iteration = this.iteration;
-    iteration.changeStatus(this.task, Task.status.REVIEW);
+    iteration.changeStatus(this.task, Task.status.VERIFY);
     
     var todo = iteration.getTodo();
-    var review = iteration.getReview();
+    var verify = iteration.getVerify();
     
     test.assertEqual(0, todo.length,
       'Iteration should not have todo. (' + todo.length + ')');
-    test.assertEqual(1, review.length,
-      'Iteration should have 1 review. (' + review.length + ')');
+    test.assertEqual(1, verify.length,
+      'Iteration should have 1 review. (' + verify.length + ')');
   }
 
 });

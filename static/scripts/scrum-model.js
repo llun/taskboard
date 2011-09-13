@@ -78,8 +78,8 @@ var Task = function(detail) {
  */
 Task.status = {
   TODO: 'todo',
-  WORKING: 'working',
-  REVIEW: 'review',
+  INPROGRESS: 'inprogress',
+  VERIFY: 'verify',
   DONE: 'done'
 };
 
@@ -120,8 +120,8 @@ var Iteration = function(name) {
   
   // Task state
   this.todo = [];
-  this.working = [];
-  this.review = [];
+  this.inprogress = [];
+  this.verify = [];
   this.done = [];
   
   // All tasks
@@ -134,8 +134,8 @@ var Iteration = function(name) {
   var _listFromTask = function _listFromTask(taskID) {
     var task = Task.get(taskID);
     var list = task.status == Task.status.TODO ? _self.todo : 
-               task.status == Task.status.WORKING ? _self.working : 
-               task.status == Task.status.REVIEW ? _self.review :
+               task.status == Task.status.INPROGRESS ? _self.inprogress : 
+               task.status == Task.status.VERIFY ? _self.verify :
                task.status == Task.status.DONE ? _self.done : null;
                
     return list;
@@ -157,8 +157,8 @@ var Iteration = function(name) {
  
   // Public methods
   this.getTodo = function getTodo() { return _self.todo; }
-  this.getWorking = function getWorking() { return _self.working; }
-  this.getReview = function getReview() { return _self.review; }
+  this.getInprogress = function getInprogress() { return _self.inprogress; }
+  this.getVerify = function getVerify() { return _self.verify; }
   this.getDone = function getDone() { return _self.done; }
   this.getTasks = function getTasks() { return _self.tasks; }
   
@@ -262,8 +262,8 @@ Iteration.get = function get(id) {
     iteration.begin = object.begin;
 
     iteration.todo = object.todo;
-    iteration.working = object.working;
-    iteration.review = object.review;
+    iteration.inprogress = object.inprogress;
+    iteration.verify = object.verify;
     iteration.done = object.done;
 
     iteration.tasks = object.tasks;

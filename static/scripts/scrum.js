@@ -51,7 +51,7 @@ _.init = function() {
     _.iteration = Iteration.get(current.key);
   }
   
-  var types = ['todo', 'working', 'review', 'done'];
+  var types = ['todo', 'inprogress', 'verify', 'done'];
   $.each(types, function (index, type) {
     
     $.each(_.iteration[type], function (index, value) {
@@ -91,6 +91,9 @@ _.init = function() {
       var task = Task.get(target);
       $(this).append(_.tmpl('task', task));
       $('#' + task.id).attr('draggable', true);
+      
+      var status = $(this)[0].id;
+      _.iteration.changeStatus(task.id, status);
       
       return false;
     }
