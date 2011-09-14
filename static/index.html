@@ -34,9 +34,6 @@
       <div class="fill">
         <div class="container">
           <h3><a href="#">Scrum</a></h3>
-          <ul>
-            <li class="active"><a href="#">Board</a></li>
-          </ul>
         </div>
       </div>
     </div>
@@ -52,7 +49,7 @@
           
           <div class="span4 offset8 columns">
             <button id="new-task-button" class="btn primary">New Task</button>
-            <button id="clear-task-button" class="btn danger">Clear Task</button>
+            <button id="clear-task-button" class="btn danger">Clear Board</button>
           </div>
           
         </div>
@@ -101,7 +98,7 @@
     </div>
     
     <!-- New task modal -->
-    <div id="new-task-modal" class="modal-backdrop new-task">
+    <div id="new-task-modal" class="modal-backdrop task-modal">
       
       <form class="modal">
         <div class="modal-header">
@@ -131,7 +128,7 @@
     <!-- End new task modal -->
     
     <!-- Edit task modal -->
-    <div id="edit-task-modal" class="modal-backdrop edit-task">
+    <div id="edit-task-modal" class="modal-backdrop task-modal">
       
       <form class="modal">
         <div class="modal-header">
@@ -152,6 +149,33 @@
             Save
           </a>
           <a id="edit-task-cancel-button" href="" class="btn seconday">
+            Cancel
+          </a>
+        </div>
+      </form>
+      
+    </div>
+    <!-- End new task modal -->
+    
+    <!-- Clear task modal -->
+    <div id="clear-task-modal" class="modal-backdrop task-modal">
+      
+      <form class="modal">
+        <div class="modal-header">
+          <h3>Remove all task</h3>
+        </div>
+        <div class="modal-body">
+          
+          <div class="clearfix">
+            <p>Do you really want to remove every task from board?</p>
+          </div>
+                    
+        </div>
+        <div class="modal-footer">
+          <a id="clear-task-confirm-button" href="#task/clear/confirm" class="btn danger">
+            Clear
+          </a>
+          <a id="clear-task-cancel-button" href="" class="btn seconday">
             Cancel
           </a>
         </div>

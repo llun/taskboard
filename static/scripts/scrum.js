@@ -52,6 +52,17 @@ _.table = {
     
     window.location.hash = '';
   },
+  'task/clear': function(hash) {
+    $('#clear-task-modal').show();
+  },
+  'task/clear/confirm': function(hash) {
+    $('.task').remove();
+    $('#clear-task-modal').hide();
+    
+    _.persistent.clear();
+    
+    window.location.hash = '';
+  },
   
   // Default state
   '': function() {
@@ -140,6 +151,10 @@ _.init = function() {
   
   $('#new-task-button').click(function(event) {
     window.location.hash = 'task/new';
+  });
+  
+  $('#clear-task-button').click(function(event) {
+    window.location.hash = 'task/clear';
   });
   
   $('#user-menu').click(function(event) {
