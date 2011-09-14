@@ -3,24 +3,45 @@ _.table = {
   'task/new': function() {
     $('#new-task-modal').show();
   },
-  'task/cancel': function() {
-    // Clear form and close
-    $('#new-task-detail').val('');
-    $('#new-task-modal').hide();
+  'task/edit': function(hash) {
+    $('#edit-task-modal').show();
+    
+    var id = hash.substring('#task/edit'.length + 1);
+    var task = Task.get(id);
+    
+    $('#edit-task-detail').val(task.getDetail());
+    $('#edit-task-save-button').attr('href', '#task/save/' + id);
   },
-  'task/save': function() {
+  'task/save': function(hash) {
     
-    // Store it to local memory and render new task in todo
-    var detail = $('#new-task-detail').val();
-    
-    var task = _.iteration.createTask(detail);
-    if (task) {
-      $('#todo').append(_.tmpl('task', task));
-      $('#' + task.id).attr('draggable', true);
+    if (hash) {
+      // Save old task
+      var id = hash.substring('#task/edit'.length + 1);
+      
+      var task = Task.get(id);
+      task.setDetail($('#edit-task-detail').val());
+      Task.save(task);
+      
+      $('#' + id + '_detail').text(task.getDetail());
+      $('#' + id + '_responders').text(task.getResponders().toString());
+      
+      $('#edit-task-detail').val('');
+      $('#edit-task-save-button').attr('href', '');
+      $('#edit-task-modal').hide();
+    } else {
+      // Save new task
+      // Store it to local memory and render new task in todo
+      var detail = $('#new-task-detail').val();
 
-      // Clear form and close
-      $('#new-task-detail').val('');
-      $('#new-task-modal').hide();
+      var task = _.iteration.createTask(detail);
+      if (task) {
+        $('#todo').append(_.tmpl('task', task));
+        $('#' + task.id).attr('draggable', true);
+
+        // Clear form and close
+        $('#new-task-detail').val('');
+        $('#new-task-modal').hide();
+      }
     }
     
   },
@@ -28,11 +49,18 @@ _.table = {
     var id = hash.substring('#task/remove'.length + 1);
     _.iteration.removeTask(id);
     $('#' + id).remove();
+    
+    window.location.hash = '';
   },
   
   // Default state
   '': function() {
+    $('#new-task-detail').val('');
+    $('#edit-task-detail').val('');
+    $('#edit-task-save-button').attr('href', '');
+    
     $('#new-task-modal').hide();
+    $('#edit-task-modal').hide();
   }
 }
 
@@ -104,6 +132,9 @@ _.init = function() {
     dragstart: function (ev) {
       var dt = ev.originalEvent.dataTransfer;
       dt.setData('Text', $(this).attr('id'));
+    },
+    dblclick: function (ev) {
+      window.location.hash = 'task/edit/' + $(this).attr('id');
     }
   });
   

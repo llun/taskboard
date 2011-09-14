@@ -41,9 +41,6 @@ $(document).ready(function() {
   window.location.hash = '';
   
   $(window).bind('hashchange', function() {
-    // Reset state by route to default
-    route('');
-    
     // Route to new target
     route(window.location.hash);
   });

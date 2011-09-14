@@ -17,11 +17,11 @@
     <script type="text/html" id="task" charset="utf-8">    
       <div id="<%=id%>" class="task">
         <a href="#task/remove/<%=id%>" class="close">x</a>
-        <p>
+        <p id="<%=id%>_detail">
           <%=getDetail()%>
         </p>
       
-        <small><%=getResponders()%></small>
+        <small id="<%=id%>_responders"><%=getResponders()%></small>
       </div>
     </td>
     </script>
@@ -133,7 +133,7 @@
           <a id="new-task-save-button" href="#task/save" class="btn primary">
             Save
           </a>
-          <a id="new-task-cancel-button" href="#task/cancel" class="btn seconday">
+          <a id="new-task-cancel-button" href="" class="btn seconday">
             Cancel
           </a>
         </div>
@@ -153,17 +153,17 @@
           
           <div class="clearfix">
             <div class="input">
-              <textarea id="new-story-detail" 
+              <textarea id="edit-task-detail" 
                         name="detail" rows="8" cols="45"></textarea>
             </div>
           </div>
                     
         </div>
         <div class="modal-footer">
-          <a id="new-story-save-button" href="#task/save" class="btn primary">
+          <a id="edit-task-save-button" href="" class="btn primary">
             Save
           </a>
-          <a id="new-story-cancel-button" href="#task/cancel" class="btn seconday">
+          <a id="edit-task-cancel-button" href="" class="btn seconday">
             Cancel
           </a>
         </div>
