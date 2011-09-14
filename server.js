@@ -12,6 +12,10 @@ if (path.existsSync('config.js')) {
   config = require('./config-default.js').config;
 }
 
+// Initial router
+var Router = new require('./router.js').router;
+var router = new Router(config.routes);
+
 // Initial server and now.js
 var httpServer = http.createServer(
   function(request, response) {
@@ -22,29 +26,31 @@ var httpServer = http.createServer(
     if (path.existsSync(filePath)) {
       // Serve static file
       var stat = fs.statSync(filePath);
-      
-      response.writeHead(200, {
-        'Content-Type': mime.lookup(filePath),
-        'Content-Length': stat.size
-      });
-      
-      var stream = fs.createReadStream(filePath);
-      stream.on('data', function (data) {
-        response.write(data);
-      });
-      
-      stream.on('end', function() {
-        response.end();
-      });
+      if (stat.isDirectory()) {
+        router.notfound(request, response);
+      } else {
+        response.writeHead(200, {
+          'Content-Type': mime.lookup(filePath),
+          'Content-Length': stat.size
+        });
+
+        var stream = fs.createReadStream(filePath);
+        stream.on('data', function (data) {
+          response.write(data);
+        });
+
+        stream.on('end', function() {
+          response.end();
+        });
+      }
       
     } else {
-      // Response 404
-      response.writeHead(404, {})
-      response.end("Not found")
+      router.route(request, response);
     }
     
   });
 httpServer.listen(config.port);
 
 var everyone = nowjs.initialize(httpServer);
-  
+router.everyone = everyone;
+

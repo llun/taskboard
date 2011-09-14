@@ -10,6 +10,7 @@ var Task = function(detail) {
   // Public propoerties
   this.detail = detail;
   this.status = Task.status.TODO;
+  this.updated = new Date().getTime();
   
   // Private methods
   /**
@@ -105,6 +106,7 @@ Task.get = function(id) {
   return task;
 }
 Task.save = function(task) {
+  task.updated = new Date().getTime();
   _.persistent.save(task);
 }
 Task.remove = function(id) {

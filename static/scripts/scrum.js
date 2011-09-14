@@ -160,4 +160,8 @@ _.init = function() {
   $('#user-menu').click(function(event) {
     $(this).toggleClass('open');
   });
+  
+  // Bind Now.js function.
+  _.from = Util.uuid();
+  console.log(_.from);
 }
