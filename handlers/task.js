@@ -64,22 +64,22 @@ var TaskHandler = {
   everyone: function(now, store) {
     
     
-    now.sync = function(task) {
+    now.sync = function(from, task) {
       var _task = Task.get(store.getClient());
       if (task.removed) {
         // Remove task
         _task.remove(task.id);
-        now.remove(task.id);
+        now.remove(from, task.id);
       } else if (!task.sync) {
         // Create task
         task.sync = true;
         
         _task.create(task);
-        now.create(task);
+        now.create(from, task);
       } else {
         // Update task
         _task.edit(task.id, task);
-        now.update(task);
+        now.update(from, task);
       }
     }
     
@@ -88,6 +88,8 @@ var TaskHandler = {
       _task.count(function (error, count) {
         
         _task.list(0, count, function (error, data) {
+          
+          var master = 'master';
           
           var server = data;
           var client = tasks;
@@ -105,34 +107,34 @@ var TaskHandler = {
             _server.add[index].sync = true;
             
             _task.create(_server.add[index]);
-            now.create(_server.add[index]);
+            now.create(master, _server.add[index]);
           }
           
           // Remove from server
           for (var index = 0; index < _server.remove.length; index++) {
             _task.remove(_server.remove[index].id);
-            now.remove(_server.remove[index].id);
+            now.remove(master, _server.remove[index].id);
           }
           
           // Update on server
           for (var index = 0; index < _server.update.length; index++) {
             _task.edit(_server.update[index].id, _server.update[index]);
-            now.update(_server.update[index]);
+            now.update(master, _server.update[index]);
           }
           
           // Add to client
           for (var index = 0; index < _client.add.length; index++) {
-            now.create(_client.add[index]);
+            now.create(master, _client.add[index]);
           }
           
           // Remove from client
           for (var index = 0; index < _client.remove.length; index++) {
-            now.remove(_client.remove[index].id);
+            now.remove(master, _client.remove[index].id);
           }
           
           // Update on client
           for (var index = 0; index < _client.update.length; index++) {
-            now.update(_client.update[index]);
+            now.update(master, _client.update[index]);
           }
           
         });

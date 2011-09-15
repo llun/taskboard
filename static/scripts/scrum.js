@@ -19,13 +19,11 @@ _.table = {
       var id = hash.substring('#task/edit'.length + 1);
       
       var task = Task.get(id);
-      console.log ('Client update: ' + task.detail);
-      
       task.setDetail($('#edit-task-detail').val());
       Task.save(task);
       
       if (navigator.onLine) {
-        now.sync(task);
+        now.sync(_.client, task);
       }
       
       $('#' + id + '_detail').text(task.getDetail());
@@ -38,7 +36,6 @@ _.table = {
       // Save new task
       // Store it to local memory and render new task in todo
       var detail = $('#new-task-detail').val();
-      console.log ('Client create: ' + detail);
 
       var task = _.iteration.createTask(detail);
       if (task) {
@@ -46,7 +43,10 @@ _.table = {
         $('#' + task.id).attr('draggable', true);
         
         if (navigator.onLine) {
-          now.sync(task);
+          now.sync(_.client, task);
+          
+          task.sync = true;
+          Task.save(task);
         }
 
         // Clear form and close
@@ -59,13 +59,12 @@ _.table = {
   'task/remove': function(hash) {
     var id = hash.substring('#task/remove'.length + 1);
     var task = Task.get(id);
-    console.log ('Client remove: ' + task.detail);
     
     _.iteration.removeTask(id);
     $('#' + id).remove();
     
     if (navigator.onLine) {
-      now.sync({id: id, removed: true});
+      now.sync(_.client, {id: id, removed: true});
     }
     
     window.location.hash = '';
@@ -74,11 +73,10 @@ _.table = {
     $('#clear-task-modal').show();
   },
   'task/clear/confirm': function(hash) {
-    console.log ('Client clear');
     var tasks = _.iteration.tasks;
     for (var index = 0; index < tasks.length; index++) {
       if (navigator.onLine) {
-        now.sync({id: tasks[index], removed: true});
+        now.sync(_.client, {id: tasks[index], removed: true});
       }
     }
     
@@ -122,12 +120,9 @@ _.init = function() {
     $.each(_.iteration[type], function (index, value) {
       var task = Task.get(_.iteration.tasks[value]);
       if (task) {
-        console.log ('Load: ' + task.detail);
         $('#' + type).append(_.tmpl('task', task));
         $('#' + task.id).attr('draggable', true);
       } else {
-        console.log ('Task is not found: ' + id);
-        
         var id = _.iteration.tasks[value];
         _.iteration.removeTask(id);
         
@@ -167,10 +162,8 @@ _.init = function() {
       
       if (navigator.onLine) {
         task = Task.get(task.id);
-        now.sync(task);
+        now.sync(_.client, task);
       }
-      
-      console.log ('Update: ' + task.detail);
       
       return false;
     }
@@ -199,11 +192,16 @@ _.init = function() {
     $(this).toggleClass('open');
   });
 
+  // Generate client id
+  _.client = Util.uuid();
+
   // Sync data to server if online
   if (navigator.onLine) {
     now.ready(function() {
       
-      now.create = function (task) {
+      now.create = function (from, task) {
+        if (from == _.client) { return; }
+        
         var clientTask = Task.get(task.id);
         if (clientTask) {
           clientTask.sync = true;
@@ -213,35 +211,31 @@ _.init = function() {
           
           clientTask = Task.get(task.id);
           
-          console.log ('Remote create: ' + task.detail);
-          
           $('#todo').append(_.tmpl('task', clientTask));
           $('#' + clientTask.id).attr('draggable', true);
         }
       };
       
-      now.update = function (task) {
-        var clientTask = Task.get(task.id);
+      now.update = function (from, task) {
+        if (from == _.client) { return; }
         
+        _.iteration.changeStatus(task.id, task.status);
+        
+        var clientTask = Task.get(task.id);
         clientTask.setDetail(task.detail);
         clientTask.updated = task.updated;
         
         Task.save(clientTask);
-        _.iteration.changeStatus(task.id, task.status);
         
         $('#' + task.id).remove();
         
         clientTask = Task.get(task.id);
-        
-        console.log ('Remote update: ' + clientTask.detail);
-        
         $('#' + clientTask.status).append(_.tmpl('task', clientTask));
         $('#' + clientTask.id).attr('draggable', true);
       }
       
-      now.remove = function (id) {
-        var task = Task.get(id);
-        console.log ('Remote remove: ' + task.detail);
+      now.remove = function (from, id) {
+        if (from == _.client) { return; }
         
         $('#' + id).remove();
         _.iteration.removeTask(id);
