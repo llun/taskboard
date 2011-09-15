@@ -22,7 +22,7 @@ _.table = {
       task.setDetail($('#edit-task-detail').val());
       Task.save(task);
       
-      if (navigator.onLine) {
+      if (navigator.onLine && _.now) {
         now.sync(_.client, task);
       }
       
@@ -44,7 +44,7 @@ _.table = {
         $('#todo').append(_.tmpl('task', task));
         $('#' + task.id).attr('draggable', true);
         
-        if (navigator.onLine) {
+        if (navigator.onLine && _.now) {
           now.sync(_.client, task);
           
           task.sync = true;
@@ -65,7 +65,7 @@ _.table = {
     _.iteration.removeTask(id);
     $('#' + id).remove();
     
-    if (navigator.onLine) {
+    if (navigator.onLine && _.now) {
       now.sync(_.client, {id: id, removed: true});
     }
     
@@ -79,17 +79,17 @@ _.table = {
   'task/clear/confirm': function(hash) {
     var tasks = _.iteration.tasks;
     for (var index = 0; index < tasks.length; index++) {
-      if (navigator.onLine) {
+      if (navigator.onLine && _.now) {
         now.sync(_.client, {id: tasks[index], removed: true});
       }
+      
+      _.iteration.removeTask(tasks[index]);
     }
     
     console.log ('client(clear)');
     
     $('.task').remove();
     $('#clear-task-modal').hide();
-    
-    _.persistent.clear();
     
     window.location.hash = '';
   },
@@ -166,7 +166,7 @@ _.init = function() {
       var status = $(this)[0].id;
       _.iteration.changeStatus(task.id, status);
       
-      if (navigator.onLine) {
+      if (navigator.onLine && _.now) {
         task = Task.get(task.id);
         now.sync(_.client, task);
       }
@@ -206,6 +206,8 @@ _.init = function() {
   // Sync data to server if online
   if (navigator.onLine) {
     now.ready(function() {
+      
+      _.now = true;
       
       now.create = function (from, task) {
         console.log ('server-debug(create): (' + from + ') ' + task.detail);
