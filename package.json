@@ -5,8 +5,8 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "now": "*",
-    "mime": "*",
-    "mongodb": "*"
+    "now": "0.75",
+    "mime": "1.2.3",
+    "mongodb": "0.9.6-15"
   }
 }
