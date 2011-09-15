@@ -26,7 +26,7 @@ _.table = {
         now.sync(_.client, task);
       }
       
-      console.log ('client(update): ' + task.detail);
+      console.log ('client(update): ' + task.status + ', ' + task.detail);
       
       $('#' + id + '_detail').text(task.getDetail());
       $('#' + id + '_responders').text(task.getResponders().toString());
@@ -51,7 +51,7 @@ _.table = {
           Task.save(task);
         }
         
-        console.log ('client(create): ' + task.detail);
+        console.log ('client(create): ' + task.status + ', ' + task.detail);
 
         // Clear form and close
         $('#new-task-detail').val('');
@@ -230,7 +230,7 @@ _.init = function() {
           _.iteration.saveTask(task);
           clientTask = Task.get(task.id);
           
-          console.log ('server(create): ' + clientTask.detail);
+          console.log ('server(create): ' + clientTask.status + ', ' + clientTask.detail);
           
           $('#todo').append(_.tmpl('task', clientTask));
           $('#' + clientTask.id).attr('draggable', true);
@@ -238,7 +238,7 @@ _.init = function() {
       };
       
       now.update = function (from, task) {
-        console.log ('server-debug(update): (' + from + ') ' + task.detail);
+        console.log ('server-debug(update): (' + from + ') '  + task.detail);
         if (from == _.client) { return; }
         
         _.iteration.changeStatus(task.id, task.status);
@@ -252,7 +252,7 @@ _.init = function() {
         $('#' + task.id).remove();
         clientTask = Task.get(task.id);
         
-        console.log ('server(update): ' + clientTask.detail);
+        console.log ('server(update): ' + clientTask.status + ', ' + clientTask.detail);
         
         $('#' + clientTask.status).append(_.tmpl('task', clientTask));
         $('#' + clientTask.id).attr('draggable', true);

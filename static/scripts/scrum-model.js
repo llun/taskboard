@@ -240,7 +240,7 @@ var Iteration = function(name) {
         list.length--;
         
         Task.remove(taskID);
-      }
+      }  
       
     } else {
       // Scan all table
@@ -253,8 +253,8 @@ var Iteration = function(name) {
           delete _self.tasks[position];
           delete list[target];
 
-          _self.tasks.length--;
-          list.length--;
+          if (_self.tasks.length > 0) { _self.tasks.length--; }
+          if (list.length > 0) { list.length--; }
 
           Task.remove(taskID);
           break;
@@ -290,6 +290,39 @@ var Iteration = function(name) {
         
         list = _listFromTask(taskID);
         list.push(position);
+      } else {
+        
+        var found = null;
+        for (var index = 0; index < _self.tasks.length; index++) {
+          if (_self.tasks[index] == taskID) {
+            found = index;
+            break;
+          }
+        }
+        
+        if (found !== null) {
+          var lists = [ _self.todo, _self.inprogress, _self.verify, _self.done ];
+          for (var key in lists) {
+            var removedFromInner = false;
+            var target = lists[key];
+            for (var index = 0; index < target.length; index++) {
+              if (target[index] == found) {
+                delete target[index];
+                target.length--;
+                
+                removedFromInner = true;
+                break;
+              }
+            }
+            
+            if (removedFromInner) {
+              break;
+            }
+          }
+          
+          _self[status].push(found);
+        }
+        
       }
     }
     
