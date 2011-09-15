@@ -22,6 +22,13 @@ TaskModel.prototype.list = function(offset, limit, callback){
   });
 }
 
+TaskModel.prototype.count = function(callback) {
+  callback = callback || function() {};
+  
+  var collection = this.collection;
+  collection.count(callback);
+}
+
 TaskModel.prototype.create = function(task, callback){
   callback = callback || function(){};
   
@@ -30,14 +37,7 @@ TaskModel.prototype.create = function(task, callback){
     return;
   }
   
-  var newTask = {}
-  
-  if(task.summary) newTask.summary = task.summary;
-  if(task.description) newTask.description = task.description;
-  if(task.state) newTask.state = task.state;
-  if(task.owner) newTask.owner = task.owner;
-  if(task.priority) newTask.priority = task.priority;
-  if(task.endTime) newTask.endTime = task.endTime;
+  task._id = task.id;
   
   var collection = this.collection;
   collection.insert(task, {safe:true},
@@ -59,19 +59,10 @@ TaskModel.prototype.edit = function(id, task, callback){
     return;
   }
   
-  var newTask = {}
-  if(task.summary) newTask.summary = task.summary;
-  if(task.description) newTask.description = task.description;
-  if(task.state) newTask.state = task.state;
-  if(task.owner) newTask.owner = task.owner;
-  if(task.priority) newTask.priority = task.priority;
-  if(task.endTime) newTask.endTime = task.endTime;
-  
   var client = this.client;
-  id = new client.bson_serializer.ObjectID(id+'');
   
   var collection = this.collection;
-  collection.update({ '_id': id}, {'$set': newTask}, {safe:true},
+  collection.update({ '_id': id}, {'$set': task}, {safe:true},
                     function(err, objects) {
     if (err){
       console.warn(err.message);
@@ -91,7 +82,6 @@ TaskModel.prototype.remove = function(id, callback){
   }
   
   var client = this.client;
-  id = new client.bson_serializer.ObjectID(id+'');
   
   var collection = this.collection;
   collection.findAndModify({ '_id': id},[], {}, {remove:true},
@@ -114,7 +104,6 @@ TaskModel.prototype.exists = function(id, callback){
   }
   
   var client = this.client;
-  id = new client.bson_serializer.ObjectID(id+'');
   
   var collection = this.collection;
   collection.find({ '_id': id}).count(function(err, objects) {
@@ -125,6 +114,15 @@ TaskModel.prototype.exists = function(id, callback){
       callback(null, objects !== 0);
     }
   });
+}
+
+var _model = null;
+TaskModel.get = function (client) {
+  if (!_model) {
+    _model = new TaskModel(client);
+  }
+  
+  return _model;
 }
 
 exports.TaskModel = TaskModel;

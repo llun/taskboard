@@ -1,7 +1,8 @@
 CACHE MANIFEST
+#Version 1
 #2011-09-14
 
-CACHE:
+NETWORK:
 index.html
 scripts/engine-persistent.js
 scripts/engine.js
@@ -10,4 +11,5 @@ scripts/scrum-model.js
 scripts/scrum.js
 css/bootstrap-1.2.0.min.css
 css/scrum.css
-scripts/now.js
+nowjs/now.js
+socket.io/socket.io.js

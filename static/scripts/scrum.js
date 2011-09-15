@@ -22,6 +22,10 @@ _.table = {
       task.setDetail($('#edit-task-detail').val());
       Task.save(task);
       
+      if (navigator.onLine) {
+        now.sync(task);
+      }
+      
       $('#' + id + '_detail').text(task.getDetail());
       $('#' + id + '_responders').text(task.getResponders().toString());
       
@@ -37,6 +41,10 @@ _.table = {
       if (task) {
         $('#todo').append(_.tmpl('task', task));
         $('#' + task.id).attr('draggable', true);
+        
+        if (navigator.onLine) {
+          now.sync(task);
+        }
 
         // Clear form and close
         $('#new-task-detail').val('');
@@ -49,6 +57,10 @@ _.table = {
     var id = hash.substring('#task/remove'.length + 1);
     _.iteration.removeTask(id);
     $('#' + id).remove();
+    
+    if (navigator.onLine) {
+      now.sync({id: id, removed: true});
+    }
     
     window.location.hash = '';
   },
@@ -134,6 +146,11 @@ _.init = function() {
       var status = $(this)[0].id;
       _.iteration.changeStatus(task.id, status);
       
+      if (navigator.onLine) {
+        task = Task.get(task.id);
+        now.sync(task);
+      }
+      
       return false;
     }
   });
@@ -160,8 +177,67 @@ _.init = function() {
   $('#user-menu').click(function(event) {
     $(this).toggleClass('open');
   });
+
+  // Sync data to server if online
+  if (navigator.onLine) {
+    now.ready(function() {
+      
+      now.create = function (task) {
+        var clientTask = Task.get(task.id);
+        if (clientTask) {
+          clientTask.sync = true;
+          Task.save(clientTask);
+        } else {
+          _.iteration.saveTask(task);
+          
+          clientTask = Task.get(task.id);
+          
+          $('#todo').append(_.tmpl('task', clientTask));
+          $('#' + clientTask.id).attr('draggable', true);
+        }
+      };
+      
+      now.update = function (task) {
+        var clientTask = Task.get(task.id);
+        
+        clientTask.setDetail(task.detail);
+        clientTask.updated = task.updated;
+        
+        Task.save(clientTask);
+        _.iteration.changeStatus(task.id, task.status);
+        
+        $('#' + task.id).remove();
+
+        $(this).append(_.tmpl('task', clientTask));
+        $('#' + clientTask.id).attr('draggable', true);
+      }
+      
+      now.remove = function (id) {
+        $('#' + id).remove();
+        _.iteration.removeTask(id);
+      }
+      
+      var prepareSync = [];
+      var tasks = _.iteration.tasks;
+      
+      for (var index = 0; index < tasks.length; index++) {
+        var task = Task.get(tasks[index]);
+        if (task) {
+          prepareSync.push(task);
+        }
+      }
+      
+      var prepareRemove = [];
+      var removed = _.persistent.get('removed');
+      
+      if (removed) {
+        prepareRemove = removed.list;
+        _.persistent.remove('removed');
+      }
+      
+      now.syncAll(prepareSync, prepareRemove);
+      
+    });
+  }
   
-  // Bind Now.js function.
-  _.from = Util.uuid();
-  console.log(_.from);
 }

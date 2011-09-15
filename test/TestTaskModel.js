@@ -8,8 +8,8 @@ new mongodb.Db('test', server, {}).open(function (error, connectclient) {
   client = connectclient;
 });
 
-var IterationModel = require('../model/IterationModel').IterationModel;
-var TaskModel = require('../model/TaskModel').TaskModel;
+var IterationModel = require('../model/iteration.js').IterationModel;
+var TaskModel = require('../model/task.js').TaskModel;
 var taskModel = null;
 
 TestIt('testTaskModel', {
@@ -22,6 +22,7 @@ TestIt('testTaskModel', {
       create: false,
       edit: false,
       list: false,
+      count: false,
       remove: false,
       exists: false
     }
@@ -30,14 +31,20 @@ TestIt('testTaskModel', {
     var created = this.created;
     
     this.fixtures = [{
-      summary: 'testT#1',
-      state: 'todo'
+      id: '1',
+      detail: 'testT#1',
+      status: 'todo',
+      updated: new Date().getTime()
     },{
-      summary: 'testT#2',
-      state: 'doing'
+      id: '2',
+      detail: 'testT#2',
+      status: 'inprogress',
+      updated: new Date().getTime()
     },{
-      summary: 'testT#3',
-      state: 'done'
+      id: '3',
+      detail: 'testT#3',
+      status: 'done',
+      updated: new Date().getTime()
     }];
     var fixtures = this.fixtures;
     var done = false;
@@ -80,18 +87,46 @@ TestIt('testTaskModel', {
       test.assertEqual(3, data.length);
     });
   },
+  'testCount': function(test) {
+    var before = this.before;
+    
+    var error = null;
+    var count = null;
+    
+    test.waitFor(function(){
+      return before.list;
+    }, begin);
+    
+    function begin(){
+      taskModel.count(function(err, data){
+        error = err;
+        count = data;
+        before.count = true;
+      });
+    }
+    
+    
+    test.waitFor(function(){
+      return before.count;
+    }, function(){
+      test.assert(!error);
+      test.assertEqual(3, count);
+    });
+  },
   'testCreate': function(test){
     var before = this.before;
     
     var error;
     var createdTask;
     test.waitFor(function(){
-      return before.list;
+      return before.count;
     }, begin);
     
     function begin(){
       var task = {
-        summary: 'task ja !'
+        id: '4',
+        detail: 'task ja !',
+        updated: new Date().getTime()
       }
       taskModel.create(task, function(err, data){
         error = err;
@@ -120,7 +155,8 @@ TestIt('testTaskModel', {
 
     function begin(){
       var task = {
-        summary: 'iteration#100'
+        summary: 'iteration#100',
+        updated: new Date().getTime()
       }
       
       taskModel.edit(created[0]._id, task, function(err, data){

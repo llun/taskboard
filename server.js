@@ -13,8 +13,13 @@ if (path.existsSync('config.js')) {
 }
 
 // Initial router
-var Router = new require('./router.js').router;
+var Router = require('./router.js').router;
 var router = new Router(config.routes);
+
+// Initial store
+var Store = require('./model/store.js').store;
+var store = new Store(config.mongo);
+router.store = store;
 
 // Initial server and now.js
 var httpServer = http.createServer(
@@ -54,3 +59,7 @@ httpServer.listen(config.port);
 var everyone = nowjs.initialize(httpServer);
 router.everyone = everyone;
 
+// Initial everyone
+for (var index = 0; index < config.everyone.length; index++) {
+  config.everyone[index] (everyone.now, store);
+}

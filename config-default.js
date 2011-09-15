@@ -5,10 +5,19 @@ var config = {
   // Base static path
   base: '/static',
   
-  // Node handlers paths
-  routes: {
-    'get:/task/list': require('./handlers/task.js').TaskHandler.listTasks,
-    'post:/task/sync': require('./handlers/task.js').TaskHandler.syncTasks
+  // Node handlers route
+  routes: {},
+  
+  // Now handlers list
+  everyone: [ require('./handlers/task.js').everyone ],
+  
+  // MongoDB configuration
+  mongo: {
+    server: '127.0.0.1',
+    port: 27017,
+    serverOption: {},
+    databaseOption: {},
+    database: 'Scrum'
   }
 }
 

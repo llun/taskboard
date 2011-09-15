@@ -101,6 +101,8 @@ Task.get = function(id) {
     task = new Task(object.detail);
     task.id = object.id;
     task.status = object.status;
+    task.sync = object.sync;
+    task.updated = object.updated;
   }
   
   return task;
@@ -111,6 +113,14 @@ Task.save = function(task) {
 }
 Task.remove = function(id) {
   _.persistent.remove(id);
+  
+  var removed = _.persistent.get('removed');
+  if (!removed) {
+    removed = { id: 'removed', list: [] };
+  }
+  
+  removed.list.push(id);
+  _.persistent.save(removed)
 }
 
 var Iteration = function(name) {
@@ -185,6 +195,24 @@ var Iteration = function(name) {
     Iteration.save(_self);
     
     return task;
+  }
+  
+  /**
+   * Save exists task to iteration
+   *
+   * @param {Object} task object
+   */
+  this.saveTask = function saveTask(task) {
+    if (!_self.begin) {
+      _self.begin = new Date().getTime();
+    }
+    
+    _.persistent.save(task);
+
+    _self.todo.push(_self.tasks.length);
+    _self.tasks.push(task.id);
+    
+    Iteration.save(_self);
   }
   
   /**
@@ -280,4 +308,12 @@ Iteration.save = function save(iteration) {
 }
 Iteration.remove = function remove(id) {
   _.persistent.remove(id);
+  
+  var removed = _.persistent.get('removed');
+  if (!removed) {
+    removed = { id: 'removed', list: [] };
+  }
+  
+  removed.list.push(id);
+  _.persistent.save(removed)
 }

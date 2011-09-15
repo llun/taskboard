@@ -8,9 +8,9 @@ new mongodb.Db('test', server, {}).open(function (error, connectclient) {
   client = connectclient;
 });
 
-var IterationModel = require('../model/IterationModel').IterationModel;
+var IterationModel = require('../model/iteration.js').IterationModel;
 var iterationModel = null;
-var TaskModel = require('../model/TaskModel').TaskModel;
+var TaskModel = require('../model/task.js').TaskModel;
 var taskModel = null;
 
 TestIt('testIterationModel', {
