@@ -70,7 +70,9 @@ _.table = {
   'task/clear/confirm': function(hash) {
     var tasks = _.iteration.tasks;
     for (var index = 0; index < tasks.length; index++) {
-      now.sync({id: tasks[index].id, removed: true});
+      if (navigator.onLine) {
+        now.sync({id: tasks[index], removed: true});
+      }
     }
     
     $('.task').remove();

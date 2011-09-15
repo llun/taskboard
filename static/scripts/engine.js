@@ -38,6 +38,9 @@ $(window).load(function() {
   
   $(applicationCache).bind('updateready', function (e) {
     if (applicationCache.status == applicationCache.UPDATEREADY) {
+      // Clear all persistent before update to new version.
+      _.persistent.clear();
+      
       // Browser downloaded a new app cache.
       // Swap it in and reload the page to get the new hotness.
       applicationCache.swapCache();
