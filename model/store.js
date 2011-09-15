@@ -7,6 +7,11 @@ var Store = function(config) {
   var _client = null;
   
   _db.open(function (error, client) {
+    if (error) {
+      console.error ("Can't connect to database");
+      process.exit(1);
+    }
+    
     _client = client;
   });
   

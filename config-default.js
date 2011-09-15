@@ -18,6 +18,16 @@ var config = {
     serverOption: {},
     databaseOption: {},
     database: 'Scrum'
+  },
+  
+  // Log facility
+  log: {
+    appenders: [ { type: 'file', 
+                   filename: 'scrum.log', 
+                   maxLogSize: 102400,
+                   backups: 3,
+                   pollInterval: 15 },
+                 { type: 'console' } ]
   }
 }
 
