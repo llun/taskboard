@@ -27,7 +27,10 @@ var config = {
                    maxLogSize: 102400,
                    backups: 3,
                    pollInterval: 15 },
-                 { type: 'console' } ]
+                 { type: 'console' } ],
+    levels: {
+      console: 'debug'
+    }
   }
 }
 

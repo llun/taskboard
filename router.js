@@ -9,6 +9,7 @@ var Router = function(routes) {
   var _pattern = /^[\w*]+:[\w.-_\/]+$/i;
   var _parse = function (routes) {
     for (var key in routes) {
+      console.debug ('Parsing route: ' + key);
       if (_pattern.test(key)) {
         var paths = key.split(':');
         

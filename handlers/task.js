@@ -1,4 +1,5 @@
-var Task = require('../model/task.js').TaskModel;
+var Task = require('../model/task.js').TaskModel,
+    util = require('util');
 
 var TaskHandler = {
   
@@ -6,7 +7,6 @@ var TaskHandler = {
    * Sync server and client list
    */
   syncAll: function (server, client) {
-    
     var output = { server: { add: [], remove: [], update: [] },
                    client: { add: [], remove: [], update: [] } };
     
@@ -63,27 +63,34 @@ var TaskHandler = {
   
   everyone: function(now, store) {
     
-    
     now.sync = function(from, task) {
       var _task = Task.get(store.getClient());
       if (task.removed) {
         // Remove task
         _task.remove(task.id);
         now.remove(from, task.id);
+        
+        console.log ('sync(remove): (' + from + ') ' + util.inspect(task));
       } else if (!task.sync) {
         // Create task
         task.sync = true;
         
         _task.create(task);
         now.create(from, task);
+        
+        console.log ('sync(create): (' + from + ') ' + util.inspect(task));
       } else {
         // Update task
         _task.edit(task.id, task);
         now.update(from, task);
+        
+        console.log ('sync(update): (' + from + ') ' + util.inspect(task));
       }
     }
     
     now.syncAll = function (tasks, removed) {
+      console.debug ('sync all tasks');
+      
       var _task = Task.get(store.getClient());
       _task.count(function (error, count) {
         
@@ -94,6 +101,9 @@ var TaskHandler = {
           var server = data;
           var client = tasks;
           
+          console.debug ('server: ' + util.inspect(server));
+          console.debug ('client: ' + util.inspect(client));
+          
           for (var index = 0; index < removed.length; index++ ) {
             client.push ({ id: removed[index], removed: true });
           }
@@ -101,6 +111,9 @@ var TaskHandler = {
           var object = TaskHandler.syncAll(server, client);
           var _server = object.server;
           var _client = object.client;
+          
+          console.debug ('after sync(server): ' + util.inspect(_server));
+          console.debug ('after sync(client): ' + util.inspect(_client));
           
           // Add to server
           for (var index = 0; index < _server.add.length; index++) {
