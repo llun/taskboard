@@ -274,7 +274,6 @@ var Iteration = function(name) {
    */
   this.changeStatus = function changeStatus(taskID, status) {
     var list = _listFromTask(taskID);
-    console.log(list);
     
     if (list) {
       var target = _taskIndexInList(list, taskID);

@@ -26,6 +26,8 @@ _.table = {
         now.sync(_.client, task);
       }
       
+      console.log ('client(update): ' + task.detail);
+      
       $('#' + id + '_detail').text(task.getDetail());
       $('#' + id + '_responders').text(task.getResponders().toString());
       
@@ -48,6 +50,8 @@ _.table = {
           task.sync = true;
           Task.save(task);
         }
+        
+        console.log ('client(create): ' + task.detail);
 
         // Clear form and close
         $('#new-task-detail').val('');
@@ -58,14 +62,14 @@ _.table = {
   },
   'task/remove': function(hash) {
     var id = hash.substring('#task/remove'.length + 1);
-    var task = Task.get(id);
-    
     _.iteration.removeTask(id);
     $('#' + id).remove();
     
     if (navigator.onLine) {
       now.sync(_.client, {id: id, removed: true});
     }
+    
+    console.log ('client(remove): ' + id);
     
     window.location.hash = '';
   },
@@ -79,6 +83,8 @@ _.table = {
         now.sync(_.client, {id: tasks[index], removed: true});
       }
     }
+    
+    console.log ('client(clear)');
     
     $('.task').remove();
     $('#clear-task-modal').hide();
@@ -165,6 +171,8 @@ _.init = function() {
         now.sync(_.client, task);
       }
       
+      console.log ('client(update): ' + task.detail);
+      
       return false;
     }
   });
@@ -200,16 +208,29 @@ _.init = function() {
     now.ready(function() {
       
       now.create = function (from, task) {
+        console.log ('server-debug(create): (' + from + ') ' + task.detail);
         if (from == _.client) { return; }
         
         var clientTask = Task.get(task.id);
         if (clientTask) {
-          clientTask.sync = true;
-          Task.save(clientTask);
+          
+          if ($('#' + clientTask.id).length == 0) {
+            Task.remove(clientTask.id);
+            
+            if (navigator.onLine) {
+              now.sync(_.client, {id: clientTask.id, removed: true});
+            }
+            
+          } else {
+            clientTask.sync = true;
+            Task.save(clientTask);
+          }
+          
         } else {
           _.iteration.saveTask(task);
-          
           clientTask = Task.get(task.id);
+          
+          console.log ('server(create): ' + clientTask.detail);
           
           $('#todo').append(_.tmpl('task', clientTask));
           $('#' + clientTask.id).attr('draggable', true);
@@ -217,6 +238,7 @@ _.init = function() {
       };
       
       now.update = function (from, task) {
+        console.log ('server-debug(update): (' + from + ') ' + task.detail);
         if (from == _.client) { return; }
         
         _.iteration.changeStatus(task.id, task.status);
@@ -228,14 +250,19 @@ _.init = function() {
         Task.save(clientTask);
         
         $('#' + task.id).remove();
-        
         clientTask = Task.get(task.id);
+        
+        console.log ('server(update): ' + clientTask.detail);
+        
         $('#' + clientTask.status).append(_.tmpl('task', clientTask));
         $('#' + clientTask.id).attr('draggable', true);
       }
       
       now.remove = function (from, id) {
+        console.log ('server-debug(remove): (' + from + ') ' + id);
         if (from == _.client) { return; }
+        
+        console.log ('server(remove): ' + id);
         
         $('#' + id).remove();
         _.iteration.removeTask(id);

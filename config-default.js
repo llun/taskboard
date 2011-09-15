@@ -29,7 +29,7 @@ var config = {
                    pollInterval: 15 },
                  { type: 'console' } ],
     levels: {
-      console: 'debug'
+      console: 'info'
     }
   }
 }

@@ -3,7 +3,8 @@ var http = require('http'),
     path = require('path'),
     fs = require('fs'),
     mime = require('mime'),
-    log4js = require('log4js');
+    log4js = require('log4js'),
+    util = require('util');
 
 // Parse configuration
 var config_file = '';
