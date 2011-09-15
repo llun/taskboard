@@ -68,6 +68,11 @@ _.table = {
     $('#clear-task-modal').show();
   },
   'task/clear/confirm': function(hash) {
+    var tasks = _.iteration.tasks;
+    for (var index = 0; index < tasks.length; index++) {
+      now.sync({id: tasks[index].id, removed: true});
+    }
+    
     $('.task').remove();
     $('#clear-task-modal').hide();
     
@@ -111,7 +116,11 @@ _.init = function() {
         $('#' + type).append(_.tmpl('task', task));
         $('#' + task.id).attr('draggable', true);
       } else {
-        console.log ('Task is not found: ' + _.iteration.tasks[value]);
+        console.log ('Task is not found: ' + id);
+        
+        var id = _.iteration.tasks[value];
+        _.iteration.removeTask(id);
+        
       }
     });
     
@@ -207,8 +216,10 @@ _.init = function() {
         _.iteration.changeStatus(task.id, task.status);
         
         $('#' + task.id).remove();
-
-        $(this).append(_.tmpl('task', clientTask));
+        
+        clientTask = Task.get(task.id);
+        
+        $('#' + clientTask.status).append(_.tmpl('task', clientTask));
         $('#' + clientTask.id).attr('draggable', true);
       }
       

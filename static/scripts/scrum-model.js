@@ -81,7 +81,8 @@ Task.status = {
   TODO: 'todo',
   INPROGRESS: 'inprogress',
   VERIFY: 'verify',
-  DONE: 'done'
+  DONE: 'done',
+  OTHER: 'other'
 };
 
 // CRUD for Task
@@ -145,6 +146,10 @@ var Iteration = function(name) {
   // Private methods
   var _listFromTask = function _listFromTask(taskID) {
     var task = Task.get(taskID);
+    if (!task) {
+      task = { status: Task.status.OTHER };
+    }
+    
     var list = task.status == Task.status.TODO ? _self.todo : 
                task.status == Task.status.INPROGRESS ? _self.inprogress : 
                task.status == Task.status.VERIFY ? _self.verify :
@@ -237,6 +242,24 @@ var Iteration = function(name) {
         Task.remove(taskID);
       }
       
+    } else {
+      // Scan all table
+      var lists = [ _self.todo, _self.inprogress, _self.verify, _self.done ];
+      for (var key in lists) {
+        var target = _taskIndexInList(lists[key], taskID);
+        if (target) {
+          var list = lists[key];
+          var position = list[target];
+          delete _self.tasks[position];
+          delete list[target];
+
+          _self.tasks.length--;
+          list.length--;
+
+          Task.remove(taskID);
+          break;
+        }
+      }
     }
     
     Iteration.save(_self);
