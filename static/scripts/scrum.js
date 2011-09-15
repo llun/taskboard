@@ -19,6 +19,8 @@ _.table = {
       var id = hash.substring('#task/edit'.length + 1);
       
       var task = Task.get(id);
+      console.log ('Update: ' + task.detail);
+      
       task.setDetail($('#edit-task-detail').val());
       Task.save(task);
       
@@ -36,6 +38,7 @@ _.table = {
       // Save new task
       // Store it to local memory and render new task in todo
       var detail = $('#new-task-detail').val();
+      console.log ('Create: ' + detail);
 
       var task = _.iteration.createTask(detail);
       if (task) {
@@ -68,6 +71,7 @@ _.table = {
     $('#clear-task-modal').show();
   },
   'task/clear/confirm': function(hash) {
+    console.log ('Clear');
     var tasks = _.iteration.tasks;
     for (var index = 0; index < tasks.length; index++) {
       if (navigator.onLine) {
@@ -115,6 +119,7 @@ _.init = function() {
     $.each(_.iteration[type], function (index, value) {
       var task = Task.get(_.iteration.tasks[value]);
       if (task) {
+        console.log ('Load: ' + task.detail);
         $('#' + type).append(_.tmpl('task', task));
         $('#' + task.id).attr('draggable', true);
       } else {
@@ -162,6 +167,8 @@ _.init = function() {
         now.sync(task);
       }
       
+      console.log ('Update: ' + task.detail);
+      
       return false;
     }
   });
@@ -203,6 +210,8 @@ _.init = function() {
           
           clientTask = Task.get(task.id);
           
+          console.log ('Create: ' + task.detail);
+          
           $('#todo').append(_.tmpl('task', clientTask));
           $('#' + clientTask.id).attr('draggable', true);
         }
@@ -221,11 +230,16 @@ _.init = function() {
         
         clientTask = Task.get(task.id);
         
+        console.log ('Update: ' + clientTask.detail);
+        
         $('#' + clientTask.status).append(_.tmpl('task', clientTask));
         $('#' + clientTask.id).attr('draggable', true);
       }
       
       now.remove = function (id) {
+        var task = Task.get(id);
+        console.log ('Remove: ' + task.detail);
+        
         $('#' + id).remove();
         _.iteration.removeTask(id);
       }
