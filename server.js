@@ -1,9 +1,9 @@
-var http = require('http'),
+var fs = require('fs'),
+    http = require('http'),
+    log4js = require('log4js'),
+    mime = require('mime'),
     nowjs = require('now'),
     path = require('path'),
-    fs = require('fs'),
-    mime = require('mime'),
-    log4js = require('log4js'),
     util = require('util');
 
 // Parse configuration
