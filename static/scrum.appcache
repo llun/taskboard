@@ -2,7 +2,7 @@ CACHE MANIFEST
 #Version 1
 #2011-09-14
 
-NETWORK:
+CACHE:
 index.html
 scripts/engine-persistent.js
 scripts/engine.js
