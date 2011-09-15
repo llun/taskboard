@@ -11,6 +11,9 @@ var config_file = '';
 var config = null;
 var reload = function (current, previous) {
   if (current.mtime != previous.mtime) {
+    var config_path = path.join(__dirname, config_file);
+    delete require.cache[config_path];
+    
     config = require(config_file).config;
     log4js.configure(config.log);
     
