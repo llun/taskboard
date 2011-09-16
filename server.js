@@ -5,6 +5,9 @@ var fs = require('fs'),
     nowjs = require('now'),
     path = require('path'),
     util = require('util');
+    
+// Put get logger to console
+console.logger = log4js.getLogger
 
 // Parse configuration
 var config_file = '';
@@ -35,14 +38,9 @@ if (path.existsSync('config.js')) {
   log4js.configure(config.log);
 }
 
-// Initial router
-var Router = require('./router.js').router;
-var router = new Router(config.routes);
-
 // Initial store
 var Store = require('./model/store.js').store;
 var store = new Store(config.mongo);
-router.store = store;
 
 // Initial server and now.js
 var httpServer = http.createServer(
@@ -55,11 +53,17 @@ var httpServer = http.createServer(
     var url = request.url == '/' ? '/index.html' : request.url;
     var filePath = path.join(__dirname, config.base, url);
     
+    var _notfound = function(request, response) {
+      // Change to serve file instead
+      response.writeHead(404, {});
+      response.end('notfound');
+    }
+    
     if (path.existsSync(filePath)) {
       // Serve static file
       var stat = fs.statSync(filePath);
       if (stat.isDirectory()) {
-        router.notfound(request, response);
+        _notfound(request, response);
       } else {
         response.writeHead(200, {
           'Content-Type': mime.lookup(filePath),
@@ -77,7 +81,7 @@ var httpServer = http.createServer(
       }
       
     } else {
-      router.route(request, response);
+      _notfound(request, response);
     }
     
   });
@@ -99,7 +103,6 @@ var everyone = nowjs.initialize(httpServer,
                   event.categoryName = everyoneLogger.category;
                   everyoneLogger.emit(level, event);
                 } } } });
-router.everyone = everyone;
 
 // Initial everyone
 for (var index = 0; index < config.everyone.length; index++) {
