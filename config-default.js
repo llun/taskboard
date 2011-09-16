@@ -29,7 +29,7 @@ var config = {
       console: 'info',
       socketio: 'info',
       store: 'error',
-      task: 'debug'
+      task: 'info'
     }
   }
 }
