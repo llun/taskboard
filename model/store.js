@@ -1,5 +1,7 @@
 var mongodb = require('mongodb');
 
+var _log = console.logger('store');
+
 var Store = function(config) {
   
   var _server = new mongodb.Server(config.server, config.port, config.serverOption);
@@ -8,7 +10,7 @@ var Store = function(config) {
   
   _db.open(function (error, client) {
     if (error) {
-      console.error ("Can't connect to database");
+      _log.error ("Can't connect to database");
       process.exit(1);
     } 
     

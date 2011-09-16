@@ -1,5 +1,7 @@
 var Task = require('../model/task.js').TaskModel,
     util = require('util');
+    
+var _log = console.logger('task');
 
 var TaskHandler = {
   
@@ -70,7 +72,7 @@ var TaskHandler = {
         _task.remove(task.id);
         now.remove(from, task.id);
         
-        console.debug ('sync(remove): (' + from + ') ' + util.inspect(task));
+        _log.debug ('sync(remove): (' + from + ') ' + util.inspect(task));
       } else if (!task.sync) {
         // Create task
         task.sync = true;
@@ -78,18 +80,18 @@ var TaskHandler = {
         _task.create(task);
         now.create(from, task);
         
-        console.debug ('sync(create): (' + from + ') ' + util.inspect(task));
+        _log.debug ('sync(create): (' + from + ') ' + util.inspect(task));
       } else {
         // Update task
         _task.edit(task.id, task);
         now.update(from, task);
         
-        console.debug ('sync(update): (' + from + ') ' + util.inspect(task));
+        _log.debug ('sync(update): (' + from + ') ' + util.inspect(task));
       }
     }
     
     now.syncAll = function (tasks, removed) {
-      console.debug ('sync all tasks');
+      _log.debug ('sync all tasks');
       
       var _task = Task.get(store.getClient());
       _task.count(function (error, count) {
@@ -101,8 +103,8 @@ var TaskHandler = {
           var server = data;
           var client = tasks;
           
-          console.debug ('server: ' + util.inspect(server));
-          console.debug ('client: ' + util.inspect(client));
+          _log.debug ('server: ' + util.inspect(server));
+          _log.debug ('client: ' + util.inspect(client));
           
           for (var index = 0; index < removed.length; index++ ) {
             client.push ({ id: removed[index], removed: true });
@@ -112,8 +114,8 @@ var TaskHandler = {
           var _server = object.server;
           var _client = object.client;
           
-          console.debug ('after sync(server): ' + util.inspect(_server));
-          console.debug ('after sync(client): ' + util.inspect(_client));
+          _log.debug ('after sync(server): ' + util.inspect(_server));
+          _log.debug ('after sync(client): ' + util.inspect(_client));
           
           // Add to server
           for (var index = 0; index < _server.add.length; index++) {
@@ -121,7 +123,7 @@ var TaskHandler = {
             
             _task.create(_server.add[index]);
             
-            console.debug ('sync(create): (' + master + ') ' + util.inspect(_server.add[index]));
+            _log.debug ('sync(create): (' + master + ') ' + util.inspect(_server.add[index]));
             now.create(master, _server.add[index]);
           }
           
@@ -129,7 +131,7 @@ var TaskHandler = {
           for (var index = 0; index < _server.remove.length; index++) {
             _task.remove(_server.remove[index].id);
             
-            console.debug ('sync(remove): (' + master + ') ' + util.inspect(_server.remove[index]));
+            _log.debug ('sync(remove): (' + master + ') ' + util.inspect(_server.remove[index]));
             now.remove(master, _server.remove[index].id);
           }
           
@@ -137,25 +139,25 @@ var TaskHandler = {
           for (var index = 0; index < _server.update.length; index++) {
             _task.edit(_server.update[index].id, _server.update[index]);
             
-            console.debug ('sync(update): (' + master + ') ' + util.inspect(_server.update[index]));
+            _log.debug ('sync(update): (' + master + ') ' + util.inspect(_server.update[index]));
             now.update(master, _server.update[index]);
           }
           
           // Add to client
           for (var index = 0; index < _client.add.length; index++) {
-            console.debug ('sync(create): (' + master + ') ' + util.inspect(_client.add[index]));
+            _log.debug ('sync(create): (' + master + ') ' + util.inspect(_client.add[index]));
             now.create(master, _client.add[index]);
           }
           
           // Remove from client
           for (var index = 0; index < _client.remove.length; index++) {
-            console.debug ('sync(remove): (' + master + ') ' + util.inspect(_client.remove[index]));
+            _log.debug ('sync(remove): (' + master + ') ' + util.inspect(_client.remove[index]));
             now.remove(master, _client.remove[index].id);
           }
           
           // Update on client
           for (var index = 0; index < _client.update.length; index++) {
-            console.debug ('sync(update): (' + master + ') ' + util.inspect(_client.add[index]));
+            _log.debug ('sync(update): (' + master + ') ' + util.inspect(_client.add[index]));
             now.update(master, _client.update[index]);
           }
           

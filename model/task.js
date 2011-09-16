@@ -1,5 +1,7 @@
 var mongodb = require('mongodb');
 
+var _log = console.logger('task');
+
 var TaskModel = function(client){
   this.client = client;
   this.collection = new mongodb.Collection(client, 'task_collection');
@@ -13,7 +15,7 @@ TaskModel.prototype.list = function(offset, limit, callback){
   var collection = this.collection;
   collection.find({}, {skip:offset, limit:limit}).toArray(function(err, docs) {
     if(err){
-      console.warn(err.message);
+      _log.warn(err.message);
       callback(err.message);
     }else{
       callback(null, docs);
@@ -43,7 +45,7 @@ TaskModel.prototype.create = function(task, callback){
   collection.insert(task, {safe:true},
                     function(err, objects) {
     if (err){
-      console.warn(err.message);
+      _log.warn(err.message);
       callback(err.message);
     }else{
       callback(null, objects[0] || null);
@@ -65,7 +67,7 @@ TaskModel.prototype.edit = function(id, task, callback){
   collection.update({ '_id': id}, {'$set': task}, {safe:true},
                     function(err, objects) {
     if (err){
-      console.warn(err.message);
+      _log.warn(err.message);
       callback(err.message);
     }else{
       callback(null, objects);
@@ -87,7 +89,7 @@ TaskModel.prototype.remove = function(id, callback){
   collection.findAndModify({ '_id': id},[], {}, {remove:true},
                     function(err, objects) {
     if (err){
-      console.warn(err.message);
+      _log.warn(err.message);
       callback(err.message);
     }else{
       callback(null, objects);
@@ -108,7 +110,7 @@ TaskModel.prototype.exists = function(id, callback){
   var collection = this.collection;
   collection.find({ '_id': id}).count(function(err, objects) {
     if (err){
-      console.warn(err.message);
+      _log.warn(err.message);
       callback(err.message);
     }else{
       callback(null, objects !== 0);

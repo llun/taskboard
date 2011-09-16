@@ -27,7 +27,9 @@ var config = {
                  { type: 'console' } ],
     levels: {
       console: 'info',
-      socketio: 'info'
+      socketio: 'info',
+      store: 'error',
+      task: 'debug'
     }
   }
 }

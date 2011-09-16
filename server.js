@@ -13,7 +13,10 @@ console.logger = log4js.getLogger
 var config_file = '';
 var config = null;
 var reload = function (current, previous) {
-  if (current.mtime != previous.mtime) {
+  var _current = current.mtime.getTime();
+  var _previous = previous.mtime.getTime();
+  
+  if (_current != _previous) {
     var config_path = path.join(__dirname, config_file);
     delete require.cache[config_path];
     
