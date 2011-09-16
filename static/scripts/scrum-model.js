@@ -214,7 +214,7 @@ var Iteration = function(name) {
     
     _.persistent.save(task);
 
-    _self.todo.push(_self.tasks.length);
+    _self[task.status].push(_self.tasks.length);
     _self.tasks.push(task.id);
     
     Iteration.save(_self);
