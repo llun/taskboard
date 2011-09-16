@@ -29,7 +29,8 @@ var config = {
                    pollInterval: 15 },
                  { type: 'console' } ],
     levels: {
-      console: 'info'
+      console: 'info',
+      socketio: 'info'
     }
   }
 }

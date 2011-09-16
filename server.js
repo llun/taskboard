@@ -84,7 +84,21 @@ var httpServer = http.createServer(
 httpServer.listen(config.port);
 console.info ('Listen to ' + config.port);
 
-var everyone = nowjs.initialize(httpServer);
+var everyoneLogger = log4js.getLogger('socketio');
+var everyone = nowjs.initialize(httpServer, 
+  { socketio: { 
+      logger: { log: everyoneLogger.log, 
+                info: everyoneLogger.info, 
+                debug: everyoneLogger.debug,
+                warn: everyoneLogger.warn,
+                error: everyoneLogger.error,
+                isLevelEnabled: function(otherLevel) {
+                  return everyoneLogger.level.isLessThanOrEqualTo(otherLevel);
+                },
+                emit: function(level, event) {
+                  event.categoryName = everyoneLogger.category;
+                  everyoneLogger.emit(level, event);
+                } } } });
 router.everyone = everyone;
 
 // Initial everyone
