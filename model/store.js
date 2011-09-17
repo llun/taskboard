@@ -9,8 +9,8 @@ var Store = function(config) {
   
   var _client = null;
   
-  if (config.databaseOption.authentication) {
-    var authentication = config.databaseOption.authentication;
+  if (config.authentication) {
+    var authentication = config.authentication;
     
     _db.authenticate(authentication.username, authentication.password,
       function (error, data) {
