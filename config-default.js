@@ -14,7 +14,11 @@ var config = {
     port: 27017,
     serverOption: {},
     databaseOption: {},
-    database: 'Scrum'
+    database: 'Scrum',
+    authentication: {
+      username: '',
+      password: ''
+    }
   },
   
   // Log facility
