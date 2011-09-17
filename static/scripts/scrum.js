@@ -124,6 +124,8 @@ _.init = function() {
   $.each(types, function (index, type) {
     
     $.each(_.iteration[type], function (index, value) {
+      if (!value) { return; }
+      
       var task = Task.get(_.iteration.tasks[value]);
       if (task) {
         $('#' + type).append(_.tmpl('task', task));
