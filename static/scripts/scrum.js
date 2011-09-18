@@ -20,11 +20,7 @@ _.table = {
       
       var task = Task.get(id);
       task.setDetail($('#edit-task-detail').val());
-      Task.save(task);
-      
-      if (navigator.onLine && now.sync) {
-        now.sync(_.client, task);
-      }
+      Task.save(task, true);
       
       console.log ('client(update): ' + task.id + ', ' + task.status + ', ' + task.detail);
       
@@ -39,17 +35,10 @@ _.table = {
       // Store it to local memory and render new task in todo
       var detail = $('#new-task-detail').val();
 
-      var task = _.iteration.createTask(detail);
+      var task = Task.create(detail, true);
       if (task) {
         $('#todo').append(_.tmpl('task', task));
         $('#' + task.id).attr('draggable', true);
-        
-        if (navigator.onLine && now.sync) {
-          now.sync(_.client, task);
-          
-          task.sync = true;
-          Task.save(task);
-        }
         
         console.log ('client(create): ' + task.id + ', ' + task.status + ', ' + task.detail);
 
@@ -62,13 +51,7 @@ _.table = {
   },
   'task/remove': function(hash) {
     var id = hash.substring('#task/remove'.length + 1);
-    _.iteration.removeTask(id);
-    $('#' + id).remove();
-    
-    if (navigator.onLine && now.sync) {
-      now.sync(_.client, {id: id, removed: true});
-    }
-    
+    Task.remove(id, true);
     console.log ('client(remove): ' + id);
     
     window.location.hash = '';
@@ -79,11 +62,7 @@ _.table = {
   'task/clear/confirm': function(hash) {
     var tasks = _.iteration.tasks;
     for (var index = 0; index < tasks.length; index++) {
-      if (navigator.onLine && now.sync) {
-        now.sync(_.client, {id: tasks[index], removed: true});
-      }
-      
-      _.iteration.removeTask(tasks[index]);
+      Task.remove(tasks[index]);
     }
     
     console.log ('client(clear)');
@@ -94,6 +73,16 @@ _.table = {
     window.location.hash = '';
   },
   
+  'update/ready': function() {
+    $('#update-modal').show();
+  },
+  'update/confirm': function() {
+    $('#update-modal').hide();
+    
+    applicationCache.swapCache();
+    window.location.reload();
+  },
+  
   // Default state
   '': function() {
     $('#new-task-detail').val('');
@@ -102,11 +91,13 @@ _.table = {
     
     $('#new-task-modal').hide();
     $('#edit-task-modal').hide();
+    $('#update-modal').hide();
   }
 }
 
 // View event binding
 _.init = function() {
+  
   _.persistent = new LocalStoragePersistent();
   
   // Load data
@@ -120,22 +111,14 @@ _.init = function() {
     _.iteration = Iteration.get(current.key);
   }
   
-  var types = ['todo', 'inprogress', 'verify', 'done'];
-  $.each(types, function (index, type) {
+  $.each (_.iteration.tasks, function (index, value) {
+    if (!value) { return; }
     
-    $.each(_.iteration[type], function (index, value) {
-      if (!value) { return; }
-      
-      var task = Task.get(_.iteration.tasks[value]);
-      if (task) {
-        $('#' + type).append(_.tmpl('task', task));
-        $('#' + task.id).attr('draggable', true);
-      } else {
-        var id = _.iteration.tasks[value];
-        _.iteration.removeTask(id);
-        
-      }
-    });
+    var task = Task.get(value);
+    if (task) {
+      $('#' + type).append(_.tmpl('task', task));
+      $('#' + task.id).attr('draggable', true);
+    }
     
   });
   
@@ -166,12 +149,8 @@ _.init = function() {
       $('#' + task.id).attr('draggable', true);
       
       var status = $(this)[0].id;
-      _.iteration.changeStatus(task.id, status);
-      
-      if (navigator.onLine && now.sync) {
-        task = Task.get(task.id);
-        now.sync(_.client, task);
-      }
+      task.status = status;
+      Task.save(task, true);
       
       console.log ('client(update): ' + task.detail);
       
@@ -213,49 +192,29 @@ _.init = function() {
         console.log ('server-debug(create): (' + from + ',' + task.id + ') ' + task.detail);
         if (from == _.client) { return; }
         
-        var clientTask = Task.get(task.id);
-        if (clientTask) {
-          
-          clientTask.sync = true;
-          Task.save(clientTask);
-          
-          if ($('#' + clientTask.id).length == 0) {
-            _.iteration.saveTask(task);
-            
-            $('#' + task.status).append(_.tmpl('task', clientTask));
-            $('#' + clientTask.id).attr('draggable', true);
-          }
-          
-        } else {
-          _.iteration.saveTask(task);
-          clientTask = Task.get(task.id);
-          
-          console.log ('server(create): ' + clientTask.status + ', ' + clientTask.detail);
-          
-          $('#' + task.status).append(_.tmpl('task', clientTask));
-          $('#' + clientTask.id).attr('draggable', true);
-        }
+        Task.save(task);
+        
+        var _task = Task.get(task.id);
+        $('#' + _task.status).append(_.tmpl('task', _task));
+        $('#' + _task.id).attr('draggable', true);
+        
+        console.log ('server(create): ' + _task.status + ', ' + _task.detail);
       };
       
       now.update = function (from, task) {
         console.log ('server-debug(update): (' + from + ',' + task.id + ') '  + task.detail);
         if (from == _.client) { return; }
         
-        _.iteration.changeStatus(task.id, task.status);
+        var _task = Task.get(task.id);
+        _task.setDetail(task.detail);
+        _task.updated = task.updated;
+        Task.save(_task);
         
-        var clientTask = Task.get(task.id);
-        clientTask.setDetail(task.detail);
-        clientTask.updated = task.updated;
+        console.log ('server(update): ' + _task.status + ', ' + _task.detail);
         
-        Task.save(clientTask);
-        
-        $('#' + task.id).remove();
-        clientTask = Task.get(task.id);
-        
-        console.log ('server(update): ' + clientTask.status + ', ' + clientTask.detail);
-        
-        $('#' + clientTask.status).append(_.tmpl('task', clientTask));
-        $('#' + clientTask.id).attr('draggable', true);
+        $('#' + _task.id).remove();
+        $('#' + _task.status).append(_.tmpl('task', _task));
+        $('#' + _task.id).attr('draggable', true);
       }
       
       now.remove = function (from, id) {
@@ -265,7 +224,7 @@ _.init = function() {
         console.log ('server(remove): ' + id);
         
         $('#' + id).remove();
-        _.iteration.removeTask(id);
+        Task.remove(id);
       }
       
       var prepareSync = [];
@@ -290,5 +249,12 @@ _.init = function() {
       
     });
   }
+  
+  // Update event
+  $(applicationCache).bind('updateready', function (e) {
+    if (applicationCache.status == applicationCache.UPDATEREADY) {
+      window.location.hash = 'update/ready';
+    }
+  });
   
 }

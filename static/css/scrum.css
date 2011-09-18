@@ -23,6 +23,7 @@ table .task-type.purple{background-color:#e2d5f0;}
 table td.wall{vertical-align: top; background-color: #EEE;}
 table td.wall.over{background-color: #CCC;}
 
+.application-modal {display:none;}
 .task-modal {display: none;}
 .task-modal .input {margin-left: 0px}
 .task-modal textarea {width:500px}

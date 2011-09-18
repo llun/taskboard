@@ -86,10 +86,18 @@ Task.status = {
 };
 
 // CRUD for Task
-Task.create = function(detail) {
+Task.create = function(detail, push) {
   var task = null;
   if (detail.length > 0) {
     task = new Task(detail);
+    
+    if (push) {
+      if (navigator.onLine && now.sync) {
+        now.sync(_.client, task);
+        task.sync = true;
+      }
+    }
+    
     _.persistent.save(task);
   }
   return task;
@@ -108,16 +116,32 @@ Task.get = function(id) {
   
   return task;
 }
-Task.save = function(task) {
-  task.updated = new Date().getTime();
+Task.save = function(task, push) {
+  
+  if (push) {
+    task.updated = new Date().getTime();
+    
+    if (navigator.onLine && now.sync) {
+      now.sync(_.client, task);
+    }
+  }
+  
   _.persistent.save(task);
+  
 }
-Task.remove = function(id) {
+Task.remove = function(id, push) {
   _.persistent.remove(id);
   
   var removed = _.persistent.get('removed');
   if (!removed) {
     removed = { id: 'removed', list: [] };
+    
+    if (push) {
+      if (navigator.onLine && now.sync) {
+        now.sync(_.client, {id: id, removed: true});
+      }
+    }
+    
   }
   
   removed.list.push(id);
