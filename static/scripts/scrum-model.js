@@ -23,12 +23,12 @@ var Task = function(detail) {
   var _parseResponders = function(detail) {
     _responders = [];
     
-    var pattern = /(^\+\w+\s+$|\s+\+\w+\s+|\s+\+\w+$)/ig;
+    var pattern = /(^\+\w+|\s+\+\w+|\s+\+\w+$)/ig;
     var matches = detail.match(pattern);
 
     if (matches) {
       for (var i = 0; i < matches.length; i++) {
-        _responders.push(matches[i].slice(1));
+        _responders.push(matches[i].replace(/^\s*([\S\s]*)\b\s*$/, '$1'));
       }      
     }
   }

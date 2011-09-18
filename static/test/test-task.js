@@ -20,6 +20,7 @@ TestIt('TestTask', {
         
     var expectResponders = 2;
     var totalResponders = responders.length;
+    
     test.assertEqual(expectResponders, totalResponders, 'Task should have ' + 
       expectResponders + ' responders. (' + totalResponders + ')');
       
