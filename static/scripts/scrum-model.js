@@ -150,14 +150,23 @@ Task.remove = function(id, push) {
 
 var Iteration = function(name) {
   
-  // Begin time
-  this.begin = null;
- 
-  // All tasks
-  this.tasks = [];
+  // Private variable
+  var _self = this;
   
-  // Iteration name
-  this.name = name || 'New Iteration';
+  // Public variable
+  this.begin = null; // Begin time
+  this.tasks = {}; // All tasks
+  this.name = name || 'New Iteration'; // Iteration name
+  
+  this.addTask = function createTask(task, push) {
+    if (!_self.tasks[task.id]) {
+      _self.tasks[task.id] = true;
+    }
+  }
+  
+  this.removeTask = function removeTask(id, push) {
+    _self.tasks[id] = false;
+  }
  
 }
 
