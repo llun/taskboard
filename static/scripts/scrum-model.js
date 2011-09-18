@@ -23,7 +23,7 @@ var Task = function(detail) {
   var _parseResponders = function(detail) {
     _responders = [];
     
-    var pattern = /\W+\+\w+/ig;
+    var pattern = /(^\+\w+\s+$|\s+\+\w+\s+|\s+\+\w+$)/ig;
     var matches = detail.match(pattern);
 
     if (matches) {
@@ -126,208 +126,15 @@ Task.remove = function(id) {
 
 var Iteration = function(name) {
   
-  var _self = this;
-  
   // Begin time
   this.begin = null;
-  
-  // Task state
-  this.todo = [];
-  this.inprogress = [];
-  this.verify = [];
-  this.done = [];
-  
+ 
   // All tasks
   this.tasks = [];
   
   // Iteration name
   this.name = name || 'New Iteration';
  
-  // Private methods
-  var _listFromTask = function _listFromTask(taskID) {
-    var task = Task.get(taskID);
-    if (!task) {
-      task = { status: Task.status.OTHER };
-    }
-    
-    var list = task.status == Task.status.TODO ? _self.todo : 
-               task.status == Task.status.INPROGRESS ? _self.inprogress : 
-               task.status == Task.status.VERIFY ? _self.verify :
-               task.status == Task.status.DONE ? _self.done : null;
-               
-    return list;
-  }
-  
-  var _taskIndexInList = function _taskIndexInList(list, taskID) {
-    var target = null;
-    
-    for (var key in list) {
-      var object = _self.tasks[list[key]];
-      if (object === taskID) {
-        target = key;
-        break;
-      }
-    }
-    
-    return target;
-  }
- 
-  // Public methods
-  this.getTodo = function getTodo() { return _self.todo; }
-  this.getInprogress = function getInprogress() { return _self.inprogress; }
-  this.getVerify = function getVerify() { return _self.verify; }
-  this.getDone = function getDone() { return _self.done; }
-  this.getTasks = function getTasks() { return _self.tasks; }
-  
-  /**
-   * Create task and add it to iteration
-   *
-   * @param {String} detail task detail
-   *
-   * @return {Object} task object
-   */
-  this.createTask = function createTask(detail) {
-    if (!_self.begin) {
-      _self.begin = new Date().getTime();
-    }
-
-    var task = Task.create(detail);
-    if (task) {
-      _self.todo.push(_self.tasks.length);
-      _self.tasks.push(task.id);
-    }
-    
-    Iteration.save(_self);
-    
-    return task;
-  }
-  
-  /**
-   * Save exists task to iteration
-   *
-   * @param {Object} task object
-   */
-  this.saveTask = function saveTask(task) {
-    if (!_self.begin) {
-      _self.begin = new Date().getTime();
-    }
-    
-    _.persistent.save(task);
-
-    _self[task.status].push(_self.tasks.length);
-    _self.tasks.push(task.id);
-    
-    Iteration.save(_self);
-  }
-  
-  /**
-   * Remove task from iteration and persistent
-   *
-   * @param {String} taskID
-   */
-  this.removeTask = function removeTask(taskID) {
-    var list = _listFromTask(taskID);
-               
-    if (list) {
-      var target = _taskIndexInList(list, taskID);
-      
-      if (target) {
-        var position = list[target];
-        delete _self.tasks[position];
-        delete list[target];
-        
-        _self.tasks.length--;
-        list.length--;
-        
-        Task.remove(taskID);
-      }  
-      
-    } else {
-      // Scan all table
-      var lists = [ _self.todo, _self.inprogress, _self.verify, _self.done ];
-      for (var key in lists) {
-        var target = _taskIndexInList(lists[key], taskID);
-        if (target) {
-          var list = lists[key];
-          var position = list[target];
-          delete _self.tasks[position];
-          delete list[target];
-
-          if (_self.tasks.length > 0) { _self.tasks.length--; }
-          if (list.length > 0) { list.length--; }
-
-          Task.remove(taskID);
-          break;
-        }
-      }
-    }
-    
-    Iteration.save(_self);
-    
-  }
-  
-  /**
-   * Change task to new status
-   *
-   * @param {String} taskID
-   * @param {String} status
-   */
-  this.changeStatus = function changeStatus(taskID, status) {
-    var list = _listFromTask(taskID);
-    
-    if (list) {
-      var target = _taskIndexInList(list, taskID);
-      
-      if (target) {
-        var task = Task.get(taskID);
-        var position = list[target];
-        
-        task.status = status;
-        delete list[target];
-        list.length--;
-        
-        Task.save(task);
-        
-        list = _listFromTask(taskID);
-        list.push(position);
-      } else {
-        
-        var found = null;
-        for (var index = 0; index < _self.tasks.length; index++) {
-          if (_self.tasks[index] == taskID) {
-            found = index;
-            break;
-          }
-        }
-        
-        if (found !== null) {
-          var lists = [ _self.todo, _self.inprogress, _self.verify, _self.done ];
-          for (var key in lists) {
-            var removedFromInner = false;
-            var target = lists[key];
-            for (var index = 0; index < target.length; index++) {
-              if (target[index] == found) {
-                delete target[index];
-                target.length--;
-                
-                removedFromInner = true;
-                break;
-              }
-            }
-            
-            if (removedFromInner) {
-              break;
-            }
-          }
-          
-          _self[status].push(found);
-        }
-        
-      }
-    }
-    
-    Iteration.save(_self);
-  }
 }
 
 // CRUD for Iteration
@@ -346,14 +153,7 @@ Iteration.get = function get(id) {
     iteration.id = object.id;
     
     iteration.begin = object.begin;
-
-    iteration.todo = object.todo;
-    iteration.inprogress = object.inprogress;
-    iteration.verify = object.verify;
-    iteration.done = object.done;
-
     iteration.tasks = object.tasks;
-
     iteration.name = object.name;
   }
   
