@@ -66,6 +66,7 @@ var TaskHandler = {
   everyone: function(now, store) {
     
     now.sync = function(from, task) {
+      _log.debug('Task: ' + util.inspect(task));
       var _task = Task.get(store.getClient());
       if (task.removed) {
         // Remove task
@@ -105,6 +106,7 @@ var TaskHandler = {
           
           _log.debug ('server: ' + util.inspect(server));
           _log.debug ('client: ' + util.inspect(client));
+          _log.debug ('remove: ' + util.inspect(removed));
           
           for (var index = 0; index < removed.length; index++ ) {
             client.push ({ id: removed[index], removed: true });

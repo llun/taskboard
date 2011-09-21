@@ -60,6 +60,8 @@ _.table = {
     
     console.log ('client(remove): ' + id);
     
+    $('#' + id).remove();
+    
     window.location.hash = '';
   },
   'task/clear': function(hash) {
@@ -67,9 +69,9 @@ _.table = {
   },
   'task/clear/confirm': function(hash) {
     var tasks = _.iteration.tasks;
-    for (var index = 0; index < tasks.length; index++) {
-      Task.remove(tasks[index]);
-      _.iteration.removeTask(tasks[index]);
+    for (var taskID in tasks) {
+      Task.remove(taskID);
+      _.iteration.removeTask(taskID);
     }
     Iteration.save(_.iteration);
     
@@ -87,7 +89,14 @@ _.table = {
   'update/confirm': function() {
     $('#update-modal').hide();
     
-    _.persistent.clear();
+    var tasks = _.iteration.tasks;
+    for (var taskID in tasks) {
+      Task.remove(taskID);
+      _.iteration.removeTask(taskID);
+    }
+    Iteration.save(_.iteration);
+    
+    console.log ('client(clear)');
     
     applicationCache.swapCache();
     window.location.reload();
@@ -235,10 +244,13 @@ _.init = function() {
         
         console.log ('server(remove): ' + id);
         
-        $('#' + id).remove();
-        Task.remove(id);
-        _.iteration.removeTask(id);
-        Iteration.save(_.iteration);
+        if ($('#' + id).length > 0) {
+          $('#' + id).remove();
+          Task.remove(id);
+          _.iteration.removeTask(id);
+          Iteration.save(_.iteration);
+        }
+        
       }
       
       var prepareSync = [];

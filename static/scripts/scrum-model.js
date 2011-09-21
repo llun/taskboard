@@ -90,15 +90,15 @@ Task.create = function(detail, push) {
   var task = null;
   if (detail.length > 0) {
     task = new Task(detail);
+    _.persistent.save(task);
     
     if (push) {
       if (navigator.onLine && now.sync) {
         now.sync(_.client, task);
         task.sync = true;
+        _.persistent.save(task);
       }
     }
-    
-    _.persistent.save(task);
   }
   return task;
 }
@@ -134,18 +134,17 @@ Task.remove = function(id, push) {
   
   var removed = _.persistent.get('removed');
   if (!removed) {
-    removed = { id: 'removed', list: [] };
-    
-    if (push) {
-      if (navigator.onLine && now.sync) {
-        now.sync(_.client, {id: id, removed: true});
-      }
-    }
-    
+    removed = { id: 'removed', list: [] };    
   }
   
   removed.list.push(id);
   _.persistent.save(removed)
+  
+  if (push) {
+    if (navigator.onLine && now.sync) {
+      now.sync(_.client, {id: id, removed: true});
+    }
+  }
 }
 
 var Iteration = function(name) {
