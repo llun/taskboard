@@ -37,6 +37,9 @@ _.table = {
 
       var task = Task.create(detail, true);
       if (task) {
+        _.iteration.addTask(task);
+        Iteration.save(_.iteration);
+        
         $('#todo').append(_.tmpl('task', task));
         $('#' + task.id).attr('draggable', true);
         
@@ -52,6 +55,9 @@ _.table = {
   'task/remove': function(hash) {
     var id = hash.substring('#task/remove'.length + 1);
     Task.remove(id, true);
+    _.iteration.removeTask(id);
+    Iteration.save(_.iteration);
+    
     console.log ('client(remove): ' + id);
     
     window.location.hash = '';
@@ -63,7 +69,9 @@ _.table = {
     var tasks = _.iteration.tasks;
     for (var index = 0; index < tasks.length; index++) {
       Task.remove(tasks[index]);
+      _.iteration.removeTask(tasks[index]);
     }
+    Iteration.save(_.iteration);
     
     console.log ('client(clear)');
     
@@ -113,16 +121,16 @@ _.init = function() {
     _.iteration = Iteration.get(current.key);
   }
   
-  $.each (_.iteration.tasks, function (index, value) {
-    if (!value) { return; }
-    
-    var task = Task.get(value);
-    if (task) {
-      $('#' + type).append(_.tmpl('task', task));
-      $('#' + task.id).attr('draggable', true);
+  for (var taskID in _.iteration.tasks) {
+
+    if (_.iteration.tasks[taskID]) {
+      var task = Task.get(taskID);
+      if (task) {
+        $('#' + task.status).append(_.tmpl('task', task));
+        $('#' + task.id).attr('draggable', true);
+      }
     }
-    
-  });
+  }
   
   // Bind drag & drop on wall
   $('.wall').bind({
@@ -195,6 +203,8 @@ _.init = function() {
         if (from == _.client) { return; }
         
         Task.save(task);
+        _.iteration.addTask(task);
+        Iteration.save(_.iteration);
         
         var _task = Task.get(task.id);
         $('#' + _task.status).append(_.tmpl('task', _task));
@@ -227,13 +237,15 @@ _.init = function() {
         
         $('#' + id).remove();
         Task.remove(id);
+        _.iteration.removeTask(id);
+        Iteration.save(_.iteration);
       }
       
       var prepareSync = [];
       var tasks = _.iteration.tasks;
       
-      for (var index = 0; index < tasks.length; index++) {
-        var task = Task.get(tasks[index]);
+      for (var taskID in tasks) {
+        var task = Task.get(taskID);
         if (task) {
           prepareSync.push(task);
         }
