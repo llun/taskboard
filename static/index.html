@@ -21,9 +21,9 @@
     <script type="text/html" id="task" charset="utf-8">    
       <div id="<%=id%>" class="task">
         <a href="#task/remove/<%=id%>" class="close">x</a>
-        <p id="<%=id%>_detail">
+        <div id="<%=id%>_detail">
           <%=getDetail()%>
-        </p>
+        </div>
       
         <small id="<%=id%>_responders"><%=getResponders()%></small>
       </div>

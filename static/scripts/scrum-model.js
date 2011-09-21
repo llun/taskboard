@@ -40,7 +40,14 @@ var Task = function(detail) {
    * @return {String} detail string.
    */
   this.getDetail = function getDetail() {
-    return this.detail;
+    var output = '';
+    var paragraphs = this.detail.split('\n');
+    for (var line in paragraphs) {
+      var paragraph = paragraphs[line];
+      output += '<p>' + paragraph + '</p>\n';
+    }
+    
+    return output;
   }
   
   /**
