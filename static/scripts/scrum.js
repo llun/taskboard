@@ -68,12 +68,7 @@ _.table = {
     $('#clear-task-modal').show();
   },
   'task/clear/confirm': function(hash) {
-    var tasks = _.iteration.tasks;
-    for (var taskID in tasks) {
-      Task.remove(taskID);
-      _.iteration.removeTask(taskID);
-    }
-    Iteration.save(_.iteration);
+    _.persistent.clear();
     
     console.log ('client(clear)');
     
