@@ -39,12 +39,24 @@ var Task = function(detail) {
    *
    * @return {String} detail string.
    */
-  this.getDetail = function getDetail() {
+  this.getDetail = function getDetail(edit) {
     var output = '';
-    var paragraphs = this.detail.split('\n');
-    for (var line in paragraphs) {
-      var paragraph = paragraphs[line];
-      output += '<p>' + paragraph + '</p>\n';
+    
+    if (!edit) {
+      var paragraphs = this.detail.split('\n');
+      for (var line in paragraphs) {
+        // Trim space
+        var paragraph = paragraphs[line].replace(/^\s+|\s+$/, '');
+        
+        // Remove html tag from text.
+        paragraph = paragraph.replace(/<\w+>|<\/\w+>/ig, '');
+
+        if (paragraph.length > 0) {
+          output += '<p>' + paragraph + '</p>\n';
+        }
+      }
+    } else {
+      output = this.detail;
     }
     
     return output;

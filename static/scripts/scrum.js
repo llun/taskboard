@@ -9,7 +9,7 @@ _.table = {
     var id = hash.substring('#task/edit'.length + 1);
     var task = Task.get(id);
     
-    $('#edit-task-detail').val(task.getDetail());
+    $('#edit-task-detail').val(task.getDetail(true));
     $('#edit-task-save-button').attr('href', '#task/save/' + id);
   },
   'task/save': function(hash) {
@@ -24,7 +24,7 @@ _.table = {
       
       console.log ('client(update): ' + task.id + ', ' + task.status + ', ' + task.detail);
       
-      $('#' + id + '_detail').text(task.getDetail());
+      $('#' + id + '_detail').html(task.getDetail());
       $('#' + id + '_responders').text(task.getResponders().toString());
       
       $('#edit-task-detail').val('');
