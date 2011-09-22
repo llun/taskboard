@@ -1,6 +1,6 @@
 #Scrumboard
 
-Task board that work in offline mode and sync when online. It's a lab project for test HTML5 and [now.js][nowjs.com]
+Task board that work in offline mode and sync when online. It's a lab project for test HTML5 and [now.js](nowjs.com)
 
 ##Requirement
 
@@ -14,6 +14,7 @@ Task board that work in offline mode and sync when online. It's a lab project fo
   Before run scrumboard, must install and run MongoDB first.
 
     git clone git://github.com/ideacube/scrumboard.git
+    npm install
     cp config-default.js config.js
     node server server.js
 
