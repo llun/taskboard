@@ -98,6 +98,7 @@ _.table = {
     $('#edit-task-detail').val('');
     $('#edit-task-save-button').attr('href', '');
     
+    $('#clear-task-modal').hide();
     $('#new-task-modal').hide();
     $('#edit-task-modal').hide();
     $('#update-modal').hide();

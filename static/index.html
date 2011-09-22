@@ -109,21 +109,22 @@
     </div>
     
     <!-- New task modal -->
-    <div id="new-task-modal" class="modal-backdrop task-modal">
+    <div id="new-task-modal" class="task-modal">
+      <div class="modal-backdrop"></div>
       
       <form class="modal">
         <div class="modal-header">
           <h3>New Task</h3>
         </div>
         <div class="modal-body">
-          
+        
           <div class="clearfix">
             <div class="input">
               <textarea id="new-task-detail" 
                         name="detail" rows="8" cols="45"></textarea>
             </div>
           </div>
-                    
+                  
         </div>
         <div class="modal-footer">
           <a id="new-task-save-button" href="#task/save" class="btn primary">
@@ -134,13 +135,12 @@
           </a>
         </div>
       </form>
-      
     </div>
     <!-- End new task modal -->
     
     <!-- Edit task modal -->
-    <div id="edit-task-modal" class="modal-backdrop task-modal">
-      
+    <div id="edit-task-modal" class="task-modal">
+      <div class="modal-backdrop"></div>
       <form class="modal">
         <div class="modal-header">
           <h3>Edit Task</h3>
@@ -164,23 +164,22 @@
           </a>
         </div>
       </form>
-      
     </div>
     <!-- End new task modal -->
     
     <!-- Clear task modal -->
-    <div id="clear-task-modal" class="modal-backdrop task-modal">
-      
+    <div id="clear-task-modal" class="task-modal">
+      <div class="modal-backdrop"></div>
       <form class="modal">
         <div class="modal-header">
           <h3>Remove all task</h3>
         </div>
         <div class="modal-body">
-          
+
           <div class="clearfix">
             <p>Do you really want to remove every task from board?</p>
           </div>
-                    
+
         </div>
         <div class="modal-footer">
           <a id="clear-task-confirm-button" href="#task/clear/confirm" class="btn danger">
@@ -191,26 +190,26 @@
           </a>
         </div>
       </form>
-      
     </div>
     <!-- End clear task modal -->
     
     <!-- Update modal -->
-    <div id="update-modal" class="modal-backdrop application-modal">
-      
-      <form class="modal">
+    <div id="update-modal" class="application-modal">
+      <div class="modal-backdrop"></div>
+
+      <form class="modal ">
         <div class="modal-header">
           <h3>New version is ready</h3>
         </div>
         <div class="modal-body">
-          
+
           <div class="clearfix">
             <p>
               Do you want to use new version now? It will clear all task after update. 
               If you don't want clear task, cancel it but you can't sync data anymore
             </p>
           </div>
-                    
+
         </div>
         <div class="modal-footer">
           <a id="update-confirm-button" href="#update/confirm" class="btn danger">
@@ -221,7 +220,6 @@
           </a>
         </div>
       </form>
-      
     </div>
     <!-- Update modal -->
     
