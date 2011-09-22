@@ -1,6 +1,6 @@
 CACHE MANIFEST
 #Version 0.3.2
-#2011-09-22
+#2011-09-23
 
 CACHE:
 index.html
@@ -9,8 +9,10 @@ scripts/engine.js
 scripts/jquery-1.6.2.min.js
 scripts/scrum-model.js
 scripts/scrum.js
-css/bootstrap-1.2.0.min.css
+css/bootstrap.min.css
 css/scrum.css
+images/trash.png
+images/wrench.png
 nowjs/now.js
 socket.io/socket.io.js
 

@@ -5,6 +5,13 @@
   user-select: none;
 }
 
+.edit{float:right;filter:alpha(opacity=10);-khtml-opacity:0.1;-moz-opacity:0.1;opacity:0.1;padding-right: 5px;}
+.edit img{height:18px}
+.edit:hover{filter:alpha(opacity=40);-khtml-opacity:0.4;-moz-opacity:0.4;opacity:0.4;}
+.delete{float:right;filter:alpha(opacity=10);-khtml-opacity:0.1;-moz-opacity:0.1;opacity:0.1;padding-right: 5px;}
+.delete img{height:18px}
+.delete:hover{filter:alpha(opacity=40);-khtml-opacity:0.4;-moz-opacity:0.4;opacity:0.4;}
+
 .tasks { 
   margin-top: 60px;
 }

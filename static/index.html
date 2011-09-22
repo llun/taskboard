@@ -20,7 +20,14 @@
     
     <script type="text/html" id="task" charset="utf-8">    
       <div id="<%=id%>" class="task">
-        <a href="#task/remove/<%=id%>" class="close">x</a>
+        
+        <a href="#task/remove/<%=id%>" class="delete">
+          <img src="images/trash.png" />
+        </a>
+        <a href="#task/edit/<%=id%>" class="edit">
+          <img src="images/wrench.png" />
+        </a>
+        
         <div id="<%=id%>_detail">
           <%=getDetail()%>
         </div>
