@@ -89,12 +89,7 @@ _.table = {
   'update/confirm': function() {
     $('#update-modal').hide();
     
-    var tasks = _.iteration.tasks;
-    for (var taskID in tasks) {
-      Task.remove(taskID);
-      _.iteration.removeTask(taskID);
-    }
-    Iteration.save(_.iteration);
+    _.persistent.clear();
     
     console.log ('client(clear)');
     
