@@ -171,7 +171,7 @@ _.init = function() {
       task.status = status;
       Task.save(task, true);
       
-      console.log ('client(update): ' + task.detail);
+      console.log ('client(update): ' + task.status + ', ' + task.detail);
       
       return false;
     }
@@ -211,15 +211,17 @@ _.init = function() {
         console.log ('server-debug(create): (' + from + ',' + task.id + ') ' + task.detail);
         if (from == _.client) { return; }
         
-        Task.save(task);
-        _.iteration.addTask(task);
-        Iteration.save(_.iteration);
+        if (!Task.get(task.id)) {
+          Task.save(task);
+          _.iteration.addTask(task);
+          Iteration.save(_.iteration);
+
+          var _task = Task.get(task.id);
+          $('#' + _task.status).append(_.tmpl('task', _task));
+          $('#' + _task.id).attr('draggable', true);
+          console.log ('server(create): ' + _task.status + ', ' + _task.detail);
+        }
         
-        var _task = Task.get(task.id);
-        $('#' + _task.status).append(_.tmpl('task', _task));
-        $('#' + _task.id).attr('draggable', true);
-        
-        console.log ('server(create): ' + _task.status + ', ' + _task.detail);
       };
       
       now.update = function (from, task) {
@@ -229,6 +231,7 @@ _.init = function() {
         var _task = Task.get(task.id);
         _task.setDetail(task.detail);
         _task.updated = task.updated;
+        _task.status = task.status;
         Task.save(_task);
         
         console.log ('server(update): ' + _task.status + ', ' + _task.detail);
