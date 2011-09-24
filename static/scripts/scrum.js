@@ -201,9 +201,18 @@ _.init = function() {
   // Generate client id
   _.client = Util.uuid();
 
+  // Update event
+  $(applicationCache).bind('updateready', function (e) {
+    if (applicationCache.status == applicationCache.UPDATEREADY) {
+      window.location.hash = 'update/ready';
+    }
+  });
+  
   // Sync data to server if online
   if (navigator.onLine) {
     now.ready(function() {
+      
+      $('#sync-status').text('Online');
       
       now.create = function (from, task) {
         console.log ('server-debug(create): (' + from + ',' + task.id + ') ' + task.detail);
@@ -272,16 +281,23 @@ _.init = function() {
         _.persistent.remove('removed');
       }
       
-      now.syncAll(prepareSync, prepareRemove);
+      $('#sync-status').text('Syncing');
+      now.syncAll(prepareSync, prepareRemove, function() {
+        $('#sync-status').text('Online');
+      });
       
     });
   }
   
-  // Update event
-  $(applicationCache).bind('updateready', function (e) {
-    if (applicationCache.status == applicationCache.UPDATEREADY) {
-      window.location.hash = 'update/ready';
-    }
+  // Online/Offline event
+  $(window).bind('online', function (e) {
+    console.log ('Online');
+    window.location.reload()
+  });
+  
+  $(window).bind('offline', function(e) {
+    console.log ('Offline');
+    $('#sync-status').text('Offline');
   });
   
 }

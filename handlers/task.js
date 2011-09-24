@@ -91,7 +91,7 @@ var TaskHandler = {
       }
     }
     
-    now.syncAll = function (tasks, removed) {
+    now.syncAll = function (tasks, removed, callback) {
       _log.debug ('sync all tasks');
       
       var _task = Task.get(store.getClient());
@@ -161,6 +161,10 @@ var TaskHandler = {
           for (var index = 0; index < _client.update.length; index++) {
             _log.debug ('sync(update): (' + master + ') ' + util.inspect(_client.add[index]));
             now.update(master, _client.update[index]);
+          }
+          
+          if (callback) {
+            callback();
           }
           
         });

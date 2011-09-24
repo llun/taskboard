@@ -12,8 +12,8 @@
 .delete img{height:18px}
 .delete:hover{filter:alpha(opacity=40);-khtml-opacity:0.4;-moz-opacity:0.4;opacity:0.4;}
 
-.tasks { 
-  margin-top: 60px;
+body {
+  padding-top: 50px;
 }
 
 table .task-type{width: 25%;}
