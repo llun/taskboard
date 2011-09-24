@@ -21,6 +21,9 @@ var config = {
     }
   },
   
+  // Socket.io Transport
+  transports: ['websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling'],
+  
   // Log facility
   log: {
     appenders: [ { type: 'file', 

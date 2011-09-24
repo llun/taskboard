@@ -94,6 +94,7 @@ console.info ('Listen to ' + config.port);
 var everyoneLogger = log4js.getLogger('socketio');
 var everyone = nowjs.initialize(httpServer, 
   { socketio: { 
+      transports: config.transports,
       logger: { log: everyoneLogger.log, 
                 info: everyoneLogger.info, 
                 debug: everyoneLogger.debug,
