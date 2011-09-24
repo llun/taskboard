@@ -32,7 +32,7 @@ var config = {
     levels: {
       console: 'info',
       socketio: 'info',
-      store: 'error',
+      store: 'info',
       task: 'info'
     }
   }

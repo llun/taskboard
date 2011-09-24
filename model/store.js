@@ -9,39 +9,39 @@ var Store = function(config) {
   
   var _client = null;
   
-  if (config.authentication) {
-    var authentication = config.authentication;
+  _db.open(function (error, client) {
     
-    _db.authenticate(authentication.username, authentication.password,
-      function (error, data) {
-        
-        if (error) {
-          _log.error ("Authentication fail");
-          process.exit(1);
-        }
-        
-        _db.open(function (error, client) {
-          
-          if (error) {
-            _log.error ("Can't open database");
-            process.exit(1);
-          }
-          
-          _client = client;
-          
-        });
-        
-      });
-  } else {
-    _db.open(function (error, client) {
-      if (error) {
-        _log.error ("Can't connect to database");
-        process.exit(1);
-      } 
+    if (error) {
+      _log.error ("Can't open database");
+      process.exit(1);
+    }
+    
+    var username = config.authentication ? config.authentication.username : null;
+    var password = config.authentication ? config.authentication.password : null;
+    
+    _log.debug ("User: " + username + " Pass: " + password);
+    
+    if (username || password) {
 
+      _db.authenticate(username, password,
+        function (error, data) {
+
+          if (error) {
+            _log.error ("Authentication fail");
+            process.exit(1);
+          } else {
+            _log.debug ("Authentication success");
+            _log.info ("Connect database success");
+            _client = client;
+          }
+
+        });
+    } else {
+      _log.info ("Connect database success");
       _client = client;
-    });
-  }
+    }
+    
+  });
   
   this.getClient = function () {
     return _client;
