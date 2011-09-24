@@ -2,6 +2,14 @@
 
 Task board that work in offline mode and sync when online. It's a lab project for test HTML5 and [now.js](nowjs.com)
 
+##Browser support
+
+Support and test below browser latest version only.
+
+ - Safari
+ - Firefox
+ - Chrome
+
 ##Requirement
 
  - mongodb: Scrumboard use MongoDB to save task data on server and sync to new client.
