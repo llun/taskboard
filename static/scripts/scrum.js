@@ -2,6 +2,7 @@
 _.table = {
   'task/new': function() {
     $('#new-task-modal').show();
+    $('#new-task-detail').focus();
   },
   'task/edit': function(hash) {
     $('#edit-task-modal').show();
@@ -9,7 +10,13 @@ _.table = {
     var id = hash.substring('#task/edit'.length + 1);
     var task = Task.get(id);
     
-    $('#edit-task-detail').val(task.getDetail(true));
+    var value = task.getDetail(true);
+    $('#edit-task-detail').val(value);
+    $('#edit-task-detail').focus();
+    
+    var textArea = $('#edit-task-detail').get(0);
+    textArea.setSelectionRange(value.length, value.length);
+    
     $('#edit-task-save-button').attr('href', '#task/save/' + id);
   },
   'task/save': function(hash) {
