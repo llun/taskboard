@@ -64,7 +64,7 @@ TestIt('TestTask', {
     var responders = fixture.getResponders();
     var totalResponders = responders.length;
     
-    test.assertEqual('Hello, World', fixture.getDetail());
+    test.assertEqual('<p>Hello, World</p>\n', fixture.getDetail());
     test.assertEqual(0, totalResponders, 
       'After update theirs should not have any responders anymore. (' + 
       totalResponders + ')');

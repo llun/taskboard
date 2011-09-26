@@ -39,7 +39,7 @@ TestIt('TestMemoryPersistent', {
     test.assert(task.id, 'Task should have ID');
     test.assertEqual(this.fixture, task.id, 
       'Task ID must equal to fixture (' + task.id + ')');
-    test.assertEqual('First Task', task.getDetail(), 
+    test.assertEqual('<p>First Task</p>\n', task.getDetail(), 
       'Task get from store must have "First Task" in detail. (' + 
       task.getDetail() + ')');
     
