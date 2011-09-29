@@ -238,35 +238,36 @@ Iteration.remove = function remove(id, push) {
   }
 }
 
-var Project = function (name) {
+var Project = function (name, firstIteration) {
 
   // Private properties
   var _self = this;
 
   // Public properties
   this.name = name;
-  this.currentIteration = null;
   this.iterations = [];
   
   // Private method
   var _constructor = function _constructor() {
-    var iteration = Iteration.create();
-    _self.currentIteration = iteration.id;
-    _self.iterations.push(iteration.id);
+    if (firstIteration) {
+      _self.iterations.push(firstIteration);
+    }
   }
   
   // Public method
+  this.currentIteration = function currentIteration() {
+    return _self.iterations[_self.iterations.length - 1];
+  }
+  
   this.endIteration = function endIteration() {
     var iteration = Iteration.create();
-    _self.currentIteration = iteration.id;
     _self.iterations.push(iteration.id);
   }
   
   this.cancelIteration = function cancelIteration() {
-    Iteration.remove(_self.currentIteration);
+    Iteration.remove(_self.currentIteration());
     
     var iteration = Iteration.create();
-    _self.currentIteration = iteration.id;
     _self.iterations[_self.iterations.length - 1] = iteration.id;
   }
   
@@ -276,7 +277,8 @@ var Project = function (name) {
 
 // CRUD for Project
 Project.create = function create(name) {
-  var project = new Project(name);
+  var iteration = Iteration.create();
+  var project = new Project(name, iteration.id);
   _.persistent.save(project);
   
   return project;
@@ -286,10 +288,9 @@ Project.get = function get(id) {
   
   var object = _.persistent.get(id);
   if (object) {
-    project = new Project();
+    project = new Project(object.name);
     project.id = object.id;
-    
-    project.name = object.name;
+    project.iterations = object.iterations;
   }
   
   return project;

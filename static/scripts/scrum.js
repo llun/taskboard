@@ -14,7 +14,7 @@ _.init = function() {
     _.project = Project.get(current.key);
   }
   
-  var iteration = Iteration.get(_.project.currentIteration);
+  var iteration = Iteration.get(_.project.currentIteration());
   for (var taskID in iteration.tasks) {
 
     if (iteration.tasks[taskID]) {
@@ -113,7 +113,7 @@ _.init = function() {
         if (!Task.get(task.id)) {
           Task.save(task);
           
-          var iteration = Iteration.get(_.project.currentIteration);
+          var iteration = Iteration.get(_.project.currentIteration());
           iteration.addTask(task);
           Iteration.save(iteration);
 
@@ -152,7 +152,7 @@ _.init = function() {
           $('#' + id).remove();
           Task.remove(id);
           
-          var iteration = Iteration.get(_.project.currentIteration);
+          var iteration = Iteration.get(_.project.currentIteration());
           iteration.removeTask(id);
           Iteration.save(iteration);
         }
@@ -164,7 +164,7 @@ _.init = function() {
         
       }
       
-      var iteration = Iteration.get(_.project.currentIteration);
+      var iteration = Iteration.get(_.project.currentIteration());
       var prepareSync = [];
       var tasks = iteration.tasks;
       
