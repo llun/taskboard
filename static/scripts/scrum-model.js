@@ -172,7 +172,7 @@ var Iteration = function(name) {
   var _self = this;
   
   // Public variable
-  this.begin = null; // Begin time
+  this.begin = new Date(); // Begin time
   this.tasks = {}; // All tasks
   this.name = name || 'New Iteration'; // Iteration name
   
@@ -213,7 +213,91 @@ Iteration.get = function get(id) {
 Iteration.save = function save(iteration) {
   _.persistent.save(iteration);
 }
-Iteration.remove = function remove(id) {
+Iteration.remove = function remove(id, push) {
+  var iteration = Iteration.get(id);
+  var tasks = iteration.tasks;
+  for (var index = 0; index < tasks.length; index++) {
+    var task = tasks[index];
+    Task.remove(task, push);
+  }
+  
+  _.persistent.remove(id);
+  
+  var removed = _.persistent.get('removed');
+  if (!removed) {
+    removed = { id: 'removed', list: [] };
+  }
+  
+  removed.list.push(id);
+  _.persistent.save(removed)
+  
+  if (push) {
+    if (navigator.onLine && now.sync) {
+      now.sync(_.client, {id: id, removed: true});
+    }
+  }
+}
+
+var Project = function (name) {
+
+  // Private properties
+  var _self = this;
+
+  // Public properties
+  this.name = name;
+  this.currentIteration = null;
+  this.iterations = [];
+  
+  // Private method
+  var _constructor = function _constructor() {
+    var iteration = Iteration.create();
+    _self.currentIteration = iteration.id;
+    _self.iterations.push(iteration.id);
+  }
+  
+  // Public method
+  this.endIteration = function endIteration() {
+    var iteration = Iteration.create();
+    _self.currentIteration = iteration.id;
+    _self.iterations.push(iteration.id);
+  }
+  
+  this.cancelIteration = function cancelIteration() {
+    Iteration.remove(_self.currentIteration);
+    
+    var iteration = Iteration.create();
+    _self.currentIteration = iteration.id;
+    _self.iterations[_self.iterations.length - 1] = iteration.id;
+  }
+  
+  // Constructor part
+  _constructor();
+}
+
+// CRUD for Iteration
+Project.create = function create(name) {
+  var project = new Project(name);
+  _.persistent.save(project);
+  
+  return project;
+}
+Project.get = function get(id) {
+  var project = null;
+  
+  var object = _.persistent.get(id);
+  if (object) {
+    project = new Project();
+    project.id = object.id;
+    
+    project.name = object.name;
+  }
+  
+  return project;
+}
+Project.save = function save(project) {
+  _.persistent.save(project);
+}
+Project.remove = function remove(id) {
   _.persistent.remove(id);
   
   var removed = _.persistent.get('removed');
