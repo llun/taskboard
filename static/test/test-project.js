@@ -16,6 +16,9 @@ TestIt('TestProject', {
       'End iteration should create new iteration');
     test.assertEqual(project.currentIteration(), project.iterations[2],
       'Last iteration and current iteration should be the same');
+      
+    var iteration = Iteration.get(project.iterations[1]);
+    test.assert(iteration.end, 'Iteration should have end time.');
   },
   
   'testCancelIteration': function (test) {

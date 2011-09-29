@@ -173,6 +173,7 @@ var Iteration = function(name) {
   
   // Public variable
   this.begin = new Date(); // Begin time
+  this.end = null; // End time
   this.tasks = {}; // All tasks
   this.name = name || 'New Iteration'; // Iteration name
   
@@ -204,6 +205,7 @@ Iteration.get = function get(id) {
     iteration.id = object.id;
     
     iteration.begin = object.begin;
+    iteration.end = object.end;
     iteration.tasks = object.tasks;
     iteration.name = object.name;
   }
@@ -260,7 +262,11 @@ var Project = function (name, firstIteration) {
   }
   
   this.endIteration = function endIteration() {
-    var iteration = Iteration.create();
+    var iteration = Iteration.get(_self.currentIteration());
+    iteration.end = new Date();
+    Iteration.save(iteration);
+    
+    iteration = Iteration.create();
     _self.iterations.push(iteration.id);
   }
   
