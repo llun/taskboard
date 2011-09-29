@@ -98,6 +98,15 @@ _.table = {
     Project.save(_.project);
     
     $('.task').remove();
+    
+    if (_.project.iterations.length == 2) {
+      // Append divider
+      $('#iterations-list-menu').append('<li class="divider"></li>');
+    }
+    
+    var iteration = Iteration.get(_.project.currentIteration());
+    $('#iterations-list-menu').append(_.tmpl('iteration_list', iteration));
+    
     window.location.hash = '';
   },
   
