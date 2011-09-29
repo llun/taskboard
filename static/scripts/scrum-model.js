@@ -274,7 +274,7 @@ var Project = function (name) {
   _constructor();
 }
 
-// CRUD for Iteration
+// CRUD for Project
 Project.create = function create(name) {
   var project = new Project(name);
   _.persistent.save(project);

@@ -1,117 +1,3 @@
-// Route table
-_.table = {
-  'task/new': function() {
-    $('#new-task-modal').show();
-    $('#new-task-detail').focus();
-  },
-  'task/edit': function(hash) {
-    $('#edit-task-modal').show();
-    
-    var id = hash.substring('#task/edit'.length + 1);
-    var task = Task.get(id);
-    
-    var value = task.getDetail(true);
-    $('#edit-task-detail').val(value);
-    $('#edit-task-detail').focus();
-    
-    var textArea = $('#edit-task-detail').get(0);
-    textArea.setSelectionRange(value.length, value.length);
-    
-    $('#edit-task-save-button').attr('href', '#task/save/' + id);
-  },
-  'task/save': function(hash) {
-    
-    if (hash) {
-      // Save old task
-      var id = hash.substring('#task/edit'.length + 1);
-      
-      var task = Task.get(id);
-      task.setDetail($('#edit-task-detail').val());
-      Task.save(task, true);
-      
-      console.log ('client(update): ' + task.id + ', ' + task.status + ', ' + task.detail);
-      
-      $('#' + id + '_detail').html(task.getDetail());
-      $('#' + id + '_responders').text(task.getResponders().toString());
-      
-      $('#edit-task-detail').val('');
-      $('#edit-task-save-button').attr('href', '');
-      $('#edit-task-modal').hide();
-    } else {
-      // Save new task
-      // Store it to local memory and render new task in todo
-      var detail = $('#new-task-detail').val();
-
-      var task = Task.create(detail, true);
-      if (task) {
-        _.iteration.addTask(task);
-        Iteration.save(_.iteration);
-        
-        $('#todo').append(_.tmpl('task', task));
-        $('#' + task.id).attr('draggable', true);
-        
-        console.log ('client(create): ' + task.id + ', ' + task.status + ', ' + task.detail);
-
-        // Clear form and close
-        $('#new-task-detail').val('');
-        $('#new-task-modal').hide();
-      }
-    }
-    
-  },
-  'task/remove': function(hash) {
-    var id = hash.substring('#task/remove'.length + 1);
-    Task.remove(id, true);
-    _.iteration.removeTask(id);
-    Iteration.save(_.iteration);
-    
-    console.log ('client(remove): ' + id);
-    
-    $('#' + id).remove();
-    
-    window.location.hash = '';
-  },
-  'task/clear': function(hash) {
-    $('#clear-task-modal').show();
-  },
-  'task/clear/confirm': function(hash) {
-    _.persistent.clear();
-    
-    console.log ('client(clear)');
-    
-    $('.task').remove();
-    $('#clear-task-modal').hide();
-    
-    window.location.hash = '';
-  },
-  
-  'update/ready': function() {
-    $('#update-modal').show();
-  },
-  'update/confirm': function() {
-    $('#update-modal').hide();
-    
-    _.persistent.clear();
-    
-    console.log ('client(clear)');
-    
-    applicationCache.swapCache();
-    window.location.reload();
-  },
-  
-  // Default state
-  '': function() {
-    $('#new-task-detail').val('');
-    $('#edit-task-detail').val('');
-    $('#edit-task-save-button').attr('href', '');
-    
-    $('#clear-task-modal').hide();
-    $('#new-task-modal').hide();
-    $('#edit-task-modal').hide();
-    $('#update-modal').hide();
-  }
-}
-
 // View event binding
 _.init = function() {
   
@@ -120,24 +6,29 @@ _.init = function() {
   // Load data
   var current = _.persistent.get('current');
   if (!current) {
-    _.iteration = Iteration.create();
+    _.project = Project.create();
     
-    var current = {id: 'current', key: _.iteration.id};
+    var current = {id: 'current', key: _.project.id};
     _.persistent.save(current);
   } else {
-    _.iteration = Iteration.get(current.key);
+    _.project = Project.get(current.key);
   }
   
-  for (var taskID in _.iteration.tasks) {
+  var iteration = Iteration.get(_.project.currentIteration);
+  for (var taskID in iteration.tasks) {
 
-    if (_.iteration.tasks[taskID]) {
+    if (iteration.tasks[taskID]) {
       var task = Task.get(taskID);
       if (task) {
         $('#' + task.status).append(_.tmpl('task', task));
         $('#' + task.id).attr('draggable', true);
       }
+      
     }
+    
   }
+  
+  $('#iteration-name').text(iteration.name);
   
   // Bind drag & drop on wall
   $('.wall').bind({
@@ -214,14 +105,17 @@ _.init = function() {
       
       $('#sync-status').text('Online');
       
+      // Task real-time synchronization
       now.create = function (from, task) {
         console.log ('server-debug(create): (' + from + ',' + task.id + ') ' + task.detail);
         if (from == _.client) { return; }
         
         if (!Task.get(task.id)) {
           Task.save(task);
-          _.iteration.addTask(task);
-          Iteration.save(_.iteration);
+          
+          var iteration = Iteration.get(_.project.currentIteration);
+          iteration.addTask(task);
+          Iteration.save(iteration);
 
           var _task = Task.get(task.id);
           $('#' + _task.status).append(_.tmpl('task', _task));
@@ -257,14 +151,22 @@ _.init = function() {
         if ($('#' + id).length > 0) {
           $('#' + id).remove();
           Task.remove(id);
-          _.iteration.removeTask(id);
-          Iteration.save(_.iteration);
+          
+          var iteration = Iteration.get(_.project.currentIteration);
+          iteration.removeTask(id);
+          Iteration.save(iteration);
         }
         
       }
       
+      // Iteration real-time synchronization
+      now.endIteration = function () {
+        
+      }
+      
+      var iteration = Iteration.get(_.project.currentIteration);
       var prepareSync = [];
-      var tasks = _.iteration.tasks;
+      var tasks = iteration.tasks;
       
       for (var taskID in tasks) {
         var task = Task.get(taskID);
