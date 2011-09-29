@@ -89,6 +89,18 @@ _.table = {
     window.location.hash = '';
   },
   
+  // Iteration controllers
+  'iteration/end': function() {
+    $('#iteration-end-modal').show();
+  },
+  'iteration/end/confirm': function() {
+    _.project.endIteration();
+    Project.save(_.project);
+    
+    $('.task').remove();
+    window.location.hash = '';
+  },
+  
   // Update controllers
   'update/ready': function() {
     $('#update-modal').show();
@@ -101,7 +113,6 @@ _.table = {
     console.log ('client(clear)');
     
     applicationCache.swapCache();
-    window.location.reload();
   },
   
   // Default state
@@ -113,6 +124,9 @@ _.table = {
     $('#clear-task-modal').hide();
     $('#new-task-modal').hide();
     $('#edit-task-modal').hide();
+    
+    $('#iteration-end-modal').hide();
+    
     $('#update-modal').hide();
   }
 }

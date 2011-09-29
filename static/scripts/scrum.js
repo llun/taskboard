@@ -30,6 +30,17 @@ _.init = function() {
   
   $('#iteration-name').text(iteration.name);
   
+  if (_.project.iterations.length > 1) {
+    $('#iterations-list-menu').append('<li class="divider"></li>');
+    
+    var iterations = _.project.iterations;
+    for (var index = 0; index < iterations.length - 1; index++) {
+      var iteration = Iteration.get(iterations[index]);
+      var list = _.tmpl('iteration_list', iteration);
+      $('#iterations-list-menu').append(list);
+    }
+  }
+  
   // Bind drag & drop on wall
   $('.wall').bind({
     dragenter: function (ev) {
@@ -83,6 +94,10 @@ _.init = function() {
   
   $('#clear-task-button').click(function(event) {
     window.location.hash = 'task/clear';
+  });
+  
+  $('#end-iteration-button').click(function(event) {
+    window.location.hash = 'iteration/end';
   });
   
   $('#iterations-menu').click(function(event) {
