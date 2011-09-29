@@ -6,6 +6,9 @@ TestIt('TestProject', {
     var iteration = Iteration.create();
     this.project.iterations.push(iteration.id);
     
+    var task = Task.create('test');
+    iteration.addTask(task);
+    
   },
   
   'testEndIteration': function (test) {
@@ -19,6 +22,12 @@ TestIt('TestProject', {
       
     var iteration = Iteration.get(project.iterations[1]);
     test.assert(iteration.end, 'Iteration should have end time.');
+
+    for (var key in iteration.tasks) {
+      var task = Task.get(key);
+      test.assertEqual(Task.status.DONE, task.status, 
+        'All task in ended iteration should be done');
+    }
   },
   
   'testCancelIteration': function (test) {

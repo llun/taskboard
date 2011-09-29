@@ -90,6 +90,35 @@ _.table = {
   },
   
   // Iteration controllers
+  'iteration/show': function() {
+    var id = hash.substring('#task/remove'.length + 1);
+    
+    if (_.project.currentIteration() == id) {
+      // Show new task and end iteration button
+      $('#iteration-actions').show();
+    } else {
+      // Hide new task and end iteration button
+      $('#iteration-actions').hide();
+    }
+    
+    $('.task').remove();
+    
+    var iteration = Iteration.get(id);
+    for (var taskID in iteration.tasks) {
+
+      if (iteration.tasks[taskID]) {
+        var task = Task.get(taskID);
+        if (task) {
+          $('#' + task.status).append(_.tmpl('task', task));
+        }
+
+      }
+
+    }
+    
+    $('.task-action').hide();
+    
+  },
   'iteration/end': function() {
     $('#iteration-end-modal').show();
   },

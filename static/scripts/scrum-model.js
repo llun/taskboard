@@ -177,7 +177,7 @@ var Iteration = function(name) {
   this.tasks = {}; // All tasks
   this.name = name || 'New Iteration'; // Iteration name
   
-  this.addTask = function createTask(task, push) {
+  this.addTask = function addTask(task, push) {
     if (!_self.tasks[task.id]) {
       _self.tasks[task.id] = true;
     }
@@ -265,6 +265,12 @@ var Project = function (name, firstIteration) {
     var iteration = Iteration.get(_self.currentIteration());
     iteration.end = new Date();
     Iteration.save(iteration);
+    
+    for (var key in iteration.tasks) {
+      var task = Task.get(key);
+      task.status = Task.status.DONE;
+      Task.save(task);
+    }
     
     iteration = Iteration.create();
     _self.iterations.push(iteration.id);

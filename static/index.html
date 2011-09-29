@@ -20,16 +20,16 @@
     <script src="scripts/scrum-controller.js" type="text/javascript"></script>
     
     <script type="text/html" id="iteration_list" charset="utf-8">
-      <li><a href="#iteration/<%=id%>"><%=name%></a></li>
+      <li><a href="#iteration/show/<%=id%>"><%=name%></a></li>
     </script>
     
     <script type="text/html" id="task" charset="utf-8">    
       <div id="<%=id%>" class="task">
         
-        <a href="#task/remove/<%=id%>" class="delete">
+        <a href="#task/remove/<%=id%>" class="task-action delete">
           <img src="images/trash.png" />
         </a>
-        <a href="#task/edit/<%=id%>" class="edit">
+        <a href="#task/edit/<%=id%>" class="task-action edit">
           <img src="images/wrench.png" />
         </a>
         
@@ -74,7 +74,7 @@
             <h4 id="iteration-name">Task board</h4>
           </div>
           
-          <div class="span4 offset8 columns">
+          <div id="iteration-actions" class="span4 offset8 columns">
             <button id="new-task-button" class="btn primary">New Task</button>
             <button id="end-iteration-button" class="btn danger">End Iteration</button>
           </div>
