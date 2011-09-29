@@ -194,7 +194,7 @@ _.init = function() {
     window.location.hash = 'task/clear';
   });
   
-  $('#user-menu').click(function(event) {
+  $('#iterations-menu').click(function(event) {
     $(this).toggleClass('open');
   });
 
