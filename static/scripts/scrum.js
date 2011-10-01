@@ -100,10 +100,18 @@ _.init = function() {
     window.location.hash = 'iteration/end';
   });
   
-  $('#iterations-menu').click(function(event) {
-    $(this).toggleClass('open');
+  $('.dropdown').click(function(event) {
+    var open = false;
+    if (!$(this).hasClass('open')) {
+      open = true;
+    }
+    $('.dropdown').removeClass('open');
+    
+    if (open) {
+      $(this).addClass('open');
+    }
   });
-
+  
   // Generate client id
   _.client = Util.uuid();
 
