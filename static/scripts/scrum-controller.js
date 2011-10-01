@@ -42,7 +42,7 @@ _.table = {
       // Save new task
       // Store it to local memory and render new task in todo
       var detail = $('#new-task-detail').val();
-      var iteration = Iteration.get(_.project.currentIteration);
+      var iteration = Iteration.get(_.project.currentIteration());
       
       var task = Task.create(detail, true);
       if (task) {
@@ -62,7 +62,7 @@ _.table = {
     
   },
   'task/remove': function(hash) {
-    var iteration = Iteration.get(_.project.currentIteration);
+    var iteration = Iteration.get(_.project.currentIteration());
     
     var id = hash.substring('#task/remove'.length + 1);
     Task.remove(id, true);
@@ -90,20 +90,13 @@ _.table = {
   },
   
   // Iteration controllers
-  'iteration/show': function() {
-    var id = hash.substring('#task/remove'.length + 1);
-    
-    if (_.project.currentIteration() == id) {
-      // Show new task and end iteration button
-      $('#iteration-actions').show();
-    } else {
-      // Hide new task and end iteration button
-      $('#iteration-actions').hide();
-    }
+  'iteration/show': function(hash) {
+    var id = hash.substring('#iteration/show'.length + 1);
     
     $('.task').remove();
     
-    var iteration = Iteration.get(id);
+    var realID = id == 'current' ? _.project.currentIteration() : id;
+    var iteration = Iteration.get(realID);
     for (var taskID in iteration.tasks) {
 
       if (iteration.tasks[taskID]) {
@@ -116,8 +109,17 @@ _.table = {
 
     }
     
-    $('.task-action').hide();
+    if (id == 'current') {
+      // Show new task and end iteration button
+      $('#iteration-actions').show();
+      $('.task').attr('draggable', true);
+    } else {
+      // Hide new task and end iteration button
+      $('#iteration-actions').hide();
+      $('.task-action').hide();
+    }
     
+    window.location.hash = '';
   },
   'iteration/end': function() {
     $('#iteration-end-modal').show();
@@ -133,8 +135,9 @@ _.table = {
       $('#iterations-list-menu').append('<li class="divider"></li>');
     }
     
-    var iteration = Iteration.get(_.project.currentIteration());
-    $('#iterations-list-menu').append(_.tmpl('iteration_list', iteration));
+    var iterations = _.project.iterations;
+    var pastIteration = Iteration.get(iterations[iterations.length - 2]);
+    $('#iterations-list-menu').append(_.tmpl('iteration_list', pastIteration));
     
     window.location.hash = '';
   },

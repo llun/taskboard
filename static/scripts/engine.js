@@ -1,3 +1,6 @@
+// Now object will override when load in online mode.
+var now = { ready: function() {} };
+
 var _ = {
   table: {},
   init: function() {},

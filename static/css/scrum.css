@@ -3,6 +3,7 @@
   -khtml-user-select: none;
   -webkit-user-select: none;
   user-select: none;
+  cursor: move;
 }
 
 .edit{float:right;filter:alpha(opacity=10);-khtml-opacity:0.1;-moz-opacity:0.1;opacity:0.1;padding-right: 5px;}
@@ -46,7 +47,6 @@ table td.wall.over{background-color: #CCC;}
   box-shadow: none;
   margin-top: 5px;
   margin-bottom: 5px;
-  cursor: move;
 }
 .task h5 {line-height: 18px;}
 .task div {
