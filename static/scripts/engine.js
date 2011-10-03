@@ -1,5 +1,12 @@
 // Now object will override when load in online mode.
-var now = { ready: function() {} };
+try {
+  if (!now) {
+    now = { ready: function() {} };
+  }
+} catch (e) {
+  console.log ('Can\'t find now.js');
+  now = { ready: function() {} };
+}
 
 var _ = {
   table: {},
