@@ -47,16 +47,33 @@
   <body>
     
     <div class="topbar">
-      <div class="fill">
+      <div class="topbar-inner">
         <div class="container">
           <h3><a href="#">Scrum</a></h3>
           <ul class="nav">
+            
+            <li><a href="#">Board</a></li>
+            <li><a href="#">Story</a></li>
+            
+            <!-- Project menu -->
+            <li id="projects-menu" class="dropdown">
+              <a href="#" class="dropdown-toggle">Project name</a>
+              <ul id="projects-list-menu" class="dropdown-menu">
+                <li><a href="#">New project</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Current project name</a>
+              </ul>
+            </li>
+            
+            <!-- Iteration menu -->
             <li id="iterations-menu" class="dropdown">
               <a href="#" class="dropdown-toggle">Iterations</a>
               <ul id="iterations-list-menu" class="dropdown-menu">
                 <li><a href="#iteration/show/current">Current Iteration</a></li>
               </ul>
             </li>
+            
+            <!-- Tools menu -->
             <li class="dropdown">
               <a href="#" class="dropdown-toggle">Tools</a>
               <ul class="dropdown-menu">
@@ -65,8 +82,22 @@
               </ul>
             </li>
           </ul>
+          
+          <!-- User & Online menu -->
           <ul class="nav secondary-nav">
-            <li><a id="sync-status">Offline</a></li>
+            <li>
+              <a id="sync-status">Offline</a>
+            </li>
+            
+            <li class="dropdown">
+              <a class="user-icon dropdown-toggle" href="#">
+                <img src="http://placehold.it/20x20" />
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Profile</a></li>
+                <li><a href="#">Logout</a></li>
+              </ul>
+            </li>
           </ul>
         </div>
       </div>
@@ -77,8 +108,9 @@
         
         <div class="row">
           
-          <div class="span4 columns">
+          <div class="span4 columns iteration-head">
             <h4 id="iteration-name">Task board</h4>
+            <a href="#"><img src="images/wrench.png" /></a>
           </div>
           
           <div id="iteration-actions" class="span4 offset8 columns">
