@@ -1,13 +1,13 @@
 /**
  * Task model constructor
  *
- * @param {String} detail string.
+ * @param {String} detail Task detail.
  */
 var Task = function(detail) {
   // Private properties
   var _responders = [];
   
-  // Public propoerties
+  // Public properties
   this.detail = detail;
   this.status = Task.status.TODO;
   this.updated = new Date().getTime();
@@ -166,6 +166,11 @@ Task.remove = function(id, push) {
   }
 }
 
+/**
+ * Iteration model constructor
+ *
+ * @param {String} name Iteration name.
+ */
 var Iteration = function(name) {
   
   // Private variable
@@ -240,7 +245,13 @@ Iteration.remove = function (id, push) {
   }
 }
 
-var Project = function (name, firstIteration) {
+/**
+ * Project model constructor
+ *
+ * @param {String} name Project name.
+ * @param {Object} iteration First iteration object.
+ */
+var Project = function (name, iteration) {
 
   // Private properties
   var _self = this;
@@ -250,9 +261,9 @@ var Project = function (name, firstIteration) {
   this.iterations = [];
   
   // Private method
-  var _constructor = function _constructor() {
-    if (firstIteration) {
-      _self.iterations.push(firstIteration);
+  var _constructor = function () {
+    if (iteration) {
+      _self.iterations.push(iteration);
     }
   }
   
@@ -311,6 +322,70 @@ Project.save = function (project) {
   _.persistent.save(project);
 }
 Project.remove = function (id) {
+  _.persistent.remove(id);
+  
+  var removed = _.persistent.get('removed');
+  if (!removed) {
+    removed = { id: 'removed', list: [] };
+  }
+  
+  removed.list.push(id);
+  _.persistent.save(removed)
+}
+
+/**
+ * User model constructor
+ *
+ * @param {String} username
+ * @param {Object} project First project object
+ */
+var User = function (username, project) {
+
+  // Private properties
+  var _self = this;
+
+  // Public properties
+  this.username = username;
+  this.projects = [];
+  this.defaultProject = null;
+
+  // Private method
+  var _constructor = function () {
+    if (project) {
+      _self.projects.push(project);
+      _self.defaultProject = project;
+    }
+  }
+
+}
+
+// CRUD for User
+User.create = function (username) {
+  var project = Project.create('Project 1');
+  var user = new User(username, project);
+  _.persistent.save(user);
+  
+  return user;
+}
+
+User.get = function (id) {
+  var user = null;
+  
+  var object = _.persistent.get(id);
+  if (object) {
+    user = new User(object.username);
+    user.projects = object.projects;
+    user.defaultProject = object.defaultProject;
+  }
+  
+  return user;
+}
+
+User.save = function (user) {
+  _.persistent.save(user);
+}
+
+User.remove = function (id) {
   _.persistent.remove(id);
   
   var removed = _.persistent.get('removed');

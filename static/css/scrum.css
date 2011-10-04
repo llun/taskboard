@@ -19,8 +19,8 @@ body {
   padding-top: 50px;
 }
 
-.iteration-head h4 { display: inline; }
-.iteration-head img { 
+.board-head h4 { display: inline; }
+.board-head img { 
   height: 13px; 
   padding-left: 5px; 
   
@@ -29,7 +29,7 @@ body {
   -moz-opacity: 0.4;
   opacity: 0.4;
 }
-.iteration-head input {
+.board-head input {
   width: 180px;
   line-height: 36px;
   display: none;
