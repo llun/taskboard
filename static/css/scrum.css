@@ -29,6 +29,11 @@ body {
   -moz-opacity: 0.4;
   opacity: 0.4;
 }
+.iteration-head input {
+  width: 180px;
+  line-height: 36px;
+  display: none;
+}
 
 table .task-type{width: 25%;}
 

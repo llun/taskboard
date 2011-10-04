@@ -190,13 +190,13 @@ var Iteration = function(name) {
 }
 
 // CRUD for Iteration
-Iteration.create = function create() {
-  var iteration = new Iteration();
+Iteration.create = function (name) {
+  var iteration = new Iteration(name);
   _.persistent.save(iteration);
   
   return iteration;
 }
-Iteration.get = function get(id) {
+Iteration.get = function (id) {
   var iteration = null;
   
   var object = _.persistent.get(id);
@@ -212,10 +212,10 @@ Iteration.get = function get(id) {
   
   return iteration;
 }
-Iteration.save = function save(iteration) {
+Iteration.save = function (iteration) {
   _.persistent.save(iteration);
 }
-Iteration.remove = function remove(id, push) {
+Iteration.remove = function (id, push) {
   var iteration = Iteration.get(id);
   var tasks = iteration.tasks;
   for (var index = 0; index < tasks.length; index++) {
@@ -272,7 +272,7 @@ var Project = function (name, firstIteration) {
       Task.save(task);
     }
     
-    iteration = Iteration.create();
+    iteration = Iteration.create('Iteration ' + (_self.iterations.length + 1));
     _self.iterations.push(iteration.id);
   }
   
@@ -288,14 +288,14 @@ var Project = function (name, firstIteration) {
 }
 
 // CRUD for Project
-Project.create = function create(name) {
-  var iteration = Iteration.create();
+Project.create = function (name) {
+  var iteration = Iteration.create('Iteration 1');
   var project = new Project(name, iteration.id);
   _.persistent.save(project);
   
   return project;
 }
-Project.get = function get(id) {
+Project.get = function (id) {
   var project = null;
   
   var object = _.persistent.get(id);
@@ -307,10 +307,10 @@ Project.get = function get(id) {
   
   return project;
 }
-Project.save = function save(project) {
+Project.save = function (project) {
   _.persistent.save(project);
 }
-Project.remove = function remove(id) {
+Project.remove = function (id) {
   _.persistent.remove(id);
   
   var removed = _.persistent.get('removed');

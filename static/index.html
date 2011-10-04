@@ -109,8 +109,8 @@
         <div class="row">
           
           <div class="span4 columns iteration-head">
-            <h4 id="iteration-name">Task board</h4>
-            <a href="#"><img src="images/wrench.png" /></a>
+            <h4 id="iteration-name">Iteration name</h4>
+            <a href="#iteration/edit" id="iteration-name-edit"><img src="images/wrench.png" /></a>
           </div>
           
           <div id="iteration-actions" class="span4 offset8 columns">
@@ -212,7 +212,7 @@
                     
         </div>
         <div class="modal-footer">
-          <a id="edit-task-save-button" href="#close" class="btn primary">
+          <a id="edit-task-save-button" href="#task/save" class="btn primary">
             Save
           </a>
           <a id="edit-task-cancel-button" href="#close" class="btn seconday">
@@ -250,7 +250,7 @@
     <!-- End clear task modal -->
     
     <!-- Iteration end modal -->
-    <div id="iteration-end-modal" class="application-modal">
+    <div id="end-iteration-modal" class="application-modal">
       <div class="modal-backdrop"></div>
       <form class="modal">
         <div class="modal-header">
@@ -277,6 +277,35 @@
       </form>
     </div>
     <!-- End iteration end modal -->
+    
+    <!-- Edit iteration modal -->
+    <div id="edit-iteration-modal" class="application-modal">
+      <div class="modal-backdrop"></div>
+      <form class="modal">
+        <div class="modal-header">
+          <h3>Iteration setting</h3>
+        </div>
+        <div class="modal-body">
+          
+          <div class="clearfix">
+            <label for="edit-iteration-name">Iteration name</label>
+            <div class="input">
+              <input type="text" name="edit-iteration-name" id="edit-iteration-name" class="xlarge">
+            </div>
+          </div>
+                    
+        </div>
+        <div class="modal-footer">
+          <a id="edit-iteration-save-button" href="#iteration/save" class="btn primary">
+            Save
+          </a>
+          <a id="edit-iteration-cancel-button" href="#close" class="btn seconday">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+    <!-- End edit iteration modal -->
     
     <!-- Update modal -->
     <div id="update-modal" class="application-modal">

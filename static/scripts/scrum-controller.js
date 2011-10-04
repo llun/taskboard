@@ -121,14 +121,41 @@ _.table = {
     
     window.location.hash = '';
   },
+  'iteration/edit': function() {
+  
+    $('#edit-iteration-modal').show();
+    
+    var iteration = Iteration.get(_.project.currentIteration());
+    $('#edit-iteration-name').val(iteration.name);
+    $('#edit-iteration-name').focus();
+    
+    var input = $('#edit-iteration-name')[0];
+    input.setSelectionRange(0, iteration.name.length);
+    
+  },
+  'iteration/save': function () {
+    
+    var iteration = Iteration.get(_.project.currentIteration());
+    iteration.name = $('#edit-iteration-name').val();
+    Iteration.save(iteration);
+    
+    $('#iteration-name').text(iteration.name);
+    $('#edit-iteration-name').val('');
+    
+    $('#edit-iteration-modal').hide();
+    
+  },
   'iteration/end': function() {
-    $('#iteration-end-modal').show();
+    $('#end-iteration-modal').show();
   },
   'iteration/end/confirm': function() {
     _.project.endIteration();
     Project.save(_.project);
     
+    var iteration = Iteration.get(_.project.currentIteration());
+    
     $('.task').remove();
+    $('#iteration-name').text(iteration.name);
     
     if (_.project.iterations.length == 2) {
       // Append divider
@@ -161,12 +188,14 @@ _.table = {
     $('#new-task-detail').val('');
     $('#edit-task-detail').val('');
     $('#edit-task-save-button').attr('href', '');
+    $('#edit-iteration-name').val('');
     
     $('#clear-task-modal').hide();
     $('#new-task-modal').hide();
     $('#edit-task-modal').hide();
     
-    $('#iteration-end-modal').hide();
+    $('#end-iteration-modal').hide();
+    $('#edit-iteration-modal').hide();
     
     $('#update-modal').hide();
   }
