@@ -366,6 +366,8 @@ var User = function (username, project) {
     _self.projects.push(project.id);
     
     User.save(_self);
+    
+    return project;
   }
   
   this.removeProject = function (id) {
@@ -418,6 +420,7 @@ User.get = function (id) {
   var object = _.persistent.get(id);
   if (object) {
     user = new User(object.username);
+    user.id = object.id;
     user.projects = object.projects;
     user.members = object.members;
     user.defaultProject = object.defaultProject;

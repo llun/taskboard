@@ -191,6 +191,29 @@ _.table = {
     $('#new-project-modal').show();
   },
   'project/save': function () {
+    var name = $('#new-project-name').val();
+    var pattern = /^[\w\d ]+$/;
+    if (pattern.test(name)) {
+    
+      var project = _.user.createProject(name);
+      var list = _.tmpl('project_list', project);
+      $('#projects-list-menu').append(list);
+      
+      $('#new-project-modal').hide();
+      
+      $('.new-project-name').addClass('error');
+      $('#new-project-help').text('Project name can contains only alphabet' +
+                                  ', numeric or white space');
+      $('#new-project-save-button').attr('href', '#project/save?' + new Date().getTime());
+    
+    } else {
+    
+      $('.new-project-name').addClass('error');
+      $('#new-project-help').text('Project name can contains only alphabet' +
+                                  ', numeric or white space');
+      $('#new-project-save-button').attr('href', '#project/save?' + new Date().getTime());
+    
+    }
   },
   
   // Update controllers
