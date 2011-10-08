@@ -106,19 +106,17 @@ Task.status = {
 
 // CRUD for Task
 Task.create = function(detail, push) {
-  var task = null;
-  if (detail.length > 0) {
-    task = new Task(detail);
-    _.persistent.save(task);
-    
-    if (push) {
-      if (navigator.onLine && now.sync) {
-        now.sync(_.client, task);
-        task.sync = true;
-        _.persistent.save(task);
-      }
+  task = new Task(detail);
+  _.persistent.save(task);
+  
+  if (push) {
+    if (navigator.onLine && now.sync) {
+      now.sync(_.client, task);
+      task.sync = true;
+      _.persistent.save(task);
     }
   }
+  
   return task;
 }
 Task.get = function(id) {

@@ -63,7 +63,7 @@
             <li id="projects-menu" class="dropdown">
               <a href="#" class="dropdown-toggle">Projects</a>
               <ul id="projects-list-menu" class="dropdown-menu">
-                <li><a href="#">New project</a></li>
+                <li><a href="#project/new">New project</a></li>
                 <li class="divider"></li>
               </ul>
             </li>
@@ -180,10 +180,13 @@
         </div>
         <div class="modal-body">
         
-          <div class="clearfix">
+          <div class="clearfix new-task-detail">
             <div class="input">
               <textarea id="new-task-detail" 
-                        name="detail" rows="8" cols="45"></textarea>
+                        name="detail" rows="8" cols="45"
+                        class="new-task-detail"></textarea>
+                        
+              <span id="new-task-help" class="help-block"></span>
             </div>
           </div>
                   
@@ -209,10 +212,13 @@
         </div>
         <div class="modal-body">
           
-          <div class="clearfix">
+          <div class="clearfix edit-task-detail">
             <div class="input">
-              <textarea id="edit-task-detail" 
-                        name="detail" rows="8" cols="45"></textarea>
+              <textarea id="edit-task-detail"
+                        name="detail" rows="8" cols="45"
+                        class="edit-task-detail"></textarea>
+                        
+              <span id="edit-task-help" class="help-block"></span>
             </div>
           </div>
                     
@@ -283,6 +289,37 @@
       </form>
     </div>
     <!-- End iteration end modal -->
+    
+    <!-- New project modal -->
+    <div id="new-project-modal" class="application-modal">
+      <div class="modal-backdrop"></div>
+      <form class="modal">
+        <div class="modal-header">
+          <h3>Create new project</h3>
+        </div>
+        <div class="modal-body">
+          
+          <div class="clearfix edit-project-name">
+            <label for="new-project-name">Project name</label>
+            <div class="input">
+              <input type="text" name="new-project-name" id="new-project-name" 
+                     class="xlarge new-project-name">
+              <span id="new-project-name-help" class="help-block"></span>
+            </div>
+          </div>
+                    
+        </div>
+        <div class="modal-footer">
+          <a id="new-project-save-button" href="#project/save" class="btn primary">
+            Save
+          </a>
+          <a id="new-project-cancel-button" href="#close" class="btn seconday">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+    <!-- End new project modal -->
     
     <!-- Edit board modal -->
     <div id="edit-board-modal" class="application-modal">

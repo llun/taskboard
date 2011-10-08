@@ -22,30 +22,58 @@ _.table = {
   },
   'task/save': function(hash) {
     
+    var id = null;
     if (hash) {
-      // Save old task
-      var id = hash.substring('#task/edit'.length + 1);
+      var matches = hash.match(/[0-9a-fA-F-]{36}/);
+      if (matches) {
+        id = hash.match(/[0-9a-fA-F-]{36}/)[0];
+      }
+    }
+    
+    if (id) {
+      // Validate value
+      var taskDetail = $('#edit-task-detail').val();
+      taskDetail = taskDetail.replace(/^\s+|\s+$/,'');
       
-      var task = Task.get(id);
-      task.setDetail($('#edit-task-detail').val());
-      Task.save(task, true);
+      if (taskDetail.length > 0) {
       
-      console.log ('client(update): ' + task.id + ', ' + task.status + ', ' + task.detail);
+        // Save old task
+        var task = Task.get(id);
+        task.setDetail(taskDetail);
+        Task.save(task, true);
+        
+        console.log ('client(update): ' + task.id + ', ' + task.status + ', ' + task.detail);
+        
+        $('#' + id + '_detail').html(task.getDetail());
+        $('#' + id + '_responders').text(task.getResponders().toString());
+        
+        $('#edit-task-detail').val('');
+        $('#edit-task-save-button').attr('href', '');
+        $('#edit-task-modal').hide();
+        
+        $('.edit-task-detail').removeClass('error');
+        $('#edit-task-help').text('');
+        $('#edit-task-save-button').attr('href', '#task/save');
+        
+      } else {
       
-      $('#' + id + '_detail').html(task.getDetail());
-      $('#' + id + '_responders').text(task.getResponders().toString());
+        $('.edit-task-detail').addClass('error');
+        $('#edit-task-help').text('Task detail cannot empty');
+        $('#edit-task-save-button').attr('href', '#task/save/' + id + '?' + new Date().getTime());
       
-      $('#edit-task-detail').val('');
-      $('#edit-task-save-button').attr('href', '');
-      $('#edit-task-modal').hide();
+      }
+      
     } else {
       // Save new task
       // Store it to local memory and render new task in todo
-      var detail = $('#new-task-detail').val();
-      var iteration = Iteration.get(_.project.currentIteration());
+      var taskDetail = $('#new-task-detail').val();
+      taskDetail = taskDetail.replace(/^\s+|\s+$/, '');
       
-      var task = Task.create(detail, true);
-      if (task) {
+      if (taskDetail.length > 0) {
+      
+        var iteration = Iteration.get(_.project.currentIteration());
+        
+        var task = Task.create(taskDetail, true);
         iteration.addTask(task);
         Iteration.save(iteration);
         
@@ -57,7 +85,19 @@ _.table = {
         // Clear form and close
         $('#new-task-detail').val('');
         $('#new-task-modal').hide();
+        
+        $('.new-task-detail').removeClass('error');
+        $('#new-task-help').text('');
+        $('#new-task-save-button').attr('href', '#task/save');
+        
+      } else {
+      
+        $('.new-task-detail').addClass('error');
+        $('#new-task-help').text('Task detail cannot empty');
+        $('#new-task-save-button').attr('href', '#task/save?' + new Date().getTime());
+      
       }
+      
     }
     
   },
@@ -144,6 +184,13 @@ _.table = {
     }
     
     window.location.hash = '';
+  },
+  
+  // Project controllers
+  'project/new': function () {
+    $('#new-project-modal').show();
+  },
+  'project/save': function () {
   },
   
   // Update controllers
@@ -239,6 +286,15 @@ _.table = {
     $('#edit-task-save-button').attr('href', '');
     $('#edit-iteration-name').val('');
     $('#edit-project-name').val('');
+    $('#new-project-name').val('');
+    
+    $('.edit-task-detail').removeClass('error');
+    $('#edit-task-help').text('');
+    $('#edit-task-save-button').attr('href', '#task/save');
+    
+    $('.new-task-detail').removeClass('error');
+    $('#new-task-help').text('');
+    $('#new-task-save-button').attr('href', '#task/save');
     
     $('.edit-project-name').removeClass('error');
     $('#project-name-help').text('');
@@ -253,6 +309,7 @@ _.table = {
     $('#edit-task-modal').hide();
     
     $('#end-iteration-modal').hide();
+    $('#new-project-modal').hide();
 
     $('#edit-board-modal').hide();
     
