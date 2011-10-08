@@ -150,7 +150,6 @@ _.table = {
   },
   'iteration/end/confirm': function() {
     _.project.endIteration();
-    Project.save(_.project);
     
     var iteration = Iteration.get(_.project.currentIteration());
     

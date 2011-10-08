@@ -259,6 +259,7 @@ var Project = function (name, iteration) {
   // Public properties
   this.name = name;
   this.iterations = [];
+  this.sync = false;
   
   // Private method
   var _constructor = function () {
@@ -285,6 +286,8 @@ var Project = function (name, iteration) {
     
     iteration = Iteration.create('Iteration ' + (_self.iterations.length + 1));
     _self.iterations.push(iteration.id);
+    
+    Project.save(_self);
   }
   
   this.cancelIteration = function cancelIteration() {
@@ -292,6 +295,8 @@ var Project = function (name, iteration) {
     
     var iteration = Iteration.create();
     _self.iterations[_self.iterations.length - 1] = iteration.id;
+    
+    Project.save(_self);
   }
   
   // Constructor part
@@ -347,15 +352,56 @@ var User = function (username, project) {
   // Public properties
   this.username = username;
   this.projects = [];
+  this.members = [];
   this.defaultProject = null;
 
   // Private method
   var _constructor = function () {
     if (project) {
-      _self.projects.push(project);
-      _self.defaultProject = project;
+      _self.projects.push(project.id);
+      _self.defaultProject = project.id;
     }
   }
+  
+  this.createProject = function (name) {
+    var project = Project.create(name);
+    _self.projects.push(project.id);
+    
+    User.save(_self);
+  }
+  
+  this.removeProject = function (id) {
+  
+    var projects = _self.projects;
+    
+    var found = false;
+    var index = 0;
+    for (; index < projects.length; index++) {
+      if (projects[index] == id) {
+        found = true;
+        break;
+      }
+    }
+    
+    if (found) {
+      // Remove project;
+      Project.remove(projects[index]);
+      
+      var firstSet = [];
+      var secondSet = [];
+      
+      firstSet = projects.slice(0, index);
+      if (index < projects.length - 1) {
+        secondSet = projects.slice(index + 1);
+      }
+      
+      _self.projects = firstSet.concat(secondSet);
+      User.save(_self);
+    }
+  
+  }
+  
+  _constructor();
 
 }
 
