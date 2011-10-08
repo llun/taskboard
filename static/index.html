@@ -19,8 +19,12 @@
     <script src="scripts/scrum-model.js" type="text/javascript"></script>
     <script src="scripts/scrum-controller.js" type="text/javascript"></script>
     
+    <script type="text/html" id="project_list" charset="utf-8">
+      <li class="project-list-menu-item"><a href="#project/show/<%=id%>"><%=name%></a></li>
+    </script>
+    
     <script type="text/html" id="iteration_list" charset="utf-8">
-      <li><a href="#iteration/show/<%=id%>"><%=name%></a></li>
+      <li class="iteration-list-menu-item"><a href="#iteration/show/<%=id%>"><%=name%></a></li>
     </script>
     
     <script type="text/html" id="task" charset="utf-8">    
@@ -61,7 +65,6 @@
               <ul id="projects-list-menu" class="dropdown-menu">
                 <li><a href="#">New project</a></li>
                 <li class="divider"></li>
-                <li><a href="#">Current project name</a>
               </ul>
             </li>
             
@@ -69,7 +72,8 @@
             <li id="iterations-menu" class="dropdown">
               <a href="#" class="dropdown-toggle">Iterations</a>
               <ul id="iterations-list-menu" class="dropdown-menu">
-                <li><a href="#iteration/show/current">Current Iteration</a></li>
+                <li><a href="#iteration/end">End iteration</a></li>
+                <li class="divider"></li>
               </ul>
             </li>
             

@@ -134,14 +134,14 @@ _.table = {
     $('.task').remove();
     $('#iteration-name').text(iteration.name);
     
-    if (_.project.iterations.length == 2) {
-      // Append divider
-      $('#iterations-list-menu').append('<li class="divider"></li>');
-    }
+    $('.iteration-list-menu-item').remove();
     
-    var iterations = _.project.iterations;
-    var pastIteration = Iteration.get(iterations[iterations.length - 2]);
-    $('#iterations-list-menu').append(_.tmpl('iteration_list', pastIteration));
+    var iterations = _.project.iterations.slice(0).reverse()
+    for (var index = 0; index < iterations.length; index++) {
+      var iteration = Iteration.get(iterations[index]);
+      var list = _.tmpl('iteration_list', iteration);
+      $('#iterations-list-menu').append(list);
+    }
     
     window.location.hash = '';
   },

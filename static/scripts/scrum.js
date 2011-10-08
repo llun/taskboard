@@ -33,15 +33,20 @@ _.init = function() {
   $('#project-name').text(_.project.name);
   $('#iteration-name').text(iteration.name);
   
-  if (_.project.iterations.length > 1) {
-    $('#iterations-list-menu').append('<li class="divider"></li>');
-    
-    var iterations = _.project.iterations;
-    for (var index = 0; index < iterations.length - 1; index++) {
-      var iteration = Iteration.get(iterations[index]);
-      var list = _.tmpl('iteration_list', iteration);
-      $('#iterations-list-menu').append(list);
-    }
+  // List projects
+  var projects = _.user.projects;
+  for (var index = 0; index < projects.length; index++) {
+    var project = Project.get(projects[index]);
+    var list = _.tmpl('project_list', project);
+    $('#projects-list-menu').append(list);
+  }
+  
+  // List iterations
+  var iterations = _.project.iterations.slice(0).reverse()
+  for (var index = 0; index < iterations.length; index++) {
+    var iteration = Iteration.get(iterations[index]);
+    var list = _.tmpl('iteration_list', iteration);
+    $('#iterations-list-menu').append(list);
   }
   
   // Bind drag & drop on wall
