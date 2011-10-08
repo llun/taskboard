@@ -421,6 +421,7 @@ User.get = function (id) {
   if (object) {
     user = new User(object.username);
     user.projects = object.projects;
+    user.members = object.members;
     user.defaultProject = object.defaultProject;
   }
   

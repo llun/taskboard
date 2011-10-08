@@ -6,12 +6,14 @@ _.init = function() {
   // Load data
   var current = _.persistent.get('current');
   if (!current) {
-    _.project = Project.create();
+    _.user = User.create('anonymous');
+    _.project = Project.get(_.user.defaultProject);
     
-    var current = {id: 'current', key: _.project.id};
+    var current = {id: 'current', key: _.user.id};
     _.persistent.save(current);
   } else {
-    _.project = Project.get(current.key);
+    _.user = User.get(current.key);
+    _.project = Project.get(_.user.defaultProject);
   }
   
   var iteration = Iteration.get(_.project.currentIteration());
@@ -27,9 +29,9 @@ _.init = function() {
     }
     
   }
-  
+
+  $('#project-name').text(_.project.name);
   $('#iteration-name').text(iteration.name);
-  $('#iteration-name-input').val(iteration.name);
   
   if (_.project.iterations.length > 1) {
     $('#iterations-list-menu').append('<li class="divider"></li>');

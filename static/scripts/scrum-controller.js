@@ -165,6 +165,9 @@ _.table = {
   
     $('#edit-board-modal').show();
     
+    var project = _.project;
+    $('#edit-project-name').val(project.name);
+    
     var iteration = Iteration.get(_.project.currentIteration());
     $('#edit-iteration-name').val(iteration.name);
     $('#edit-iteration-name').focus();
@@ -175,14 +178,57 @@ _.table = {
   },
   'board/save': function () {
     
-    var iteration = Iteration.get(_.project.currentIteration());
-    iteration.name = $('#edit-iteration-name').val();
-    Iteration.save(iteration);
+    // Validate input
+    var pattern = /^[\w\d ]+$/i;
     
-    $('#iteration-name').text(iteration.name);
-    $('#edit-iteration-name').val('');
+    var projectName = $('#edit-project-name').val();
+    var iterationName = $('#edit-iteration-name').val();
     
-    $('#edit-board-modal').hide();
+    var projectPass = pattern.test(projectName);
+    var iterationPass = pattern.test(iterationName);
+        
+    if (projectPass && iterationPass) {
+      // Persist input
+      var project = _.project;
+      project.name = projectName;
+      Project.save(project);
+      
+      $('#project-name').text(project.name);
+      $('#edit-project-name').val('');      
+      
+      $('.edit-project-name').removeClass('error');
+      $('#project-name-help').text('');
+      
+      var iteration = Iteration.get(_.project.currentIteration());
+      iteration.name = iterationName;
+      Iteration.save(iteration);
+      
+      $('#iteration-name').text(iteration.name);
+      $('#edit-iteration-name').val('');
+      
+      $('.edit-iteration-name').removeClass('error');
+      $('#iteration-name-help').text('');
+      
+      $('#edit-board-modal').hide();
+      
+      $('#edit-board-save-button').attr('href', '#board/save');
+    } else {
+    
+      if (!projectPass) {
+        $('.edit-project-name').addClass('error');
+        $('#project-name-help').text('Project name can contains only alphabet' +
+                                     ', numeric or white space');
+      }
+      
+      if (!iterationPass) {
+        $('.edit-iteration-name').addClass('error');
+        $('#iteration-name-help').text('Iteration name can contains only alphabet' +
+                                       ', numeric or white space');
+      }
+      
+      $('#edit-board-save-button').attr('href', '#board/save?'+ (new Date()).getTime());
+    
+    }
     
   },
   
@@ -192,6 +238,15 @@ _.table = {
     $('#edit-task-detail').val('');
     $('#edit-task-save-button').attr('href', '');
     $('#edit-iteration-name').val('');
+    $('#edit-project-name').val('');
+    
+    $('.edit-project-name').removeClass('error');
+    $('#project-name-help').text('');
+    
+    $('.edit-iteration-name').removeClass('error');
+    $('#iteration-name-help').text('');
+    
+    $('#edit-board-save-button').attr('href', '#board/save');
     
     $('#clear-task-modal').hide();
     $('#new-task-modal').hide();

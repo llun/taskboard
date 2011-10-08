@@ -109,7 +109,7 @@
         <div class="row">
           
           <div class="span8 columns board-head">
-            <h4>Project name</h4> 
+            <h4 id="project-name">Project name</h4> 
             <span> - </span>
             <h4 id="iteration-name">Iteration name</h4>
             <a href="#board/edit" id="board-name-edit"><img src="images/wrench.png" /></a>
@@ -289,17 +289,21 @@
         </div>
         <div class="modal-body">
           
-          <div class="clearfix">
+          <div class="clearfix edit-project-name">
             <label for="edit-project-name">Current project name</label>
             <div class="input">
-              <input type="text" name="edit-project-name" id="edit-project-name" class="xlarge">
+              <input type="text" name="edit-project-name" id="edit-project-name" 
+                     class="xlarge edit-project-name">
+              <span id="project-name-help" class="help-block"></span>
             </div>
           </div>
           
-          <div class="clearfix">
+          <div class="clearfix edit-iteration-name">
             <label for="edit-iteration-name">Current iteration name</label>
             <div class="input">
-              <input type="text" name="edit-iteration-name" id="edit-iteration-name" class="xlarge">
+              <input type="text" name="edit-iteration-name" id="edit-iteration-name" 
+                     class="xlarge edit-iteration-name">
+              <span id="iteration-name-help" class="help-block"></span>
             </div>
           </div>
                     
