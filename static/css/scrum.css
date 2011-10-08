@@ -19,7 +19,7 @@ body {
   padding-top: 50px;
 }
 
-.board-head h4 { display: inline; }
+.board-head h4 { display: inline; cursor: pointer; }
 .board-head img { 
   height: 13px; 
   padding-left: 5px; 

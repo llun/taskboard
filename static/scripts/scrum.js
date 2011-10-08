@@ -29,6 +29,7 @@ _.init = function() {
   }
   
   $('#iteration-name').text(iteration.name);
+  $('#iteration-name-input').val(iteration.name);
   
   if (_.project.iterations.length > 1) {
     $('#iterations-list-menu').append('<li class="divider"></li>');

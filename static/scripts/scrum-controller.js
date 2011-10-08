@@ -109,6 +109,8 @@ _.table = {
 
     }
     
+    $('#iteration-name').text(iteration.name);
+    
     if (id == 'current') {
       // Show new task and end iteration button
       $('#iteration-actions').show();
@@ -120,30 +122,6 @@ _.table = {
     }
     
     window.location.hash = '';
-  },
-  'iteration/edit': function() {
-  
-    $('#edit-iteration-modal').show();
-    
-    var iteration = Iteration.get(_.project.currentIteration());
-    $('#edit-iteration-name').val(iteration.name);
-    $('#edit-iteration-name').focus();
-    
-    var input = $('#edit-iteration-name')[0];
-    input.setSelectionRange(0, iteration.name.length);
-    
-  },
-  'iteration/save': function () {
-    
-    var iteration = Iteration.get(_.project.currentIteration());
-    iteration.name = $('#edit-iteration-name').val();
-    Iteration.save(iteration);
-    
-    $('#iteration-name').text(iteration.name);
-    $('#edit-iteration-name').val('');
-    
-    $('#edit-iteration-modal').hide();
-    
   },
   'iteration/end': function() {
     $('#end-iteration-modal').show();
@@ -182,6 +160,32 @@ _.table = {
     applicationCache.swapCache();
   },
   
+  // Board controllers.
+  'board/edit': function() {
+  
+    $('#edit-board-modal').show();
+    
+    var iteration = Iteration.get(_.project.currentIteration());
+    $('#edit-iteration-name').val(iteration.name);
+    $('#edit-iteration-name').focus();
+    
+    var input = $('#edit-iteration-name')[0];
+    input.setSelectionRange(0, iteration.name.length);
+    
+  },
+  'board/save': function () {
+    
+    var iteration = Iteration.get(_.project.currentIteration());
+    iteration.name = $('#edit-iteration-name').val();
+    Iteration.save(iteration);
+    
+    $('#iteration-name').text(iteration.name);
+    $('#edit-iteration-name').val('');
+    
+    $('#edit-board-modal').hide();
+    
+  },
+  
   // Default state
   '': function() {
     $('#new-task-detail').val('');
@@ -194,7 +198,8 @@ _.table = {
     $('#edit-task-modal').hide();
     
     $('#end-iteration-modal').hide();
-    $('#edit-iteration-modal').hide();
+
+    $('#edit-board-modal').hide();
     
     $('#update-modal').hide();
   }
