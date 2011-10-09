@@ -219,6 +219,31 @@ _.table = {
   // Project controllers
   'project/show': function (hash) {
   
+    var id = null;    
+    var matches = hash.match(/[0-9a-fA-F-]{36}/);
+    if (matches) {
+      id = matches[0];
+    }
+    
+    if (id) {
+    
+      var user = _.user;
+      user.defaultProject = id;
+      User.save(user);
+      
+      _.project = user.defaultProject;
+      
+      var project = Project.get(user.defaultProject);
+      var iteration = Iteration.get(project.currentIteration());
+      
+      $('.task').remove();
+      
+      $('#project-name').text(project.name);
+      $('#iteration-name').text(iteration.name);
+      
+      _.table['iteration/show']('#iteration/show/' + iteration.id);
+    
+    }
   
   },
   'project/new': function () {
