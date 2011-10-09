@@ -36,7 +36,8 @@ var config = {
       console: 'info',
       socketio: 'info',
       store: 'info',
-      task: 'info'
+      task: 'info',
+      iteration: 'info'
     }
   }
 }

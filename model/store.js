@@ -1,6 +1,7 @@
-var mongodb = require('mongodb');
+var mongodb = require('mongodb'),
+    log4js = require('log4js');
 
-var _log = console.logger('store');
+var _log = log4js.getLogger('store');
 
 var Store = function(config) {
   

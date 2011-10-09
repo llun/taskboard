@@ -6,9 +6,6 @@ var fs = require('fs'),
     path = require('path'),
     util = require('util');
     
-// Put get logger to console
-console.logger = log4js.getLogger
-
 // Parse configuration
 var config_file = '';
 var config = null;
@@ -112,4 +109,5 @@ var everyone = nowjs.initialize(httpServer,
 for (var index = 0; index < config.everyone.length; index++) {
   config.everyone[index] (everyone.now, store);
 }
+
 console.info ('Everyone is listen to everybody, ready!');

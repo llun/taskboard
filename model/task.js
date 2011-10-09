@@ -1,6 +1,7 @@
-var mongodb = require('mongodb');
+var mongodb = require('mongodb'),
+    log4js = require('log4js');
 
-var _log = console.logger('task');
+var _log = log4js.getLogger('task');
 
 var TaskModel = function(client){
   this.client = client;

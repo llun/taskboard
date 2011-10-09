@@ -1,7 +1,8 @@
 var Task = require('../model/task.js').TaskModel,
-    util = require('util');
+    util = require('util'),
+    log4js = require('log4js');
     
-var _log = console.logger('task');
+var _log = log4js.getLogger('task');
 
 var TaskHandler = {
   
