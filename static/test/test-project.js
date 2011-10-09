@@ -9,6 +9,8 @@ TestIt('TestProject', {
     var task = Task.create('test');
     iteration.addTask(task);
     
+    this.task = task.id;
+    
   },
   
   'testEndIteration': function (test) {
@@ -28,6 +30,24 @@ TestIt('TestProject', {
       test.assertEqual(Task.status.DONE, task.status, 
         'All task in ended iteration should be done');
     }
+  },
+  
+  'testEndIterationHasRemovedTask': function (test) {
+  
+    var project = this.project;
+    var iteration = Iteration.get(project.currentIteration());
+    
+    Task.remove(this.task);
+    iteration.removeTask(this.task);
+    Iteration.save(iteration);
+    
+    project.endIteration();
+    
+    test.assertEqual(3, project.iterations.length, 
+      'End iteration should create new iteration');
+    test.assertEqual(project.currentIteration(), project.iterations[2],
+      'Last iteration and current iteration should be the same');
+    
   },
   
   'testCancelIteration': function (test) {

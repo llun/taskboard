@@ -278,8 +278,10 @@ var Project = function (name, iteration) {
     
     for (var key in iteration.tasks) {
       var task = Task.get(key);
-      task.status = Task.status.DONE;
-      Task.save(task);
+      if (task) {
+        task.status = Task.status.DONE;
+        Task.save(task);
+      }
     }
     
     iteration = Iteration.create('Iteration ' + (_self.iterations.length + 1));

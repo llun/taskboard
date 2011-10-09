@@ -7,18 +7,28 @@ _.table = {
   },
   'task/edit': function(hash) {
     $('#edit-task-modal').show();
+
+    var id = null;    
+    var matches = hash.match(/[0-9a-fA-F-]{36}/);
+    if (matches) {
+      id = matches[0];
+    }
     
-    var id = hash.substring('#task/edit'.length + 1);
-    var task = Task.get(id);
+    if (id) {
     
-    var value = task.getDetail(true);
-    $('#edit-task-detail').val(value);
-    $('#edit-task-detail').focus();
+      var task = Task.get(id);
+      
+      var value = task.getDetail(true);
+      $('#edit-task-detail').val(value);
+      $('#edit-task-detail').focus();
+      
+      var textArea = $('#edit-task-detail').get(0);
+      textArea.setSelectionRange(value.length, value.length);
+      
+      $('#edit-task-save-button').attr('href', '#task/save/' + id);
+      
+    }
     
-    var textArea = $('#edit-task-detail').get(0);
-    textArea.setSelectionRange(value.length, value.length);
-    
-    $('#edit-task-save-button').attr('href', '#task/save/' + id);
   },
   'task/save': function(hash) {
     
@@ -26,7 +36,7 @@ _.table = {
     if (hash) {
       var matches = hash.match(/[0-9a-fA-F-]{36}/);
       if (matches) {
-        id = hash.match(/[0-9a-fA-F-]{36}/)[0];
+        id = matches[0];
       }
     }
     
@@ -104,16 +114,26 @@ _.table = {
   'task/remove': function(hash) {
     var iteration = Iteration.get(_.project.currentIteration());
     
-    var id = hash.substring('#task/remove'.length + 1);
-    Task.remove(id, true);
-    iteration.removeTask(id);
-    Iteration.save(iteration);
+    var id = null;    
+    var matches = hash.match(/[0-9a-fA-F-]{36}/);
+    if (matches) {
+      id = matches[0];
+    }
     
-    console.log ('client(remove): ' + id);
+    if (id) {
     
-    $('#' + id).remove();
+      Task.remove(id, true);
+      iteration.removeTask(id);
+      Iteration.save(iteration);
+      
+      console.log ('client(remove): ' + id);
+      
+      $('#' + id).remove();
+      
+      window.location.hash = '';
+      
+    }
     
-    window.location.hash = '';
   },
   'task/clear': function(hash) {
     $('#clear-task-modal').show();
@@ -131,37 +151,47 @@ _.table = {
   
   // Iteration controllers
   'iteration/show': function(hash) {
-    var id = hash.substring('#iteration/show'.length + 1);
+  
+    var id = null;    
+    var matches = hash.match(/[0-9a-fA-F-]{36}/);
+    if (matches) {
+      id = matches[0];
+    }
     
-    $('.task').remove();
+    if (id) {
     
-    var realID = id == 'current' ? _.project.currentIteration() : id;
-    var iteration = Iteration.get(realID);
-    for (var taskID in iteration.tasks) {
-
-      if (iteration.tasks[taskID]) {
-        var task = Task.get(taskID);
-        if (task) {
-          $('#' + task.status).append(_.tmpl('task', task));
+      $('.task').remove();
+          
+      var realID = id == 'current' ? _.project.currentIteration() : id;
+      var iteration = Iteration.get(realID);
+      for (var taskID in iteration.tasks) {
+  
+        if (iteration.tasks[taskID]) {
+          var task = Task.get(taskID);
+          if (task) {
+            $('#' + task.status).append(_.tmpl('task', task));
+          }
+  
         }
-
+  
       }
-
+      
+      $('#iteration-name').text(iteration.name);
+      
+      if (id == 'current') {
+        // Show new task and end iteration button
+        $('#iteration-actions').show();
+        $('.task').attr('draggable', true);
+      } else {
+        // Hide new task and end iteration button
+        $('#iteration-actions').hide();
+        $('.task-action').hide();
+      }
+      
+      window.location.hash = '';
+    
     }
     
-    $('#iteration-name').text(iteration.name);
-    
-    if (id == 'current') {
-      // Show new task and end iteration button
-      $('#iteration-actions').show();
-      $('.task').attr('draggable', true);
-    } else {
-      // Hide new task and end iteration button
-      $('#iteration-actions').hide();
-      $('.task-action').hide();
-    }
-    
-    window.location.hash = '';
   },
   'iteration/end': function() {
     $('#end-iteration-modal').show();
@@ -187,6 +217,10 @@ _.table = {
   },
   
   // Project controllers
+  'project/show': function (hash) {
+  
+  
+  },
   'project/new': function () {
     $('#new-project-modal').show();
   },
