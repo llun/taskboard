@@ -160,10 +160,10 @@ _.table = {
     
     if (id) {
     
+      var isCurrent = id == _.project.currentIteration();
+    
       $('.task').remove();
-          
-      var realID = id == 'current' ? _.project.currentIteration() : id;
-      var iteration = Iteration.get(realID);
+      var iteration = Iteration.get(id);
       for (var taskID in iteration.tasks) {
   
         if (iteration.tasks[taskID]) {
@@ -178,7 +178,7 @@ _.table = {
       
       $('#iteration-name').text(iteration.name);
       
-      if (id == 'current') {
+      if (isCurrent) {
         // Show new task and end iteration button
         $('#iteration-actions').show();
         $('.task').attr('draggable', true);
