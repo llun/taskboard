@@ -1,8 +1,9 @@
-var Task = require('../model/task.js').TaskModel,
+var model = require('../model/model.js').Model,
     util = require('util'),
     log4js = require('log4js');
     
-var _log = log4js.getLogger('task');
+var _type = 'task';
+var _log = log4js.getLogger(_type);
 
 var TaskHandler = {
   
@@ -68,7 +69,7 @@ var TaskHandler = {
     
     everyone.syncTask = function(iteration, from, task) {
       _log.debug('Task: ' + util.inspect(task));
-      var _task = Task.get(store.getClient());
+      var _task = model.get(_type, store.getClient());
       if (task.removed) {
         // Remove task
         _task.remove(task.id);
@@ -95,7 +96,7 @@ var TaskHandler = {
     everyone.syncAllTask = function (iteration, tasks, removed, callback) {
       _log.debug ('sync all tasks');
       
-      var _task = Task.get(store.getClient());
+      var _task = model.get(_type, store.getClient());
       _task.count(function (error, count) {
         
         _task.list(0, count, function (error, data) {

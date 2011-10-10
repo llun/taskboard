@@ -1,14 +1,14 @@
 var mongodb = require('mongodb'),
     log4js = require('log4js');
 
-var _log = log4js.getLogger('task');
+var _log = log4js.getLogger('model');
 
-var TaskModel = function(client){
+var Model = function(name, client){
   this.client = client;
-  this.collection = new mongodb.Collection(client, 'task_collection');
+  this.collection = new mongodb.Collection(client, name + '_collection');
 }
 
-TaskModel.prototype.list = function(offset, limit, callback){
+Model.prototype.list = function(offset, limit, callback){
   callback = callback || function(){};
   offset = offset || 0;
   limit = limit || 25;
@@ -25,25 +25,25 @@ TaskModel.prototype.list = function(offset, limit, callback){
   });
 }
 
-TaskModel.prototype.count = function(callback) {
+Model.prototype.count = function(callback) {
   callback = callback || function() {};
   
   var collection = this.collection;
   collection.count(callback);
 }
 
-TaskModel.prototype.create = function(task, callback){
+Model.prototype.create = function(object, callback){
   callback = callback || function(){};
   
-  if(!task){
+  if(!object){
     callback('invalid args');
     return;
   }
   
-  task._id = task.id;
+  object._id = object.id;
   
   var collection = this.collection;
-  collection.insert(task, {safe:true},
+  collection.insert(object, {safe:true},
                     function(err, objects) {
     if (err){
       _log.warn(err.message);
@@ -54,18 +54,18 @@ TaskModel.prototype.create = function(task, callback){
   });
 }
 
-TaskModel.prototype.edit = function(id, task, callback){
+Model.prototype.edit = function(id, object, callback){
   callback = callback || function(){};
   
-  if(!id || !task){
-    callback('invalid args - id:'+id+', task:'+task);
+  if(!id || !object){
+    callback('invalid args - id:'+id+', model:'+object);
     return;
   }
   
   var client = this.client;
   
   var collection = this.collection;
-  collection.update({ '_id': id}, {'$set': task}, {safe:true},
+  collection.update({ '_id': id}, {'$set': object}, {safe:true},
                     function(err, objects) {
     if (err){
       _log.warn(err.message);
@@ -76,7 +76,7 @@ TaskModel.prototype.edit = function(id, task, callback){
   });
 }
 
-TaskModel.prototype.remove = function(id, callback){
+Model.prototype.remove = function(id, callback){
   callback = callback || function(){};
   
   if(!id){
@@ -98,7 +98,7 @@ TaskModel.prototype.remove = function(id, callback){
   });
 }
 
-TaskModel.prototype.exists = function(id, callback){
+Model.prototype.exists = function(id, callback){
   callback = callback || function(){};
   
   if(!id){
@@ -119,13 +119,13 @@ TaskModel.prototype.exists = function(id, callback){
   });
 }
 
-var _model = null;
-TaskModel.get = function (client) {
-  if (!_model) {
-    _model = new TaskModel(client);
+var _models = {};
+Model.get = function (type, client) {
+  if (!_models[type]) {
+    _models[type] = new Model(type, client);
   }
   
-  return _model;
+  return _models[type];
 }
 
-exports.TaskModel = TaskModel;
+exports.Model = Model;

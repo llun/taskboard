@@ -8,8 +8,7 @@ new mongodb.Db('test', server, {}).open(function (error, connectclient) {
   client = connectclient;
 });
 
-var IterationModel = require('../model/iteration.js').IterationModel;
-var TaskModel = require('../model/task.js').TaskModel;
+var Model = require('../model/model.js').Model;
 var taskModel = null;
 
 TestIt('testTaskModel', {
@@ -50,7 +49,7 @@ TestIt('testTaskModel', {
     var done = false;
     
     function begin(){
-      taskModel = new TaskModel(client);      
+      taskModel = new Model('task', client);      
       var collection = new mongodb.Collection(client, 'task_collection');
       
       collection.drop(function(){
