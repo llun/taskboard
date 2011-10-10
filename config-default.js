@@ -6,7 +6,8 @@ var config = {
   base: '/static',
   
   // Now handlers list
-  everyone: [ require('./handlers/task.js').everyone ],
+  everyone: [ require('./handlers/task.js').initial,
+              require('./handlers/iteration.js').initial ],
   
   // MongoDB configuration
   mongo: {

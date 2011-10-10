@@ -64,15 +64,15 @@ var TaskHandler = {
     return output;
   },
   
-  everyone: function(now, store) {
+  initial: function(now, everyone, store) {
     
-    now.sync = function(from, task) {
+    everyone.syncTask = function(iteration, from, task) {
       _log.debug('Task: ' + util.inspect(task));
       var _task = Task.get(store.getClient());
       if (task.removed) {
         // Remove task
         _task.remove(task.id);
-        now.remove(from, task.id);
+        everyone.remove(from, task.id);
         
         _log.debug ('sync(remove): (' + from + ') ' + util.inspect(task));
       } else if (!task.sync) {
@@ -80,19 +80,19 @@ var TaskHandler = {
         task.sync = true;
         
         _task.create(task);
-        now.create(from, task);
+        everyone.create(from, task);
         
         _log.debug ('sync(create): (' + from + ') ' + util.inspect(task));
       } else {
         // Update task
         _task.edit(task.id, task);
-        now.update(from, task);
+        everyone.update(from, task);
         
         _log.debug ('sync(update): (' + from + ') ' + util.inspect(task));
       }
     }
     
-    now.syncAll = function (tasks, removed, callback) {
+    everyone.syncAllTask = function (iteration, tasks, removed, callback) {
       _log.debug ('sync all tasks');
       
       var _task = Task.get(store.getClient());
@@ -120,6 +120,8 @@ var TaskHandler = {
           _log.debug ('after sync(server): ' + util.inspect(_server));
           _log.debug ('after sync(client): ' + util.inspect(_client));
           
+          var group = now.getGroup(iteration);
+          
           // Add to server
           for (var index = 0; index < _server.add.length; index++) {
             _server.add[index].sync = true;
@@ -127,7 +129,7 @@ var TaskHandler = {
             _task.create(_server.add[index]);
             
             _log.debug ('sync(create): (' + master + ') ' + util.inspect(_server.add[index]));
-            now.create(master, _server.add[index]);
+            group.create(master, _server.add[index]);
           }
           
           // Remove from server
@@ -135,7 +137,7 @@ var TaskHandler = {
             _task.remove(_server.remove[index].id);
             
             _log.debug ('sync(remove): (' + master + ') ' + util.inspect(_server.remove[index]));
-            now.remove(master, _server.remove[index].id);
+            group.remove(master, _server.remove[index].id);
           }
           
           // Update on server
@@ -143,25 +145,25 @@ var TaskHandler = {
             _task.edit(_server.update[index].id, _server.update[index]);
             
             _log.debug ('sync(update): (' + master + ') ' + util.inspect(_server.update[index]));
-            now.update(master, _server.update[index]);
+            group.update(master, _server.update[index]);
           }
           
           // Add to client
           for (var index = 0; index < _client.add.length; index++) {
             _log.debug ('sync(create): (' + master + ') ' + util.inspect(_client.add[index]));
-            now.create(master, _client.add[index]);
+            group.create(master, _client.add[index]);
           }
           
           // Remove from client
           for (var index = 0; index < _client.remove.length; index++) {
             _log.debug ('sync(remove): (' + master + ') ' + util.inspect(_client.remove[index]));
-            now.remove(master, _client.remove[index].id);
+            group.remove(master, _client.remove[index].id);
           }
           
           // Update on client
           for (var index = 0; index < _client.update.length; index++) {
             _log.debug ('sync(update): (' + master + ') ' + util.inspect(_client.add[index]));
-            now.update(master, _client.update[index]);
+            group.update(master, _client.update[index]);
           }
           
           if (callback) {
@@ -179,4 +181,4 @@ var TaskHandler = {
 }
 
 exports.TaskHandler = TaskHandler;
-exports.everyone = TaskHandler.everyone;
+exports.initial = TaskHandler.initial;

@@ -110,8 +110,8 @@ Task.create = function(detail, push) {
   _.persistent.save(task);
   
   if (push) {
-    if (navigator.onLine && now.sync) {
-      now.sync(_.client, task);
+    if (navigator.onLine && now.syncTask) {
+      now.syncTask(_.client, task);
       task.sync = true;
       _.persistent.save(task);
     }
@@ -138,8 +138,8 @@ Task.save = function(task, push) {
   if (push) {
     task.updated = new Date().getTime();
     
-    if (navigator.onLine && now.sync) {
-      now.sync(_.client, task);
+    if (navigator.onLine && now.syncTask) {
+      now.syncTask(_.client, task);
     }
   }
   
@@ -158,8 +158,8 @@ Task.remove = function(id, push) {
   _.persistent.save(removed)
   
   if (push) {
-    if (navigator.onLine && now.sync) {
-      now.sync(_.client, {id: id, removed: true});
+    if (navigator.onLine && now.syncTask) {
+      now.syncTask(_.client, {id: id, removed: true});
     }
   }
 }
@@ -237,8 +237,8 @@ Iteration.remove = function (id, push) {
   _.persistent.save(removed)
   
   if (push) {
-    if (navigator.onLine && now.sync) {
-      now.sync(_.client, {id: id, removed: true});
+    if (navigator.onLine && now.syncTask) {
+      now.syncTask(_.client, {id: id, removed: true});
     }
   }
 }

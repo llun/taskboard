@@ -107,7 +107,7 @@ var everyone = nowjs.initialize(httpServer,
 
 // Initial everyone
 for (var index = 0; index < config.everyone.length; index++) {
-  config.everyone[index] (everyone.now, store);
+  config.everyone[index] (nowjs, everyone.now, store);
 }
 
 console.info ('Everyone is listen to everybody, ready!');

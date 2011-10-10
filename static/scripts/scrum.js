@@ -133,7 +133,8 @@ _.init = function() {
   // Sync data to server if online
   if (navigator.onLine) {
     now.ready(function() {
-      
+    
+      _.client = now.core.clientId;
       $('#sync-status').text('Online');
       
       // Task real-time synchronization
@@ -214,9 +215,13 @@ _.init = function() {
         _.persistent.remove('removed');
       }
       
-      $('#sync-status').text('Syncing');
-      now.syncAll(prepareSync, prepareRemove, function() {
-        $('#sync-status').text('Online');
+      now.join(_.client, iteration.id, function() {
+      
+        $('#sync-status').text('Syncing');
+        now.syncAll(iteration.id , prepareSync, prepareRemove, function() {
+          $('#sync-status').text('Online');
+        });
+      
       });
       
     });
