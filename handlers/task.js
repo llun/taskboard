@@ -120,7 +120,7 @@ var TaskHandler = {
           _log.debug ('after sync(server): ' + util.inspect(_server));
           _log.debug ('after sync(client): ' + util.inspect(_client));
           
-          var group = now.getGroup(iteration);
+          var group = now.getGroup(iteration).now;
           
           // Add to server
           for (var index = 0; index < _server.add.length; index++) {

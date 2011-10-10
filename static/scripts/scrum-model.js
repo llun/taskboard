@@ -111,7 +111,7 @@ Task.create = function(detail, push) {
   
   if (push) {
     if (navigator.onLine && now.syncTask) {
-      now.syncTask(_.client, task);
+      now.syncTask(_.project.currentIteration(), _.client, task);
       task.sync = true;
       _.persistent.save(task);
     }
@@ -139,7 +139,7 @@ Task.save = function(task, push) {
     task.updated = new Date().getTime();
     
     if (navigator.onLine && now.syncTask) {
-      now.syncTask(_.client, task);
+      now.syncTask(_.project.currentIteration(), _.client, task);
     }
   }
   
@@ -159,7 +159,8 @@ Task.remove = function(id, push) {
   
   if (push) {
     if (navigator.onLine && now.syncTask) {
-      now.syncTask(_.client, {id: id, removed: true});
+      now.syncTask(_.project.currentIteration(), _.client, 
+                   {id: id, removed: true});
     }
   }
 }
@@ -238,7 +239,7 @@ Iteration.remove = function (id, push) {
   
   if (push) {
     if (navigator.onLine && now.syncTask) {
-      now.syncTask(_.client, {id: id, removed: true});
+      now.syncTask(id, _.client, {id: id, removed: true});
     }
   }
 }

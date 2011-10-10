@@ -15,7 +15,7 @@ var IterationHandler = {
       }
     }
     
-    everyone.endIteration = function (client, iteration, callback) {
+    everyone.endIteration = function (client, oldIteration, newIteration, callback) {
     }
   
   }

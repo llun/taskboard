@@ -119,9 +119,6 @@ _.init = function() {
       $(this).addClass('open');
     }
   });
-  
-  // Generate client id
-  _.client = Util.uuid();
 
   // Update event
   $(applicationCache).bind('updateready', function (e) {
@@ -218,7 +215,7 @@ _.init = function() {
       now.join(_.client, iteration.id, function() {
       
         $('#sync-status').text('Syncing');
-        now.syncAll(iteration.id , prepareSync, prepareRemove, function() {
+        now.syncAllTask(iteration.id , prepareSync, prepareRemove, function() {
           $('#sync-status').text('Online');
         });
       
