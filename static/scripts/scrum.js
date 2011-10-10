@@ -135,7 +135,7 @@ _.init = function() {
       $('#sync-status').text('Online');
       
       // Task real-time synchronization
-      now.create = function (from, task) {
+      now.clientCreateTask = function (from, task) {
         console.log ('server-debug(create): (' + from + ',' + task.id + ') ' + task.detail);
         if (from == _.client) { return; }
         
@@ -154,7 +154,7 @@ _.init = function() {
         
       };
       
-      now.update = function (from, task) {
+      now.clientUpdateTask = function (from, task) {
         console.log ('server-debug(update): (' + from + ',' + task.id + ') '  + task.detail);
         if (from == _.client) { return; }
         
@@ -171,7 +171,7 @@ _.init = function() {
         $('#' + _task.id).attr('draggable', true);
       }
       
-      now.remove = function (from, id) {
+      now.clientRemoveTask = function (from, id) {
         console.log ('server-debug(remove): (' + from + ',' + id + ')');
         if (from == _.client) { return; }
         

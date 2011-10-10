@@ -68,12 +68,16 @@ var TaskHandler = {
   initial: function(now, everyone, store) {
     
     everyone.syncTask = function(iteration, from, task) {
+      _log.debug('Iteration: ' + iteration);
       _log.debug('Task: ' + util.inspect(task));
+      
+      var group = now.getGroup(iteration).now;
+      
       var _task = model.get(_type, store.getClient());
       if (task.removed) {
         // Remove task
         _task.remove(task.id);
-        everyone.remove(from, task.id);
+        group.clientRemoveTask(from, task.id);
         
         _log.debug ('sync(remove): (' + from + ') ' + util.inspect(task));
       } else if (!task.sync) {
@@ -81,13 +85,13 @@ var TaskHandler = {
         task.sync = true;
         
         _task.create(task);
-        everyone.create(from, task);
+        group.clientCreateTask(from, task);
         
         _log.debug ('sync(create): (' + from + ') ' + util.inspect(task));
       } else {
         // Update task
         _task.edit(task.id, task);
-        everyone.update(from, task);
+        group.clientUpdateTask(from, task);
         
         _log.debug ('sync(update): (' + from + ') ' + util.inspect(task));
       }
@@ -130,7 +134,7 @@ var TaskHandler = {
             _task.create(_server.add[index]);
             
             _log.debug ('sync(create): (' + master + ') ' + util.inspect(_server.add[index]));
-            group.create(master, _server.add[index]);
+            group.clientCreateTask(master, _server.add[index]);
           }
           
           // Remove from server
@@ -138,7 +142,7 @@ var TaskHandler = {
             _task.remove(_server.remove[index].id);
             
             _log.debug ('sync(remove): (' + master + ') ' + util.inspect(_server.remove[index]));
-            group.remove(master, _server.remove[index].id);
+            group.clientRemoveTask(master, _server.remove[index].id);
           }
           
           // Update on server
@@ -146,25 +150,25 @@ var TaskHandler = {
             _task.edit(_server.update[index].id, _server.update[index]);
             
             _log.debug ('sync(update): (' + master + ') ' + util.inspect(_server.update[index]));
-            group.update(master, _server.update[index]);
+            group.clientUpdateTask(master, _server.update[index]);
           }
           
           // Add to client
           for (var index = 0; index < _client.add.length; index++) {
             _log.debug ('sync(create): (' + master + ') ' + util.inspect(_client.add[index]));
-            group.create(master, _client.add[index]);
+            group.clientCreateTask(master, _client.add[index]);
           }
           
           // Remove from client
           for (var index = 0; index < _client.remove.length; index++) {
             _log.debug ('sync(remove): (' + master + ') ' + util.inspect(_client.remove[index]));
-            group.remove(master, _client.remove[index].id);
+            group.clientRemoveTask(master, _client.remove[index].id);
           }
           
           // Update on client
           for (var index = 0; index < _client.update.length; index++) {
             _log.debug ('sync(update): (' + master + ') ' + util.inspect(_client.add[index]));
-            group.update(master, _client.update[index]);
+            group.clientUpdateTask(master, _client.update[index]);
           }
           
           if (callback) {
