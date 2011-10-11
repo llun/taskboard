@@ -5,6 +5,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "oauth": "latest",
     "now": "latest",
     "mime": "latest",
     "mongodb": "latest",

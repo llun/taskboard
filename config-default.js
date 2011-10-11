@@ -6,7 +6,7 @@ var config = {
   base: '/static',
   
   // Node handlers route
-  routes: { 'post:/oauth/authenticate' : require('./routers/oauth.js').oauth.authenticate },
+  routes: { 'get:/oauth/authenticate/twitter' : require('./routers/oauth.js').oauth.authenticate },
   
   // Now handlers list
   everyone: [ require('./handlers/task.js').initial,
@@ -41,7 +41,8 @@ var config = {
       socketio: 'info',
       store: 'info',
       task: 'info',
-      iteration: 'info'
+      iteration: 'info',
+      router: 'info'
     }
   }
 }
