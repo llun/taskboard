@@ -7,6 +7,9 @@
 }
 
 .topbar a.user-icon { padding: 10px 10px 5px; border-left: 2px solid #333; }
+.topbar a.login { padding: 10px 10px 10px; border-left: 2px solid #333; }
+.topbar img.login { vertical-align: text-bottom; }
+
 .user-icon img { height: 14px; border: 1px solid #999; padding: 2px; }
 
 .edit{float:right;filter:alpha(opacity=10);-khtml-opacity:0.1;-moz-opacity:0.1;opacity:0.1;padding-right: 5px;}

@@ -38,6 +38,10 @@ if (path.existsSync('config.js')) {
   log4js.configure(config.log);
 }
 
+// Initial router
+var Router = require('.router.js').router;
+var router = new Router(config.routes);
+
 // Initial store
 var Store = require('./model/store.js').store;
 var store = new Store(config.mongo);
@@ -53,17 +57,11 @@ var httpServer = http.createServer(
     var url = request.url == '/' ? '/index.html' : request.url;
     var filePath = path.join(__dirname, config.base, url);
     
-    var _notfound = function(request, response) {
-      // Change to serve file instead
-      response.writeHead(404, {});
-      response.end('notfound');
-    }
-    
     if (path.existsSync(filePath)) {
       // Serve static file
       var stat = fs.statSync(filePath);
       if (stat.isDirectory()) {
-        _notfound(request, response);
+        router.notfound(request, response);
       } else {
         response.writeHead(200, {
           'Content-Type': mime.lookup(filePath),
@@ -81,7 +79,7 @@ var httpServer = http.createServer(
       }
       
     } else {
-      _notfound(request, response);
+      router.route(request, response);
     }
     
   });

@@ -5,6 +5,9 @@ var config = {
   // Base static path
   base: '/static',
   
+  // Node handlers route
+  routes: {},
+  
   // Now handlers list
   everyone: [ require('./handlers/task.js').initial,
               require('./handlers/iteration.js').initial ],
