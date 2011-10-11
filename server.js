@@ -39,7 +39,7 @@ if (path.existsSync('config.js')) {
 }
 
 // Initial router
-var Router = require('.router.js').router;
+var Router = require('./router.js').router;
 var router = new Router(config.routes);
 
 // Initial store

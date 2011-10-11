@@ -6,7 +6,7 @@ var config = {
   base: '/static',
   
   // Node handlers route
-  routes: {},
+  routes: { 'post:/oauth/authenticate' : require('./routers/oauth.js').oauth.authenticate },
   
   // Now handlers list
   everyone: [ require('./handlers/task.js').initial,

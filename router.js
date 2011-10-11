@@ -10,7 +10,7 @@ var Router = function(routes) {
     post: {}
   };
   
-  var _pattern = /^(post|get|*):[\w.-_\/]+$/i;
+  var _pattern = /^(post|get|\*):[\w.-_\/]+$/i;
   var _parse = function (routes) {
     for (var key in routes) {
       if (_pattern.test(key)) {
@@ -42,7 +42,7 @@ var Router = function(routes) {
   
     var method = _map[request.method.toLowerCase()][request.url];
     if (method) {
-      method(request, response, _self.everyone, _self.store);
+      method(request, response);
     } else {
       _self.notfound(request, response);
     }
