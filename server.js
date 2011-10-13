@@ -4,6 +4,7 @@ var fs = require('fs'),
     mime = require('mime'),
     nowjs = require('now'),
     path = require('path'),
+    url = require('url'),
     util = require('util');
     
 // Parse configuration
@@ -54,8 +55,8 @@ var httpServer = http.createServer(
                    request.connection.remoteAddress;
     console.log ('(' + incoming + ') request: ' + request.url);
     
-    var url = request.url == '/' ? '/index.html' : request.url;
-    var filePath = path.join(__dirname, config.base, url);
+    var target = request.url == '/' ? '/index.html' : request.url;
+    var filePath = path.join(__dirname, config.base, url.parse(request.url).pathname);
     
     if (path.existsSync(filePath)) {
       // Serve static file

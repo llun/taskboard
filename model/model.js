@@ -32,6 +32,20 @@ Model.prototype.count = function(callback) {
   collection.count(callback);
 }
 
+Model.prototype.find = function(query, callback) {
+  callback = callback || function(){};
+  
+  if (!query) {
+    callback('invalid query');
+    return;
+  }
+  
+  var collection = this.collection;
+  var cursor = collection.find(query);
+  
+  callback(cursor);
+}
+
 Model.prototype.create = function(object, callback){
   callback = callback || function(){};
   

@@ -4,6 +4,8 @@ var crypto = require ('crypto'),
     oauth = require('oauth').OAuth,
     path = require ('path');
 
+var model = require('../model/model.js').Model;
+
 var _log = log4js.getLogger('oauth');
 var _config = null;
 var _services = {};
@@ -81,8 +83,38 @@ var services = {
                                    _log.debug(JSON.parse(data));
                                    var user = JSON.parse(data);
                                    
-                                   response.writeHead(200, {});
-                                   response.end('Hello, world');                               
+                                   var users = model.get('user', store.getClient());
+                                   users.find({username: user.screen_name}, function (cursor) {
+                                   
+                                     cursor.toArray(function (error, items) {
+                                       
+                                       if (items.length == 0) {
+                                         _log.debug ('Create user: ' + user.screen_name);
+                                         // Create user and return to index
+                                         users.create({ username: user.screen_name }, 
+                                           function (error, user) {
+                                             _log.debug (user);
+                                             
+                                             response.writeHead(301, {
+                                               'Location': '/index.html?login=' + user._id
+                                             });
+                                             response.end('');                               
+                                           });
+                                       } else {
+                                         // Get first user and return to index
+                                         _log.debug (items[0]);
+                                         
+                                         response.writeHead(301, {
+                                           'Location': '/index.html?login=' + items[0]._id
+                                         });
+                                         response.end('');                               
+                                       }
+                                       
+                                     });
+                                   
+                                   });
+                                   
+                                   // End verify credentials
                                  
                                  });
     
