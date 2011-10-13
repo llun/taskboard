@@ -38,13 +38,13 @@ if (path.existsSync('config.js')) {
   log4js.configure(config.log);
 }
 
-// Initial router
-var Router = require('./router.js').router;
-var router = new Router(config.routes);
-
 // Initial store
 var Store = require('./model/store.js').store;
 var store = new Store(config.mongo);
+
+// Initial router
+var Router = require('./router.js').router;
+var router = new Router(config.routes, store);
 
 // Initial server and now.js
 var httpServer = http.createServer(

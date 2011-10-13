@@ -2,9 +2,11 @@ var log4js = require('log4js');
 
 var _log = log4js.getLogger('router');
 
-var Router = function(routes) {
+var Router = function(routes, store) {
   
   var _self = this;
+  
+  var _store = store;
   var _map = {
     get: {},
     post: {}
@@ -42,9 +44,28 @@ var Router = function(routes) {
   
     var method = _map[request.method.toLowerCase()][request.url];
     if (method) {
-      method(request, response);
+      method(request, response, _store);
     } else {
-      _self.notfound(request, response);
+    
+      var methods = _map[request.method.toLowerCase()];
+      var match = null;
+      for (var key in methods) {
+      
+        var pattern = new RegExp('^' + key + '.*$', 'i');
+        _log.debug ('url: ' + request.url + ' pattern: ' + pattern);
+        if (pattern.test(request.url)) {
+          match = methods[key];
+          break;
+        }
+      
+      }
+      
+      if (match) {
+        match(request, response, _store);
+      } else {
+        _self.notfound(request, response);
+      }
+      
     }
   }
   

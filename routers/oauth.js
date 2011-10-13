@@ -6,8 +6,9 @@ var crypto = require ('crypto'),
 
 var _log = log4js.getLogger('oauth');
 var _config = null;
+var _services = {};
 
-var loadConfig = function () {
+var _loadConfig = function () {
   if (!_config) {
   
     var configPath = path.resolve(__dirname, '../config-oauth.js');
@@ -27,17 +28,29 @@ var loadConfig = function () {
   
 }
 
+var _getService = function (name) {
+
+  if (!_services[name]) {
+    var config = _loadConfig()[name];
+    var service = new oauth(config.request, 
+                            config.access,
+                            config.consumerKey,
+                            config.consumerSecret, 
+                            config.version,
+                            config.callback, 
+                            config.signature);
+    _services[name] = service;
+  }
+  
+  return _services[name];
+
+}
+
 var services = {
 
-  twitter: function (request, response) {
+  'twitter': function (request, response, store) {
   
-    var config = loadConfig().twitter;
-    var service = new oauth('https://api.twitter.com/oauth/request_token', 
-                            'https://api.twitter.com/oauth/access_token',
-                            config.consumerKey,
-                            config.consumerSecret, '1.0',
-                            null, 'HMAC-SHA1');
-                            
+    var service = _getService('twitter');          
     service.getOAuthRequestToken(
       function (error, oauth_token, oauth_token_secret, results) {
         if(error) {
@@ -54,12 +67,33 @@ var services = {
     	});
           
   },
+  
+  'twitter/callback': function (request, response, store) {
+  
+    var config = _loadConfig().twitter;
+    var service = _getService('twitter');
+    service.getProtectedResource('http://api.twitter.com/1/account/verify_credentials.json',
+                                 'GET',
+                                 config.token,
+                                 config.tokenSecret,
+                                 function (error, data, serviceResponse) {
+                                   
+                                   _log.debug(JSON.parse(data));
+                                   var user = JSON.parse(data);
+                                   
+                                   response.writeHead(200, {});
+                                   response.end('Hello, world');                               
+                                 
+                                 });
+    
+  },
 
-  authenticate: function (request, response) {
+  'authenticate': function (request, response, store) {
   
     var method = null;
     for (var service in services) {
-      var pattern = new RegExp(service + '$', 'i');
+      _log.debug ('url: ' + request.url + ' pattern: ' + pattern);
+      var pattern = new RegExp(service + '(\\?.*){0,1}$', 'i');
       if (pattern.test(request.url)) {
         method = services[service];
         break;
@@ -67,7 +101,7 @@ var services = {
     }
 
     if (method) {
-      method(request, response);
+      method(request, response, store);
     } else {
       response.writeHead(301, { 'Location': '/notfound' });
       response.end();
