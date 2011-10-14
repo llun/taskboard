@@ -90,9 +90,10 @@
               <a id="sync-status">Offline</a>
             </li>
             
-            <li class="dropdown">
+            <li id="signed-in-menu" class="dropdown">
               <a class="user-icon dropdown-toggle" href="#">
-                <img src="images/user.png" />
+                <img id="sigend-in-image" src="images/user.png" />
+                <span id="signed-in-user">username</span>
               </a>
               <ul class="dropdown-menu">
                 <li><a href="#">Profile</a></li>
@@ -100,7 +101,7 @@
               </ul>
             </li>
             
-            <li class="dropdown">
+            <li id="signed-out-menu" class="dropdown">
               <a class="login dropdown-toggle" href="#">Sign in</a>
               <ul class="dropdown-menu">
                 <li>

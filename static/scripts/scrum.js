@@ -131,6 +131,24 @@ _.init = function() {
   if (navigator.onLine) {
     now.ready(function() {
     
+      if (_.oldHash) {
+        // Parse login
+        if (/^#login/i.test(_.oldHash)) {
+          var hashes = _.oldHash.split('/');
+          now.user(hashes[1], function (user) {
+            if (user) {
+            
+              // Sync user.
+              $('#signed-in-menu').show();
+              $('#signed-out-menu').hide();
+              
+              $('#signed-in-user').text(user.username);
+              $('#sigend-in-image').attr('src', user.profileImage);
+            }
+          });
+        }
+      }
+    
       _.client = now.core.clientId;
       $('#sync-status').text('Online');
       

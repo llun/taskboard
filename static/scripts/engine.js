@@ -47,6 +47,9 @@ var _ = {
 $(document).ready(function() {
   _.init();
   
+  // Keep old hash
+  _.oldHash = window.location.hash;
+  
   // Reset hash after refresh.
   window.location.hash = '';
   

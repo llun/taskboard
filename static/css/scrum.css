@@ -6,7 +6,14 @@
   cursor: move;
 }
 
-.topbar a.user-icon { padding: 10px 10px 5px; border-left: 2px solid #333; }
+body {
+  padding-top: 50px;
+}
+
+#signed-in-menu { display: none; }
+#signed-in-menu img { vertical-align: middle; }
+
+.topbar a.user-icon { padding: 10px 10px 8px; border-left: 2px solid #333; }
 .topbar a.login { padding: 10px 10px 10px; border-left: 2px solid #333; }
 .topbar img.login { vertical-align: text-bottom; }
 
@@ -18,10 +25,6 @@
 .delete{float:right;filter:alpha(opacity=10);-khtml-opacity:0.1;-moz-opacity:0.1;opacity:0.1;padding-right: 5px;}
 .delete img{height:18px}
 .delete:hover{filter:alpha(opacity=40);-khtml-opacity:0.4;-moz-opacity:0.4;opacity:0.4;}
-
-body {
-  padding-top: 50px;
-}
 
 .board-head h4 { display: inline; cursor: pointer; }
 .board-head img { 

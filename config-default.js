@@ -6,11 +6,12 @@ var config = {
   base: '/static',
   
   // Node handlers route
-  routes: { 'get:/oauth/authenticate/twitter' : require('./routers/oauth.js').oauth.authenticate },
+  routes: { 'get:/oauth' : require('./routers/oauth.js').oauth.authenticate },
   
   // Now handlers list
   everyone: [ require('./handlers/task.js').initial,
-              require('./handlers/iteration.js').initial ],
+              require('./handlers/iteration.js').initial,
+              require('./handlers/user.js').initial ],
   
   // MongoDB configuration
   mongo: {

@@ -56,7 +56,7 @@ var httpServer = http.createServer(
     console.log ('(' + incoming + ') request: ' + request.url);
     
     var target = request.url == '/' ? '/index.html' : request.url;
-    var filePath = path.join(__dirname, config.base, url.parse(request.url).pathname);
+    var filePath = path.join(__dirname, config.base, url.parse(target).pathname);
     
     if (path.existsSync(filePath)) {
       // Serve static file

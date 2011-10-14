@@ -91,12 +91,13 @@ var services = {
                                        if (items.length == 0) {
                                          _log.debug ('Create user: ' + user.screen_name);
                                          // Create user and return to index
-                                         users.create({ username: user.screen_name }, 
+                                         users.create({ username: user.screen_name,
+                                                        profileImage: user.profile_image_url }, 
                                            function (error, user) {
                                              _log.debug (user);
                                              
                                              response.writeHead(301, {
-                                               'Location': '/index.html?login=' + user._id
+                                               'Location': '/index.html#login/' + user._id
                                              });
                                              response.end('');                               
                                            });
@@ -105,7 +106,7 @@ var services = {
                                          _log.debug (items[0]);
                                          
                                          response.writeHead(301, {
-                                           'Location': '/index.html?login=' + items[0]._id
+                                           'Location': '/index.html#login/' + items[0]._id
                                          });
                                          response.end('');                               
                                        }
