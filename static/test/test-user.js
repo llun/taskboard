@@ -4,7 +4,7 @@ TestIt('TestUser', {
     var project1 = Project.create('project1');
     var project2 = Project.create('project2');
     
-    var user = new User('sample', '', project1);    
+    var user = new User('sample', '', false, project1);    
     user.projects.push(project2.id);
     
     this.user = user;

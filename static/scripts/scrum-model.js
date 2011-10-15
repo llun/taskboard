@@ -345,13 +345,14 @@ Project.remove = function (id) {
  * @param {String} username
  * @param {Object} project First project object
  */
-var User = function (username, image, project) {
+var User = function (username, image, anonymous, project) {
 
   // Private properties
   var _self = this;
 
   // Public properties
   this.username = username;
+  this.anonymous = anonymous;
   this.image = image;
   this.projects = [];
   this.members = [];
@@ -410,9 +411,9 @@ var User = function (username, image, project) {
 }
 
 // CRUD for User
-User.create = function (username, image) {
+User.create = function (username, image, anonymous) {
   var project = Project.create('Project 1');
-  var user = new User(username, image, project);
+  var user = new User(username, image, anonymous, project);
   _.persistent.save(user);
   
   return user;
@@ -428,6 +429,8 @@ User.get = function (id) {
     user.projects = object.projects;
     user.members = object.members;
     user.defaultProject = object.defaultProject;
+    user.anonymous = object.anonymous;
+    user.image = object.image;
   }
   
   return user;

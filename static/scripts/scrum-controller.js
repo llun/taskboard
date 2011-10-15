@@ -361,6 +361,41 @@ _.table = {
     
   },
   
+  // User controllers
+  'user/login': function(hash) {
+    var hashes = hash.split('/');
+    now.user(hashes[2], function (user) {
+      if (user) {
+      
+        // Sync user.
+        $('#signed-in-menu').show();
+        $('#signed-out-menu').hide();
+        
+        $('#signed-in-user').text(user.username);
+        $('#sigend-in-image').attr('src', user.image);
+          
+        if (!user.defaultProject) {
+          var anonymous = _.user;
+          
+          user.defaultProject = anonymous.defaultProject;
+          user.projects = anonymous.projects;
+          
+          User.save(user);
+        }
+        
+        _.user = User.get(user.id);
+        
+        var current = _.persistent.get('current');
+        current.key = user.id;
+        _.persistent.save(current);
+        
+        window.location.hash = '';
+        
+      }
+    });
+    
+  },
+  
   // Default state
   '': function() {
     $('#new-task-detail').val('');

@@ -19,7 +19,10 @@ var UserHandler = {
         cursor.toArray(function (error, items) {
         
           if (items.length > 0) {
-            callback(items[0]);
+            var output = items[0];
+            output.id = items[0]._id;
+            
+            callback(output);
           } else {
             callback(null);
           }

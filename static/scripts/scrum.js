@@ -6,7 +6,7 @@ _.init = function() {
   // Load data
   var current = _.persistent.get('current');
   if (!current) {
-    _.user = User.create('anonymous');
+    _.user = User.create('anonymous', '', true);
     _.project = Project.get(_.user.defaultProject);
     
     var current = {id: 'current', key: _.user.id};
@@ -131,21 +131,22 @@ _.init = function() {
   if (navigator.onLine) {
     now.ready(function() {
     
+      $('#signing-in-menu').hide();
+      
+      if (_.user.anonymous) {
+        $('#signed-out-menu').show();
+      } else {
+        $('#signed-in-user').text(_.user.username);
+        $('#sigend-in-image').attr('src', _.user.image);
+      
+        $('#signed-in-menu').show();
+      }
+      
+      
       if (_.oldHash) {
         // Parse login
-        if (/^#login/i.test(_.oldHash)) {
-          var hashes = _.oldHash.split('/');
-          now.user(hashes[1], function (user) {
-            if (user) {
-            
-              // Sync user.
-              $('#signed-in-menu').show();
-              $('#signed-out-menu').hide();
-              
-              $('#signed-in-user').text(user.username);
-              $('#sigend-in-image').attr('src', user.profileImage);
-            }
-          });
+        if (/^#user\/login/i.test(_.oldHash)) {
+          window.location.hash = _.oldHash;        
         }
       }
     
@@ -240,6 +241,8 @@ _.init = function() {
       });
       
     });
+  } else {
+    $('#signed-out-menu').show();
   }
   
   // Online/Offline event

@@ -11,6 +11,7 @@ body {
 }
 
 #signed-in-menu { display: none; }
+#signed-out-menu { display: none; }
 #signed-in-menu img { vertical-align: middle; }
 
 .topbar a.user-icon { padding: 10px 10px 8px; border-left: 2px solid #333; }
