@@ -10,6 +10,7 @@ body {
   padding-top: 50px;
 }
 
+#logged-in-status { display: none; }
 #logged-in-menu { display: none; }
 #logged-out-menu { display: none; }
 #logged-in-menu img { vertical-align: middle; }

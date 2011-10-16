@@ -366,9 +366,10 @@ _.table = {
     var hashes = hash.split('/');
     now.user(hashes[2], function (user) {
       if (user) {
+        $('#logged-in-status').css('display', 'block');
       
         // Sync user.
-        $('#logged-in-menu').show();
+        $('#logged-in-menu').css('display', 'block');
         $('#logged-out-menu').hide();
         
         $('#logged-in-user').text(user.username);
@@ -395,10 +396,13 @@ _.table = {
     });
     
   },
-  'user/logout/warning': function() {
+  'user/logout': function() {
+    $('#logout-modal').show();
   },
   'user/logout/confirm': function() {
-  }
+    _.persistent.clear();
+    location.reload();
+  },
   
   // Default state
   '': function() {
@@ -433,6 +437,8 @@ _.table = {
     $('#new-project-modal').hide();
 
     $('#edit-board-modal').hide();
+    
+    $('#logout-modal').hide();
     
     $('#update-modal').hide();
   }

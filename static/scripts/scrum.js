@@ -134,12 +134,13 @@ _.init = function() {
       $('#logging-in-menu').hide();
       
       if (_.user.anonymous) {
-        $('#logged-out-menu').show();
+        $('#logged-out-menu').css('display', 'block');
       } else {
         $('#logged-in-user').text(_.user.username);
         $('#logged-in-image').attr('src', _.user.image);
       
-        $('#logged-in-menu').show();
+        $('#logged-in-menu').css('display', 'block');
+        $('#logged-in-status').css('display', 'block');
       }
       
       
@@ -245,12 +246,12 @@ _.init = function() {
     
     $('#logging-in-menu').hide();
     if (_.user.anonymous) {
-      $('#logged-out-menu').show();
-      $('#log-in-menu').remove();
+      $('#logged-out-menu').hide();
     } else {
+      $('#logged-in-status').css('display', 'block');
       $('#logged-in-user').text(_.user.username);
     
-      $('#logged-in-menu').show();
+      $('#logged-in-menu').css('display', 'block');
       $('#log-out-menu').remove();
     }
     
