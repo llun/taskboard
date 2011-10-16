@@ -10,9 +10,9 @@ body {
   padding-top: 50px;
 }
 
-#signed-in-menu { display: none; }
-#signed-out-menu { display: none; }
-#signed-in-menu img { vertical-align: middle; }
+#logged-in-menu { display: none; }
+#logged-out-menu { display: none; }
+#logged-in-menu img { vertical-align: middle; }
 
 .topbar a.user-icon { padding: 10px 10px 8px; border-left: 2px solid #333; }
 .topbar a.login { padding: 10px 10px 10px; border-left: 2px solid #333; }

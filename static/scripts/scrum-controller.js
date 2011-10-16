@@ -368,11 +368,11 @@ _.table = {
       if (user) {
       
         // Sync user.
-        $('#signed-in-menu').show();
-        $('#signed-out-menu').hide();
+        $('#logged-in-menu').show();
+        $('#logged-out-menu').hide();
         
-        $('#signed-in-user').text(user.username);
-        $('#sigend-in-image').attr('src', user.image);
+        $('#logged-in-user').text(user.username);
+        $('#logged-in-image').attr('src', user.image);
           
         if (!user.defaultProject) {
           var anonymous = _.user;
@@ -395,6 +395,10 @@ _.table = {
     });
     
   },
+  'user/logout/warning': function() {
+  },
+  'user/logout/confirm': function() {
+  }
   
   // Default state
   '': function() {

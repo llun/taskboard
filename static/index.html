@@ -90,30 +90,30 @@
               <a id="sync-status">Offline</a>
             </li>
             
-            <li id="signed-in-menu" class="dropdown">
+            <li id="logged-in-menu" class="dropdown">
               <a class="user-icon dropdown-toggle" href="#">
-                <img id="sigend-in-image" src="images/user.png" />
-                <span id="signed-in-user">username</span>
+                <img id="logged-in-image" src="images/user.png" />
+                <span id="logged-in-user">username</span>
               </a>
               <ul class="dropdown-menu">
                 <li><a href="#">Profile</a></li>
-                <li><a href="#">Logout</a></li>
+                <li id="log-out-menu"><a href="#">Logout</a></li>
               </ul>
             </li>
             
-            <li id="signing-in-menu">
+            <li id="logging-in-menu">
               <a class="login" href="#">
-                Signing in ...
+                Logging in ...
               </a>
             </li>
             
-            <li id="signed-out-menu" class="dropdown">
-              <a class="login dropdown-toggle" href="#">Sign in</a>
+            <li id="logged-out-menu" class="dropdown">
+              <a class="login dropdown-toggle" href="#">Log in</a>
               <ul class="dropdown-menu">
-                <li>
+                <li id="log-in-menu">
                   <a href="/oauth/twitter">
-                    <img class="login" src="images/twitter.png" alt="signin with twitter" />
-                    <span>Sign in with Twitter</span>
+                    <img class="login" src="images/twitter.png" alt="login with twitter" />
+                    <span>Log in with Twitter</span>
                   </a>
                 </li>
               </ul>
@@ -377,6 +377,35 @@
     </div>
     <!-- End edit board modal -->
     
+    <!-- Logout modal -->
+        <div id="logout-modal" class="application-modal">
+          <div class="modal-backdrop"></div>
+    
+          <form class="modal ">
+            <div class="modal-header">
+              <h3>Logout</h3>
+            </div>
+            <div class="modal-body">
+    
+              <div class="clearfix">
+                <p>
+                  Do you want to logout? We will clear all user data after logout.
+                </p>
+              </div>
+    
+            </div>
+            <div class="modal-footer">
+              <a id="logout-confirm-button" href="#user/logout/confirm" class="btn danger">
+                Logout
+              </a>
+              <a id="logout-cancel-button" href="#close" class="btn seconday">
+                Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+        <!-- Update modal -->
+    
     <!-- Update modal -->
     <div id="update-modal" class="application-modal">
       <div class="modal-backdrop"></div>
@@ -389,7 +418,7 @@
 
           <div class="clearfix">
             <p>
-              Do you want to use new version now? It will clear all task after update. 
+              Do you want to use new version now? We will clear data after update. 
               If you don't want clear task, cancel it but you can't sync data anymore
             </p>
           </div>

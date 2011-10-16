@@ -131,15 +131,15 @@ _.init = function() {
   if (navigator.onLine) {
     now.ready(function() {
     
-      $('#signing-in-menu').hide();
+      $('#logging-in-menu').hide();
       
       if (_.user.anonymous) {
-        $('#signed-out-menu').show();
+        $('#logged-out-menu').show();
       } else {
-        $('#signed-in-user').text(_.user.username);
-        $('#sigend-in-image').attr('src', _.user.image);
+        $('#logged-in-user').text(_.user.username);
+        $('#logged-in-image').attr('src', _.user.image);
       
-        $('#signed-in-menu').show();
+        $('#logged-in-menu').show();
       }
       
       
@@ -242,7 +242,18 @@ _.init = function() {
       
     });
   } else {
-    $('#signed-out-menu').show();
+    
+    $('#logging-in-menu').hide();
+    if (_.user.anonymous) {
+      $('#logged-out-menu').show();
+      $('#log-in-menu').remove();
+    } else {
+      $('#logged-in-user').text(_.user.username);
+    
+      $('#logged-in-menu').show();
+      $('#log-out-menu').remove();
+    }
+    
   }
   
   // Online/Offline event
