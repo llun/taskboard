@@ -141,6 +141,9 @@ _.init = function() {
       
         $('#logged-in-menu').css('display', 'block');
         $('#logged-in-status').css('display', 'block');
+        
+        // If user already login it should sync user.
+        now.syncUser(_.user);
       }
       
       

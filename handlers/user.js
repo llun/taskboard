@@ -1,4 +1,5 @@
-var log4js = require('log4js');
+var log4js = require('log4js'),
+    util = require('util');
 
 var _log = log4js.getLogger('user');
     _model = require('../model/model.js').Model;
@@ -14,15 +15,15 @@ var UserHandler = {
       var ObjectID = client.bson_serializer.ObjectID;
     
       var users = _model.get('user', store.getClient());
-      var user = users.find({ _id: new ObjectID(id) }, function (cursor) {
+      users.find({ _id: new ObjectID(id) }, function (cursor) {
       
         cursor.toArray(function (error, items) {
         
           if (items.length > 0) {
-            var output = items[0];
-            output.id = items[0]._id;
+            var user = items[0];
+            user.id = items[0]._id;
             
-            callback(output);
+            callback(user);
           } else {
             callback(null);
           }
@@ -31,6 +32,49 @@ var UserHandler = {
       
       });
       
+    }
+    
+    everyone.syncUser = function (user, callback) {
+      callback = callback || function () {};
+    
+      var client = store.getClient();
+      var ObjectID = client.bson_serializer.ObjectID;
+    
+      var users = _model.get('user', store.getClient());
+      users.find({ _id: new ObjectID(user.id) }, function (cursor) {
+      
+        cursor.toArray(function (error, items) {
+        
+          if (items.length > 0) {
+          
+            var found = items[0];
+          
+            _log.debug ('client user: ' + util.inspect(user));
+            _log.debug ('server user: ' + util.inspect(found));
+            
+            if (found.updated > user.updated) {
+              // Force user use all data from server
+              callback({ status: 'update', data: found });
+            } else {
+              _log.debug ('user: ' + user.id + ' ' + util.inspect(user));
+            
+              // Update user on server
+              users.edit(new ObjectID(user.id), user, function (error) {
+                callback({ status: 'keep' });
+              });
+            }
+            
+          
+          } else {
+            _log.debug ('user not found: ' + util.inspect(user));
+          
+            callback({ error: 'notfound' });
+          }
+        
+        });
+      
+      });
+    
     }
   
   }

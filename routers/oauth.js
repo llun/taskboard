@@ -1,5 +1,4 @@
 var crypto = require ('crypto'),
-    https = require ('https'),
     log4js = require ('log4js'),
     oauth = require('oauth').OAuth,
     path = require ('path');
@@ -93,6 +92,7 @@ var services = {
                                          // Create user and return to index
                                          users.create({ username: user.screen_name,
                                                         image: user.profile_image_url,
+                                                        updated: 0,
                                                         anonymous: false }, 
                                            function (error, user) {
                                              _log.debug (user);

@@ -356,6 +356,7 @@ var User = function (username, image, anonymous, project) {
   this.image = image;
   this.projects = [];
   this.members = [];
+  this.updated = 0;
   this.defaultProject = null;
 
   // Private method
@@ -431,13 +432,19 @@ User.get = function (id) {
     user.defaultProject = object.defaultProject;
     user.anonymous = object.anonymous;
     user.image = object.image;
+    user.updated = object.updated;
   }
   
   return user;
 }
 
 User.save = function (user) {
+  user.updated += 1;
   _.persistent.save(user);
+  
+  if (navigator.onLine && now.syncUser && !user.anonymouse) {
+    now.syncUser(user);
+  }
 }
 
 User.remove = function (id) {

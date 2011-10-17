@@ -375,14 +375,17 @@ _.table = {
         $('#logged-in-user').text(user.username);
         $('#logged-in-image').attr('src', user.image);
           
+        var anonymous = _.user;  
+        User.remove(anonymous.id);
+        
+        // New user
         if (!user.defaultProject) {
-          var anonymous = _.user;
-          
           user.defaultProject = anonymous.defaultProject;
-          user.projects = anonymous.projects;
-          
-          User.save(user);
+          user.projects = [];
         }
+        
+        user.projects = user.projects.concat(anonymous.projects);
+        User.save(user);
         
         _.user = User.get(user.id);
         
