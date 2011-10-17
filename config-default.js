@@ -11,6 +11,7 @@ var config = {
   // Now handlers list
   everyone: [ require('./handlers/task.js').initial,
               require('./handlers/iteration.js').initial,
+              require('./handlers/project.js').initial,
               require('./handlers/user.js').initial ],
   
   // MongoDB configuration
@@ -39,11 +40,16 @@ var config = {
                  { type: 'console' } ],
     levels: {
       console: 'info',
+      
+      router: 'info',
       socketio: 'info',
+      
       store: 'info',
+      
       task: 'info',
       iteration: 'info',
-      router: 'info'
+      project: 'info',
+      user: 'info'
     }
   }
 }

@@ -37,8 +37,10 @@ _.init = function() {
   var projects = _.user.projects;
   for (var index = 0; index < projects.length; index++) {
     var project = Project.get(projects[index]);
-    var list = _.tmpl('project_list', project);
-    $('#projects-list-menu').append(list);
+    if (project) {
+      var list = _.tmpl('project_list', project);
+      $('#projects-list-menu').append(list);
+    }
   }
   
   // List iterations

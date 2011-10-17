@@ -320,12 +320,17 @@ Project.get = function (id) {
     project = new Project(object.name);
     project.id = object.id;
     project.iterations = object.iterations;
+    project.sync = object.sync;
   }
   
   return project;
 }
 Project.save = function (project) {
   _.persistent.save(project);
+  
+  if (navigator.onLine && now.syncProject && project.sync) {
+    now.syncProject(project);
+  }
 }
 Project.remove = function (id) {
   _.persistent.remove(id);
