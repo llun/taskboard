@@ -11,46 +11,47 @@ var ProjectHandler = {
     everyone.syncProjects = function (projects, callback) {
       callback = callback || function () {};
     
+      var push = {};
       var models = _model.get('project', store.getClient());
-      for (var index = 0; index < projects.length; index++) {
-        var project = projects[index];
-        models.exists(project.id, function (error, output) {
-
-          if (!output) {
-            // Save to models
-            _log.debug ('Create project: ' + project.id);
-            project._id = project.id;
-            models.create(project);
-          } else {
-            // Check updated number
-            _log.debug ('Project exists: ' + project.id);
-            models.find({ _id: project.id }, function (cursor) {
-              cursor.toArray(function (error, items) {
-              
-                if (!error) {
-                  if (items.length > 0) {
-                  
-                    _log.debug ('Found: ' + util.inspect(items[0]));
-                  
-                    var found = items[0];
-                    if (found.updated < project.updated) {
-                      models.edit(project.id, project, function (error) {
-                        callback({ status: 'keep' });
-                      });
-                    } 
-                     
-                  } 
-                } 
-              
-              });
-            });
-          }
-          
+      var process = function (project) {
+      
+        models.find ({ _id: project.id }, function (cursor) {
+          cursor.toArray(function (error, items) {
+            if (!error) {
+              if (items.length > 0) {
+                var found = items[0];
+                if (found.updated > project.updated) {
+                  _log.debug ('Push project: ' + project.id);
+                  push[found.id] = found;
+                } else {
+                  _log.debug ('Update project: ' + project.id);
+                  models.edit(project.id, project);
+                }
+              } else {
+                _log.debug ('Create project: ' + project.id);
+                project._id = project.id;
+                models.create(project);
+                callback({ status: 'keep' });
+              }  
+            }
+            
+            index++;
+            if (index < projects.length) {
+              process(projects[index]);
+            } else {
+              callback({ status: 'update', data: push });
+            }
+          });
         });
-        
+      
       }
       
-      callback({ status: 'done' });
+      var index = 0;
+      if (index < projects.length) {
+        process(projects[index]);
+      } else {
+        callback({ status: 'keep' });
+      } 
 
     }
   

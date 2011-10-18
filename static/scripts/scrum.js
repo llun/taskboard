@@ -282,6 +282,10 @@ _.init = function() {
     
       $('#logged-in-menu').css('display', 'block');
       $('#log-out-menu').remove();
+      
+      if (_.project.sync) {
+        $('#end-iteration-button').attr('disabled', true);
+      }
     }
     
   }
@@ -295,6 +299,10 @@ _.init = function() {
   $(window).bind('offline', function(e) {
     console.log ('Offline');
     $('#sync-status').text('Offline');
+    
+    if (_.project.sync) {
+      $('#end-iteration-button').attr('disabled', true);
+    }
   });
   
 }

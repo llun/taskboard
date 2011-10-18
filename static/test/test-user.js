@@ -15,7 +15,7 @@ TestIt('TestUser', {
   
     // What's happen when create project?
     var user = this.user;
-    user.createProject('Project 3');
+    user.createProject('Project 3', false);
     
     test.assertEqual(3, user.projects.length, 
       'User should have 3 projects. (' + 

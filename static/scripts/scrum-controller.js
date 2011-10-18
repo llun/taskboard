@@ -242,6 +242,12 @@ _.table = {
       $('#iteration-name').text(iteration.name);
       
       _.table['iteration/show']('#iteration/show/' + iteration.id);
+      
+      if (_.project.sync && !navigator.onLine && !now.endIteration) {
+        $('#end-iteration-button').attr('disabled', true);
+      } else {
+        $('#end-iteration-button').removeAttr('disabled');
+      }
     
     }
   
@@ -251,10 +257,14 @@ _.table = {
   },
   'project/save': function () {
     var name = $('#new-project-name').val();
+    var isSync = $('#new-project-sync-option').attr('checked') ? true : false;
+    $('#new-project-sync-option').removeAttr('checked');
+    $('#new-project-sync-option').removeAttr('disabled');
+    
     var pattern = /^[\w\d ]+$/;
     if (pattern.test(name)) {
     
-      var project = _.user.createProject(name);
+      var project = _.user.createProject(name, isSync);
       var list = _.tmpl('project_list', project);
       $('#projects-list-menu').append(list);
       
@@ -264,6 +274,12 @@ _.table = {
       $('#new-project-help').text('Project name can contains only alphabet' +
                                   ', numeric or white space');
       $('#new-project-save-button').attr('href', '#project/save?' + new Date().getTime());
+      
+      if (_.project.sync && !navigator.onLine && !now.endIteration) {
+        $('#end-iteration-button').attr('disabled', true);
+      } else {
+        $('#end-iteration-button').removeAttr('disabled');
+      }
     
     } else {
     
@@ -298,8 +314,8 @@ _.table = {
     $('#edit-project-name').val(project.name);
     
     if (project.sync) {
-      $('#edit-sync-project').attr('checked', true);
-      $('#edit-sync-project').attr('disabled', true);
+      $('#edit-project-sync-option').attr('checked', true);
+      $('#edit-project-sync-option').attr('disabled', true);
     }
     
     var iteration = Iteration.get(_.project.currentIteration());
@@ -323,9 +339,9 @@ _.table = {
         
     if (projectPass && iterationPass) {
     
-      var isSyncProject = $('#edit-sync-project').attr('checked') ? true : false;
-      $('#edit-sync-project').removeAttr('checked');
-      $('#edit-sync-project').removeAttr('disabled');
+      var isSyncProject = $('#edit-project-sync-option').attr('checked') ? true : false;
+      $('#edit-project-sync-option').removeAttr('checked');
+      $('#edit-project-sync-option').removeAttr('disabled');
     
       // Persist input
       var project = _.project;
@@ -438,6 +454,8 @@ _.table = {
     
     $('.edit-project-name').removeClass('error');
     $('#project-name-help').text('');
+    $('#new-project-sync-option').removeAttr('checked');
+    $('#new-project-sync-option').removeAttr('disabled');
     
     $('.edit-iteration-name').removeClass('error');
     $('#iteration-name-help').text('');
@@ -452,8 +470,8 @@ _.table = {
     $('#new-project-modal').hide();
 
     $('#edit-board-modal').hide();
-    $('#edit-sync-project').removeAttr('checked');
-    $('#edit-sync-project').removeAttr('disabled');
+    $('#edit-project-sync-option').removeAttr('checked');
+    $('#edit-project-sync-option').removeAttr('disabled');
     
     $('#logout-modal').hide();
     

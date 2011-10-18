@@ -323,6 +323,25 @@
               <span id="new-project-help" class="help-block"></span>
             </div>
           </div>
+
+          <div class="clearfix new-project-options">
+            <label for="new-project-options">Project options</label>
+            <div class="input">
+              <ul class="inputs-list">
+                <li>
+                  <label>
+                    <input type="checkbox" id="new-project-sync-option" 
+                           name="projectSyncOption" value="sync" />
+                    <span>Sync this project</span>
+                  </label>
+                </li>
+              </ul>
+              <span id="new-project-options-help" class="help-block">
+                <strong>Note</strong>: mark project as sync cannot revert
+              </span>
+            </div>
+          </div>
+
                     
         </div>
         <div class="modal-footer">
@@ -364,18 +383,19 @@
             </div>
           </div>
           
-          <div class="clearfix edit-sync-project">
-            <label for="edit-sync-project">Project options</label>
+          <div class="clearfix edit-project-options">
+            <label for="edit-project-options">Project options</label>
             <div class="input">
               <ul class="inputs-list">
                 <li>
                   <label>
-                    <input type="checkbox" id="edit-sync-project" name="projectSyncOption" value="sync" />
+                    <input type="checkbox" id="edit-project-sync-option" 
+                           name="projectSyncOption" value="sync" />
                     <span>Sync this project</span>
                   </label>
                 </li>
               </ul>
-              <span id="iteration-name-help" class="help-block">
+              <span id="edit-project-options-help" class="help-block">
                 <strong>Note</strong>: mark project as sync cannot revert
               </span>
             </div>

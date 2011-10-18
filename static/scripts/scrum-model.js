@@ -306,9 +306,10 @@ var Project = function (name, iteration) {
 }
 
 // CRUD for Project
-Project.create = function (name) {
+Project.create = function (name, sync) {
   var iteration = Iteration.create('Iteration 1');
   var project = new Project(name, iteration.id);
+  project.sync = sync;
   _.persistent.save(project);
   
   return project;
@@ -375,8 +376,8 @@ var User = function (username, image, anonymous, project) {
     }
   }
   
-  this.createProject = function (name) {
-    var project = Project.create(name);
+  this.createProject = function (name, sync) {
+    var project = Project.create(name, sync);
     _self.projects.push(project.id);
     
     User.save(_self);
