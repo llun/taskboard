@@ -14,6 +14,7 @@ var Store = function(config) {
     
     if (error) {
       _log.error ("Can't open database");
+      _log.debug (error);
       process.exit(1);
     }
     
