@@ -133,10 +133,19 @@ _.init = function() {
   if (navigator.onLine) {
     now.ready(function() {
     
+      _.client = now.core.clientId;
+    
       $('#logging-in-menu').hide();
       
       if (_.user.anonymous) {
         $('#logged-out-menu').css('display', 'block');
+        
+        if (_.oldHash) {
+          // Parse login
+          if (/^#user\/login/i.test(_.oldHash)) {
+            window.location.hash = _.oldHash;        
+          }
+        }
       } else {
         $('#logged-in-user').text(_.user.username);
         $('#logged-in-image').attr('src', _.user.image);
@@ -145,18 +154,33 @@ _.init = function() {
         $('#logged-in-status').css('display', 'block');
         
         // If user already login it should sync user.
-        now.syncUser(_.user);
+        now.syncUser(_.user, function(object) {
+        
+          // How to handler error ?
+          if (!object.error) {
+          
+            if (object.status == 'update') {
+              var data = object.data;
+              User.save(data);
+            }
+            
+            // Prepare project need to sync
+            var projects = _.user.projects;
+            var prepare = [];
+            for (var index = 0; index < projects.length; index++) {
+              var project = Project.get(projects[index]);
+              if (project.sync) {
+                prepare.push(project);
+              }
+            }
+            
+            now.syncProjects(prepare);
+            
+          }
+        
+        });
       }
       
-      
-      if (_.oldHash) {
-        // Parse login
-        if (/^#user\/login/i.test(_.oldHash)) {
-          window.location.hash = _.oldHash;        
-        }
-      }
-    
-      _.client = now.core.clientId;
       $('#sync-status').text('Online');
       
       // Task real-time synchronization

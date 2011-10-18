@@ -258,6 +258,7 @@ var Project = function (name, iteration) {
   // Public properties
   this.name = name;
   this.iterations = [];
+  this.updated = 0;
   this.sync = false;
   
   // Private method
@@ -321,15 +322,17 @@ Project.get = function (id) {
     project.id = object.id;
     project.iterations = object.iterations;
     project.sync = object.sync;
+    project.updated = object.updated;
   }
   
   return project;
 }
 Project.save = function (project) {
+  project.updated += 1;
   _.persistent.save(project);
   
-  if (navigator.onLine && now.syncProject && project.sync) {
-    now.syncProject(project);
+  if (navigator.onLine && now.syncProjects && project.sync) {
+    now.syncProjects([project]);
   }
 }
 Project.remove = function (id) {

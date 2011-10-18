@@ -8,7 +8,23 @@ var ProjectHandler = {
 
   initial: function (now, everyone, store) {
   
-    everyone.syncProject = function (project, callback) {
+    everyone.syncProjects = function (projects, callback) {
+    
+      var models = _model.get('project', store.getClient());
+    
+      for (var index = 0; index < projects.length; index++) {
+        var project = projects[index];
+        models.exists(project.id, function (error, output) {
+          if (!output) {
+            // Save to models
+            models.create(project, function (error, output) {
+            });
+          } else {
+            // Check updated number
+          }
+        });
+      }
+    
     }
   
   }

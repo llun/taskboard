@@ -297,6 +297,11 @@ _.table = {
     var project = _.project;
     $('#edit-project-name').val(project.name);
     
+    if (project.sync) {
+      $('#edit-sync-project').attr('checked', true);
+      $('#edit-sync-project').attr('disabled', true);
+    }
+    
     var iteration = Iteration.get(_.project.currentIteration());
     $('#edit-iteration-name').val(iteration.name);
     $('#edit-iteration-name').focus();
@@ -317,9 +322,16 @@ _.table = {
     var iterationPass = pattern.test(iterationName);
         
     if (projectPass && iterationPass) {
+    
+      var isSyncProject = $('#edit-sync-project').attr('checked') ? true : false;
+      $('#edit-sync-project').removeAttr('checked');
+      $('#edit-sync-project').removeAttr('disabled');
+    
       // Persist input
       var project = _.project;
       project.name = projectName;
+      project.sync = isSyncProject;
+      
       Project.save(project);
       
       $('#project-name').text(project.name);
@@ -440,6 +452,8 @@ _.table = {
     $('#new-project-modal').hide();
 
     $('#edit-board-modal').hide();
+    $('#edit-sync-project').removeAttr('checked');
+    $('#edit-sync-project').removeAttr('disabled');
     
     $('#logout-modal').hide();
     
