@@ -64,6 +64,10 @@ var UserHandler = {
               // Update user on server
               users.edit(new ObjectID(user.id), user, function (error) {
                 callback({ status: 'keep' });
+                
+                var userGroup = now.getGroup(user.id);
+                var userNow = userGroup.now;
+                userNow.clientUpdateUser(user);
               });
             }
             
@@ -77,6 +81,21 @@ var UserHandler = {
         });
       
       });
+    
+    }
+  
+    everyone.joinGroups = function (client, groups, callback) {
+    
+      groups.forEach(function (group) {
+        var nowGroup = now.getGroup(group);
+        nowGroup.addUser(client);
+        
+        _log.debug(client + ' joined ' + group);
+      });
+      
+      if (callback) {
+        callback();
+      }
     
     }
   

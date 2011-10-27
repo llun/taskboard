@@ -1,5 +1,6 @@
 var mongodb = require('mongodb'),
-    log4js = require('log4js');
+    log4js = require('log4js'),
+    util = require('util');
 
 var _log = log4js.getLogger('store');
 
@@ -10,6 +11,7 @@ var Store = function(config) {
   
   var _client = null;
   
+  _log.debug ('Config: ' + util.inspect(config));
   _db.open(function (error, client) {
     
     if (error) {

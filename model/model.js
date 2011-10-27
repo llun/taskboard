@@ -135,7 +135,9 @@ Model.prototype.exists = function(id, callback){
 
 var _models = {};
 Model.get = function (type, client) {
+  _log.debug ('Get: ' + type);
   if (!_models[type]) {
+    _log.debug ('Create: ' + type);
     _models[type] = new Model(type, client);
   }
   

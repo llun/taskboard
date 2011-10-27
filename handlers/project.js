@@ -55,18 +55,6 @@ var ProjectHandler = {
 
     }
     
-    everyone.joinProjects = function (client, projects, callback) {
-      for (var index = 0; index < projects.length; index++) {
-        var project = projects[index];
-        var group = now.getGroup(project);
-        group.addUser(client);
-      }
-      
-      if (callback) {
-        callback();
-      }
-    }
-    
     everyone.syncProject = function (project, callback) {
       
     }

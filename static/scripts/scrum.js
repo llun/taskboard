@@ -148,12 +148,16 @@ _.init = function() {
         }
       } else {
         
+        var joinList = [];
+        
         // If user already login it should sync user.
         now.syncUser(_.user, function(object) {
         
           console.log ('Sync user success: ' + object.error);
           // How to handler error ?
           if (!object.error) {
+          
+            joinList.push(_.user.id);
           
             $('#logged-in-user').text(_.user.username);
             $('#logged-in-image').attr('src', _.user.image);
@@ -169,15 +173,22 @@ _.init = function() {
             // Prepare project need to sync
             var projects = _.user.projects;
             var prepare = [];
-            for (var index = 0; index < projects.length; index++) {
-              var project = Project.get(projects[index]);
+            projects.forEach(function (projectID) {
+              var project = Project.get(projectID);
               if (project.sync) {
                 prepare.push(project);
               }
-            }
+            });
             
             now.syncProjects(prepare, function () {
-              console.log (prepare);
+            
+              prepare.forEach(function (project) {
+                joinList.push(project.id);
+              });
+              
+              now.joinGroups(_.client, joinList, function () {
+                console.log ('Join projects success');
+              });
             });
             
           } else {
@@ -191,6 +202,11 @@ _.init = function() {
       }
       
       $('#sync-status').text('Online');
+      
+      // User real-time synchronization
+      now.clientUpdateUser = function (user) {
+        console.log ('client updated');
+      }
       
       // Task real-time synchronization
       now.clientCreateTask = function (from, task) {

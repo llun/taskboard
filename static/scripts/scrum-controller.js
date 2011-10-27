@@ -422,7 +422,7 @@ _.table = {
         _.persistent.save(current);
         
         var defaultProject = Project.get(user.defaultProject);
-        if (!defaultProject.sync) {
+        if (defaultProject && !defaultProject.sync) {
           defaultProject.sync = true;
           Project.save(defaultProject);
         }
@@ -430,15 +430,15 @@ _.table = {
         // Prepare project need to sync
         var projects = _.user.projects;
         var prepare = [];
-        for (var index = 0; index < projects.length; index++) {
-          var project = Project.get(projects[index]);
-          if (project.sync) {
+        projects.forEach(function (projectID) {
+          var project = Project.get(projectID);
+          if (project && project.sync) {
             prepare.push(project);
           }
-        }
+        });
         
-        now.syncProjects(prepare, function () {
-          console.log (prepare);
+        now.syncProjects(prepare, function (status) {
+          console.log (status);
         });
         
         window.location.hash = '';
