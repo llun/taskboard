@@ -21,7 +21,8 @@ var Store = function(config) {
     var username = config.authentication ? config.authentication.username : null;
     var password = config.authentication ? config.authentication.password : null;
     
-    _log.debug ("User: " + username + " Pass: " + password);
+    _log.debug ("User: " + (username ? username : 'no user') + 
+                " Pass: " + (password ? password : 'no password'));
     
     if (username || password) {
 

@@ -147,17 +147,19 @@ _.init = function() {
           }
         }
       } else {
-        $('#logged-in-user').text(_.user.username);
-        $('#logged-in-image').attr('src', _.user.image);
-      
-        $('#logged-in-menu').css('display', 'block');
-        $('#logged-in-status').css('display', 'block');
         
         // If user already login it should sync user.
         now.syncUser(_.user, function(object) {
         
+          console.log ('Sync user success: ' + object.error);
           // How to handler error ?
           if (!object.error) {
+          
+            $('#logged-in-user').text(_.user.username);
+            $('#logged-in-image').attr('src', _.user.image);
+            
+            $('#logged-in-menu').css('display', 'block');
+            $('#logged-in-status').css('display', 'block');
           
             if (object.status == 'update') {
               var data = object.data;
@@ -174,8 +176,15 @@ _.init = function() {
               }
             }
             
-            now.syncProjects(prepare);
+            now.syncProjects(prepare, function () {
+              console.log (prepare);
+            });
             
+          } else {
+          
+            _.persistent.clear();
+            location.reload();
+          
           }
         
         });

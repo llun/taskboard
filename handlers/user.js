@@ -23,6 +23,9 @@ var UserHandler = {
             var user = items[0];
             user.id = items[0]._id;
             
+            var projects = _model.get('project', store.getClient());
+            
+            
             callback(user);
           } else {
             callback(null);

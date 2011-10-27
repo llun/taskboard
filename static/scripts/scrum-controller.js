@@ -421,6 +421,26 @@ _.table = {
         current.key = user.id;
         _.persistent.save(current);
         
+        var defaultProject = Project.get(user.defaultProject);
+        if (!defaultProject.sync) {
+          defaultProject.sync = true;
+          Project.save(defaultProject);
+        }
+        
+        // Prepare project need to sync
+        var projects = _.user.projects;
+        var prepare = [];
+        for (var index = 0; index < projects.length; index++) {
+          var project = Project.get(projects[index]);
+          if (project.sync) {
+            prepare.push(project);
+          }
+        }
+        
+        now.syncProjects(prepare, function () {
+          console.log (prepare);
+        });
+        
         window.location.hash = '';
         
       }
