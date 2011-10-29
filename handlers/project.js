@@ -13,35 +13,32 @@ var ProjectHandler = {
     
       var push = {};
       var models = _model.get('project', store.getClient());
-      var process = function (project) {
+      var process = function (clientProject) {
       
-        models.find ({ _id: project.id }, function (cursor) {
-          cursor.toArray(function (error, items) {
-            if (!error) {
-              if (items.length > 0) {
-                var found = items[0];
-                if (found.updated > project.updated) {
-                  _log.debug ('Push project: ' + project.id);
-                  push[found.id] = found;
-                } else {
-                  _log.debug ('Update project: ' + project.id);
-                  models.edit(project.id, project);
-                }
-              } else {
-                _log.debug ('Create project: ' + project.id);
-                project._id = project.id;
-                models.create(project);
-                callback({ status: 'keep' });
-              }  
-            }
-            
-            index++;
-            if (index < projects.length) {
-              process(projects[index]);
+        models.get(clientProject, function (serverProject) {
+          if (serverProject) {
+            if (serverProject.updated > clientProject.updated) {
+              _log.debug ('Push project: ' + serverProject.id);
+              push[serverProject.id] = serverProject;
             } else {
-              callback({ status: 'update', data: push });
+              _log.debug ('Update project: ' + serverProject.id);
+              models.edit(serverProject.id, clientProject);
             }
-          });
+          } else {
+            // Create project
+            _log.debug ('Create project: ' + clientProject.id);
+            _log.trace (clientProject);
+            
+            clientProject._id = clientProject.id;
+            models.create(clientProject);
+          }
+          
+          index++;
+          if (index < projects.length) {
+            process(projects[index]);
+          } else {
+            callback({ status: 'update', data: push });
+          }
         });
       
       }

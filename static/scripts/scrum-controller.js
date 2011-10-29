@@ -392,8 +392,12 @@ _.table = {
   // User controllers
   'user/login': function(hash) {
     var hashes = hash.split('/');
-    now.user(hashes[2], function (user) {
-      if (user) {
+    now.user(hashes[2], function (data) {
+      
+      if (!data.error) {
+        var user = data.user;
+        var projects = data.projects;
+      
         $('#logged-in-status').css('display', 'block');
       
         // Sync user.
@@ -409,37 +413,44 @@ _.table = {
         // New user
         if (!user.defaultProject) {
           user.defaultProject = anonymous.defaultProject;
-          user.projects = [];
+          user.projects = anonymous.projects;
+          
+          var projects = user.projects;
+          var pushProjects = [];
+          var pushIterations = [];
+          var pushTasks = [];
+          
+          for (var key in projects) {
+            var project = Project.get(projects[key]);
+            if (project.id == user.defaultProject && !project.sync) {
+              project.sync = true;
+            } else if (project.sync) {
+              pushProjects.push(project);
+            }
+            
+            project.owner = user.id;
+            Project.save(project);
+          }
+          
+          // Push projects to server
+          now.syncProjects(pushProjects);
+          
+          // Push iterations to server
+          
         }
         
-        user.projects = user.projects.concat(anonymous.projects);
         User.save(user);
+        
+        for (var key in projects) {
+          var project = projects[key];
+          Project.save(project);
+        }
         
         _.user = User.get(user.id);
         
         var current = _.persistent.get('current');
         current.key = user.id;
         _.persistent.save(current);
-        
-        var defaultProject = Project.get(user.defaultProject);
-        if (defaultProject && !defaultProject.sync) {
-          defaultProject.sync = true;
-          Project.save(defaultProject);
-        }
-        
-        // Prepare project need to sync
-        var projects = _.user.projects;
-        var prepare = [];
-        projects.forEach(function (projectID) {
-          var project = Project.get(projectID);
-          if (project && project.sync) {
-            prepare.push(project);
-          }
-        });
-        
-        now.syncProjects(prepare, function (status) {
-          console.log (status);
-        });
         
         window.location.hash = '';
         

@@ -1,8 +1,8 @@
 TestIt('TestUser', {
   'before each': function(test) {
     
-    var project1 = Project.create('project1');
-    var project2 = Project.create('project2');
+    var project1 = Project.create('project1', 1);
+    var project2 = Project.create('project2', 1);
     
     var user = new User('sample', '', false, project1);    
     user.projects.push(project2.id);

@@ -15,73 +15,73 @@ var UserHandler = {
       var ObjectID = client.bson_serializer.ObjectID;
     
       var users = _model.get('user', store.getClient());
-      users.find({ _id: new ObjectID(id) }, function (cursor) {
+
+      users.get(new ObjectID(id), function (user) {
       
-        cursor.toArray(function (error, items) {
+        if (user) {
         
-          if (items.length > 0) {
-            var user = items[0];
-            user.id = items[0]._id;
-            
-            var projects = _model.get('project', store.getClient());
-            
-            
-            callback(user);
-          } else {
-            callback(null);
-          }
+          user.id = user._id;
         
-        });
+          // Send user and project back to client
+          var projects = _model.get('project', store.getClient());
+          projects.find({ owner: id }, function (items) {
+            callback ({ user: user, projects: items });
+          });
+        
+        } else {
+        
+          callback ({ error: 'notfound' });
+        
+        }
       
       });
-      
+            
     }
     
     everyone.syncUser = function (user, callback) {
+      _log.debug ('Sync user');
+    
       callback = callback || function () {};
     
       var client = store.getClient();
       var ObjectID = client.bson_serializer.ObjectID;
     
       var users = _model.get('user', store.getClient());
-      users.find({ _id: new ObjectID(user.id) }, function (cursor) {
-      
-        cursor.toArray(function (error, items) {
+      users.get(new ObjectID(user.id), function (item) {
+        if (item) {
         
-          if (items.length > 0) {
+          var serverUser = item;
+          var clientUser = user;
           
-            var found = items[0];
+          _log.debug ('Client user: ' + util.inspect(clientUser));
+          _log.debug ('Server user: ' + util.inspect(serverUser));
           
-            _log.debug ('client user: ' + util.inspect(user));
-            _log.debug ('server user: ' + util.inspect(found));
+          if (serverUser.updated > clientUser.updated) {
+            _log.debug ('Update client user.');
+            callback ({ status: 'update', data: serverUser });
+          } else {
+            _log.debug ('Update server user.');
+            delete clientUser._id;
             
-            if (found.updated > user.updated) {
-              // Force user use all data from server
-              callback({ status: 'update', data: found });
-            } else {
-              _log.debug ('user: ' + user.id + ' ' + util.inspect(user));
-            
-              // Update user on server
-              users.edit(new ObjectID(user.id), user, function (error) {
-                callback({ status: 'keep' });
-                
+            users.edit(new ObjectID(clientUser.id), clientUser,
+              function(error) {
+                callback ({ status: 'keep' });
+              
                 var userGroup = now.getGroup(user.id);
                 var userNow = userGroup.now;
-                userNow.clientUpdateUser(user);
+                userNow.clientUpdateUser(clientUser);
               });
-            }
             
-          
-          } else {
-            _log.debug ('user not found: ' + util.inspect(user));
-          
-            callback({ error: 'notfound' });
           }
         
-        });
-      
+        } else {
+        
+          _log.debug ('user not found: ' + util.inspect(user));
+          callback({ error: 'notfound' });
+        
+        }
       });
-    
+      
     }
   
     everyone.joinGroups = function (client, groups, callback) {

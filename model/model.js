@@ -1,5 +1,6 @@
 var mongodb = require('mongodb'),
-    log4js = require('log4js');
+    log4js = require('log4js'),
+    util = require('util');
 
 var _log = log4js.getLogger('model');
 
@@ -41,9 +42,28 @@ Model.prototype.find = function(query, callback) {
   }
   
   var collection = this.collection;
-  var cursor = collection.find(query);
+  collection.find(query).toArray(function(error, docs) {
+    if (error) {
+      callback([]);
+    } else {
+      callback(docs);
+    }
+  });
+}
+
+Model.prototype.get = function (id, callback) {
+  callback = callback || function() {};
   
-  callback(cursor);
+  _log.debug ('Get object: ' + util.inspect(id));
+  
+  var collection = this.collection;
+  collection.findOne({ _id: id }, function (error, item) {
+    if (error) {
+      callback(null);
+    } else {
+      callback(item);
+    }
+  });
 }
 
 Model.prototype.create = function(object, callback){
@@ -135,9 +155,9 @@ Model.prototype.exists = function(id, callback){
 
 var _models = {};
 Model.get = function (type, client) {
-  _log.debug ('Get: ' + type);
+  _log.debug ('Get model: ' + type);
   if (!_models[type]) {
-    _log.debug ('Create: ' + type);
+    _log.debug ('Create model: ' + type);
     _models[type] = new Model(type, client);
   }
   

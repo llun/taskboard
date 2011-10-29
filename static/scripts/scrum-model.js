@@ -306,9 +306,10 @@ var Project = function (name, iteration) {
 }
 
 // CRUD for Project
-Project.create = function (name, sync) {
+Project.create = function (name, owner, sync) {
   var iteration = Iteration.create('Iteration 1');
   var project = new Project(name, iteration.id);
+  project.owner = owner;
   project.sync = sync;
   _.persistent.save(project);
   
@@ -324,6 +325,7 @@ Project.get = function (id) {
     project.iterations = object.iterations;
     project.sync = object.sync;
     project.updated = object.updated;
+    project.owner = object.owner;
   }
   
   return project;
@@ -377,7 +379,7 @@ var User = function (username, image, anonymous, project) {
   }
   
   this.createProject = function (name, sync) {
-    var project = Project.create(name, sync);
+    var project = Project.create(name, _self.id, sync);
     _self.projects.push(project.id);
     
     User.save(_self);
@@ -422,8 +424,12 @@ var User = function (username, image, anonymous, project) {
 
 // CRUD for User
 User.create = function (username, image, anonymous) {
-  var project = Project.create('Project 1');
-  var user = new User(username, image, anonymous, project);
+  var user = new User(username, image, anonymous);
+  _.persistent.save(user);
+  
+  var project = Project.create('Project 1', user.id);
+  user.defaultProject = project.id;
+  user.projects.push(project.id);
   _.persistent.save(user);
   
   return user;
