@@ -107,6 +107,8 @@ Task.status = {
 // CRUD for Task
 Task.create = function(detail, push) {
   task = new Task(detail);
+  task.owner = _.user.id;
+  
   _.persistent.save(task);
   
   if (push) {
@@ -129,6 +131,7 @@ Task.get = function(id) {
     task.status = object.status;
     task.sync = object.sync;
     task.updated = object.updated;
+    task.owner = object.owner;
   }
   
   return task;
@@ -179,7 +182,10 @@ var Iteration = function(name) {
   this.begin = new Date(); // Begin time
   this.end = null; // End time
   this.tasks = {}; // All tasks
+  
   this.name = name || 'New Iteration'; // Iteration name
+  
+  this.updated = 0;
   
   this.addTask = function addTask(task, push) {
     if (!_self.tasks[task.id]) {
@@ -196,6 +202,8 @@ var Iteration = function(name) {
 // CRUD for Iteration
 Iteration.create = function (name) {
   var iteration = new Iteration(name);
+  iteration.owner = _.user.id;
+  
   _.persistent.save(iteration);
   
   return iteration;
@@ -212,6 +220,7 @@ Iteration.get = function (id) {
     iteration.end = object.end;
     iteration.tasks = object.tasks;
     iteration.name = object.name;
+    iteration.owner = object.owner;
   }
   
   return iteration;

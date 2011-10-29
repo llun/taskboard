@@ -15,7 +15,7 @@ var ProjectHandler = {
       var models = _model.get('project', store.getClient());
       var process = function (clientProject) {
       
-        models.get(clientProject, function (serverProject) {
+        models.get(clientProject.id, function (serverProject) {
           if (serverProject) {
             if (serverProject.updated > clientProject.updated) {
               _log.debug ('Push project: ' + serverProject.id);

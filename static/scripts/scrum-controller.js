@@ -424,6 +424,28 @@ _.table = {
             var project = Project.get(projects[key]);
             if (project.id == user.defaultProject && !project.sync) {
               project.sync = true;
+              
+              // Prepare iteration sync to server
+              var iterations = project.iterations;
+              for (var key in iterations) {
+                var iteration = Iteration.get(iterations[key]);
+                if (iteration) {
+                  pushIterations.push(iteration);
+                  
+                  var tasks = iteration.tasks;
+                  for (var key in tasks) {
+                    var task = Task.get(key);
+                    if (task) {
+                      pushTasks.push(task);
+                    }
+                    
+                  }
+                  
+                }
+                
+              }
+              
+              
             } else if (project.sync) {
               pushProjects.push(project);
             }
