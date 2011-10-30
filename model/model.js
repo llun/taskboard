@@ -17,7 +17,8 @@ Model.prototype.list = function(offset, limit, callback){
   var collection = this.collection;
   collection.find({}, {skip:offset, limit:limit}).toArray(function(err, docs) {
     if(err){
-      _log.warn(err.message);
+      _log.error ('List error');
+      _log.error (err.message);
       callback(err.message);
     }else{
       callback(null, docs);
@@ -44,6 +45,8 @@ Model.prototype.find = function(query, callback) {
   var collection = this.collection;
   collection.find(query).toArray(function(error, docs) {
     if (error) {
+      _log.error ('Find error');
+      _log.error (error);
       callback([]);
     } else {
       callback(docs);
@@ -59,6 +62,8 @@ Model.prototype.get = function (id, callback) {
   var collection = this.collection;
   collection.findOne({ _id: id }, function (error, item) {
     if (error) {
+      _log.error ('Get error');
+      _log.error (error);
       callback(null);
     } else {
       callback(item);
@@ -80,7 +85,10 @@ Model.prototype.create = function(object, callback){
   collection.insert(object, {safe:true},
                     function(err, objects) {
     if (err){
-      _log.warn(err.message);
+      _log.error ('Create error');
+      _log.error (err.message);
+      console.trace();
+      
       callback(err.message);
     }else{
       callback(null, objects[0] || null);
@@ -96,13 +104,21 @@ Model.prototype.edit = function(id, object, callback){
     return;
   }
   
+  // Don't change object._id property
+  if (object._id) {
+    delete object._id;
+  }
+  
   var client = this.client;
   
   var collection = this.collection;
   collection.update({ '_id': id}, {'$set': object}, {safe:true},
                     function(err, objects) {
     if (err){
-      _log.warn(err.message);
+      _log.error ('Edit error');
+      _log.error (err.message);
+      _log.error (object);
+      
       callback(err.message);
     }else{
       callback(null, objects);
@@ -124,7 +140,8 @@ Model.prototype.remove = function(id, callback){
   collection.findAndModify({ '_id': id},[], {}, {remove:true},
                     function(err, objects) {
     if (err){
-      _log.warn(err.message);
+      _log.error ('Remove error');
+      _log.error(err.message);
       callback(err.message);
     }else{
       callback(null, objects);
@@ -145,7 +162,8 @@ Model.prototype.exists = function(id, callback){
   var collection = this.collection;
   collection.find({ '_id': id}).count(function(err, objects) {
     if (err){
-      _log.warn(err.message);
+      _log.error ('Exists error');
+      _log.error (err.message);
       callback(err.message);
     }else{
       callback(null, objects !== 0);

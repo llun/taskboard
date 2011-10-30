@@ -397,6 +397,7 @@ _.table = {
       if (!data.error) {
         var user = data.user;
         var projects = data.projects;
+        var iterations = data.iterations;
       
         $('#logged-in-status').css('display', 'block');
       
@@ -430,6 +431,9 @@ _.table = {
               for (var key in iterations) {
                 var iteration = Iteration.get(iterations[key]);
                 if (iteration) {
+                  iteration.owner = user.id;
+                  _.persistent.save(iteration);
+                  
                   pushIterations.push(iteration);
                   
                   var tasks = iteration.tasks;
@@ -458,6 +462,9 @@ _.table = {
           now.syncProjects(pushProjects);
           
           // Push iterations to server
+          now.syncIterations(pushIterations);
+          
+          // Push tasks to server
           
         }
         
@@ -466,6 +473,12 @@ _.table = {
         for (var key in projects) {
           var project = projects[key];
           Project.save(project);
+        }
+        
+        for (var key in iterations) {
+          var iteration = iterations[key];
+          console.log (iteration);
+          Iteration.save(iteration);
         }
         
         _.user = User.get(user.id);

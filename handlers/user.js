@@ -1,4 +1,5 @@
 var log4js = require('log4js'),
+    step = require('step'),
     util = require('util');
 
 var _log = log4js.getLogger('user');
@@ -15,27 +16,39 @@ var UserHandler = {
       var ObjectID = client.bson_serializer.ObjectID;
     
       var users = _model.get('user', store.getClient());
+      var output = {};
 
-      users.get(new ObjectID(id), function (user) {
-      
-        if (user) {
-        
-          user.id = user._id;
-        
-          // Send user and project back to client
-          var projects = _model.get('project', store.getClient());
-          projects.find({ owner: id }, function (items) {
-            callback ({ user: user, projects: items });
-          });
-        
-        } else {
-        
-          callback ({ error: 'notfound' });
-        
-        }
-      
-      });
+      step(
+        function () {
+          users.get(new ObjectID(id), this);
+        },
+        function (user) {
+          if (user) {
+            user.id = user._id;
             
+            output.user = user;
+            
+            // Load projects
+            var projects = _model.get('project', store.getClient());
+            projects.find({ owner: id }, this);
+          } else {
+            callback ({ error: 'notfound' });
+          }
+        },
+        function (projects) {
+          output.projects = projects;
+          
+          var iterations = _model.get('iteration', store.getClient());
+          iterations.find({ owner: id }, this);
+        },
+        function (iterations) {
+          output.iterations = iterations;
+          
+          _log.trace (output);
+          callback(output);
+        }
+      );
+
     }
     
     everyone.syncUser = function (user, callback) {
@@ -61,7 +74,6 @@ var UserHandler = {
             callback ({ status: 'update', data: serverUser });
           } else {
             _log.debug ('Update server user.');
-            delete clientUser._id;
             
             users.edit(new ObjectID(clientUser.id), clientUser,
               function(error) {

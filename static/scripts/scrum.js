@@ -286,7 +286,7 @@ _.init = function() {
         _.persistent.remove('removed');
       }
       
-      now.join(_.client, iteration.id, function() {
+      now.joinGroups(_.client, [iteration.id], function() {
       
         $('#sync-status').text('Syncing');
         now.syncAllTask(iteration.id , prepareSync, prepareRemove, function() {

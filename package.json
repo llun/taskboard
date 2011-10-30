@@ -1,14 +1,15 @@
 {
   "name": "scrum",
-  "version": "0.2.2",
+  "version": "0.5.0",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "oauth": "latest",
-    "now": "latest",
+    "log4js": "latest",
     "mime": "latest",
     "mongodb": "latest",
-    "log4js": "latest"
+    "now": "latest",
+    "oauth": "latest",
+    "step": "latest"
   }
 }

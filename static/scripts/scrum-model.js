@@ -202,7 +202,9 @@ var Iteration = function(name) {
 // CRUD for Iteration
 Iteration.create = function (name) {
   var iteration = new Iteration(name);
-  iteration.owner = _.user.id;
+  if (_.user) {
+    iteration.owner = _.user.id;
+  }
   
   _.persistent.save(iteration);
   
@@ -226,7 +228,12 @@ Iteration.get = function (id) {
   return iteration;
 }
 Iteration.save = function (iteration) {
+  iteration.updated += 1;
   _.persistent.save(iteration);
+  
+  if (navigator.onLine && now.syncIterations) {
+    now.syncIterations([iteration]);
+  }
 }
 Iteration.remove = function (id, push) {
   var iteration = Iteration.get(id);
