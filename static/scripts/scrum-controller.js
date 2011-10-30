@@ -416,8 +416,6 @@ _.table = {
           
           var projects = user.projects;
           var pushProjects = [];
-          var pushIterations = [];
-          var pushTasks = [];
           
           for (var key in projects) {
             var project = Project.get(projects[key]);
@@ -430,11 +428,10 @@ _.table = {
                 var iteration = Iteration.get(iterations[key]);
                 if (iteration) {
                   iteration.owner = user.id;
-                  _.persistent.save(iteration);
-                  
-                  pushIterations.push(iteration);
+                  Iteration.save(iteration);
                   
                   var tasks = iteration.tasks;
+                  var pushTasks = [];
                   for (var key in tasks) {
                     var task = Task.get(key);
                     if (task) {
@@ -442,6 +439,8 @@ _.table = {
                     }
                     
                   }
+                  
+                  now.syncAllTask(iteration.id , pushTasks, []);
                   
                 }
                 
@@ -459,22 +458,17 @@ _.table = {
           // Push projects to server
           now.syncProjects(pushProjects);
           
-          // Push iterations to server
-          now.syncIterations(pushIterations);
-          
-          // Push tasks to server
-          
         }
         
         User.save(user);
         
         for (var key in data.projects) {
-          var project = projects[key];
+          var project = data.projects[key];
           Project.save(project);
         }
         
         for (var key in data.iterations) {
-          var iteration = iterations[key];
+          var iteration = data.iterations[key];
           Iteration.save(iteration);
         }
         
