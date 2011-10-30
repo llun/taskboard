@@ -395,19 +395,19 @@ _.table = {
     now.user(hashes[2], function (data) {
       
       if (!data.error) {
-        var user = data.user;
-              
-        $('#logged-in-status').css('display', 'block');
-      
-        // Sync user.
         $('#logged-in-menu').css('display', 'block');
         $('#logged-out-menu').hide();
         
-        $('#logged-in-user').text(user.username);
-        $('#logged-in-image').attr('src', user.image);
-          
+        $('#sync-status').text('Syncing');
+      
+        var user = data.user;
+        
+        // Sync user.  
         var anonymous = _.user;  
         User.remove(anonymous.id);
+        
+        var joinGroups = [];
+        joinGroups.push(user.id);
         
         // New user
         if (!user.defaultProject) {
@@ -419,45 +419,51 @@ _.table = {
           
           for (var key in projects) {
             var project = Project.get(projects[key]);
-            if (project.id == user.defaultProject && !project.sync) {
-              project.sync = true;
+            
+            if (project) {
+            
+              if (project.id == user.defaultProject && !project.sync) {
+                project.sync = true;
+              }
               
-              // Prepare iteration sync to server
-              var iterations = project.iterations;
-              for (var key in iterations) {
-                var iteration = Iteration.get(iterations[key]);
-                if (iteration) {
-                  iteration.owner = user.id;
-                  Iteration.save(iteration);
+              if (project.sync) {
+                joinGroups.push(project.id);
+              
+                // Prepare iteration sync to server
+                var iterations = project.iterations;
+                for (var key in iterations) {
+                  var iteration = Iteration.get(iterations[key]);
+                  if (iteration) {
                   
-                  var tasks = iteration.tasks;
-                  var pushTasks = [];
-                  for (var key in tasks) {
-                    var task = Task.get(key);
-                    if (task) {
-                      pushTasks.push(task);
+                    joinGroups.push(iteration.id);
+                  
+                    iteration.owner = user.id;
+                    Iteration.save(iteration);
+                    
+                    var tasks = iteration.tasks;
+                    var pushTasks = [];
+                    for (var key in tasks) {
+                      var task = Task.get(key);
+                      if (task) {
+                        pushTasks.push(task);
+                      }
+                      
                     }
+                    
+                    now.syncAllTask(iteration.id , pushTasks, []);
                     
                   }
                   
-                  now.syncAllTask(iteration.id , pushTasks, []);
-                  
                 }
-                
               }
               
+              project.owner = user.id;
+              Project.save(project);
               
-            } else if (project.sync) {
-              pushProjects.push(project);
             }
             
-            project.owner = user.id;
-            Project.save(project);
           }
-          
-          // Push projects to server
-          now.syncProjects(pushProjects);
-          
+                    
         }
         
         User.save(user);
@@ -465,11 +471,15 @@ _.table = {
         for (var key in data.projects) {
           var project = data.projects[key];
           Project.save(project);
+          
+          joinGroups.push(project.id);
         }
         
         for (var key in data.iterations) {
           var iteration = data.iterations[key];
           Iteration.save(iteration);
+          
+          joinGroups.push(iteration.id);
         }
         
         _.user = User.get(user.id);
@@ -477,6 +487,15 @@ _.table = {
         var current = _.persistent.get('current');
         current.key = user.id;
         _.persistent.save(current);
+        
+        now.joinGroups(_.client, joinGroups, function() {
+          $('#logged-in-status').css('display', 'block');
+          
+          $('#logged-in-user').text(user.username);
+          $('#logged-in-image').attr('src', user.image);
+          
+          $('#sync-status').text('Online');
+        });
         
         window.location.hash = '';
         

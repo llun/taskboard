@@ -51,11 +51,7 @@ var ProjectHandler = {
       } 
 
     }
-    
-    everyone.syncProject = function (project, callback) {
       
-    }
-  
   }
 
 }
