@@ -396,9 +396,7 @@ _.table = {
       
       if (!data.error) {
         var user = data.user;
-        var projects = data.projects;
-        var iterations = data.iterations;
-      
+              
         $('#logged-in-status').css('display', 'block');
       
         // Sync user.
@@ -470,14 +468,13 @@ _.table = {
         
         User.save(user);
         
-        for (var key in projects) {
+        for (var key in data.projects) {
           var project = projects[key];
           Project.save(project);
         }
         
-        for (var key in iterations) {
+        for (var key in data.iterations) {
           var iteration = iterations[key];
-          console.log (iteration);
           Iteration.save(iteration);
         }
         
