@@ -227,11 +227,11 @@ Iteration.get = function (id) {
   
   return iteration;
 }
-Iteration.save = function (iteration) {
+Iteration.save = function (iteration, push) {
   iteration.updated += 1;
   _.persistent.save(iteration);
   
-  if (navigator.onLine && now.syncIterations) {
+  if (navigator.onLine && now.syncIterations && push) {
     now.syncIterations([iteration]);
   }
 }
@@ -346,11 +346,11 @@ Project.get = function (id) {
   
   return project;
 }
-Project.save = function (project) {
+Project.save = function (project, push) {
   project.updated += 1;
   _.persistent.save(project);
   
-  if (navigator.onLine && now.syncProjects && project.sync) {
+  if (navigator.onLine && now.syncProjects && project.sync && push) {
     now.syncProjects([project]);
   }
 }
@@ -469,11 +469,11 @@ User.get = function (id) {
   return user;
 }
 
-User.save = function (user) {
+User.save = function (user, push) {
   user.updated += 1;
   _.persistent.save(user);
   
-  if (navigator.onLine && now.syncUser && !user.anonymouse) {
+  if (navigator.onLine && now.syncUser && !user.anonymouse && push) {
     now.syncUser(user);
   }
 }

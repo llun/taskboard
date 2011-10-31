@@ -85,7 +85,7 @@ _.table = {
         
         var task = Task.create(taskDetail, true);
         iteration.addTask(task);
-        Iteration.save(iteration);
+        Iteration.save(iteration, true);
         
         $('#todo').append(_.tmpl('task', task));
         $('#' + task.id).attr('draggable', true);
@@ -124,7 +124,7 @@ _.table = {
     
       Task.remove(id, true);
       iteration.removeTask(id);
-      Iteration.save(iteration);
+      Iteration.save(iteration, true);
       
       console.log ('client(remove): ' + id);
       
@@ -229,7 +229,7 @@ _.table = {
     
       var user = _.user;
       user.defaultProject = id;
-      User.save(user);
+      User.save(user, true);
       
       var project = Project.get(user.defaultProject);
       var iteration = Iteration.get(project.currentIteration());
@@ -348,7 +348,7 @@ _.table = {
       project.name = projectName;
       project.sync = isSyncProject;
       
-      Project.save(project);
+      Project.save(project, true);
       
       $('#project-name').text(project.name);
       $('#edit-project-name').val('');      
@@ -358,7 +358,7 @@ _.table = {
       
       var iteration = Iteration.get(_.project.currentIteration());
       iteration.name = iterationName;
-      Iteration.save(iteration);
+      Iteration.save(iteration, true);
       
       $('#iteration-name').text(iteration.name);
       $('#edit-iteration-name').val('');
@@ -438,7 +438,7 @@ _.table = {
                     joinGroups.push(iteration.id);
                   
                     iteration.owner = user.id;
-                    Iteration.save(iteration);
+                    Iteration.save(iteration, true);
                     
                     var tasks = iteration.tasks;
                     var pushTasks = [];
@@ -458,7 +458,7 @@ _.table = {
               }
               
               project.owner = user.id;
-              Project.save(project);
+              Project.save(project, true);
               
             }
             
@@ -466,7 +466,7 @@ _.table = {
                     
         }
         
-        User.save(user);
+        User.save(user, true);
         
         for (var key in data.projects) {
           var project = data.projects[key];
