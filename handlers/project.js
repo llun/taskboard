@@ -23,6 +23,10 @@ var ProjectHandler = {
             } else {
               _log.debug ('Update project: ' + serverProject.id);
               models.edit(serverProject.id, clientProject);
+              
+              var projectGroup = now.getGroup(serverProject.id);
+              var projectNow = projectGroup.now;
+              projectNow.clientUpdateProject(clientProject);
             }
           } else {
             // Create project
@@ -31,6 +35,10 @@ var ProjectHandler = {
             
             clientProject._id = clientProject.id;
             models.create(clientProject);
+            
+            var userGroup = now.getGroup(clientProject.owner);
+            var userNow = userGroup.now;
+            userNow.clientCreateProject(clientProject);
           }
           
           index++;

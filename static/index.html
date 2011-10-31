@@ -20,7 +20,9 @@
     <script src="scripts/scrum-controller.js" type="text/javascript"></script>
     
     <script type="text/html" id="project_list" charset="utf-8">
-      <li class="project-list-menu-item"><a href="#project/show/<%=id%>"><%=name%></a></li>
+      <li class="project-list-menu-item">
+        <a id="project-menu-<%=id%>" href="#project/show/<%=id%>"><%=name%></a>
+      </li>
     </script>
     
     <script type="text/html" id="iteration_list" charset="utf-8">

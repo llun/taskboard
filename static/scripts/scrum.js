@@ -205,7 +205,28 @@ _.init = function() {
       
       // User real-time synchronization
       now.clientUpdateUser = function (user) {
-        console.log ('client updated');
+      
+        if (user.updated > _.user.updated) {    
+          User.save(user);
+        }
+        
+      }
+      
+      // Project real-time synchronization
+      now.clientCreateProject = function (serverProject) {
+        Project.save(serverProject);
+        now.joinGroups(_.client, [serverProject.id]);
+      }
+      
+      now.clientUpdateProject = function (serverProject) {
+      
+        var clientProject = Project.get(serverProject.id);
+        if (serverProject.updated > clientProject.updated) {
+          Project.save(serverProject);
+          
+          $('#project-menu-' + serverProject.id).text(serverProject.name);
+        }
+        
       }
       
       // Task real-time synchronization
@@ -259,11 +280,6 @@ _.init = function() {
           iteration.removeTask(id);
           Iteration.save(iteration);
         }
-        
-      }
-      
-      // Iteration real-time synchronization
-      now.endIteration = function () {
         
       }
       

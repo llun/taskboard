@@ -231,10 +231,10 @@ _.table = {
       user.defaultProject = id;
       User.save(user);
       
-      _.project = user.defaultProject;
-      
       var project = Project.get(user.defaultProject);
       var iteration = Iteration.get(project.currentIteration());
+      
+      _.project = project;
       
       $('.task').remove();
       
