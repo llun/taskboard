@@ -78,6 +78,7 @@ var LocalStoragePersistent = function() {
   }
   
   this.save = function save(object) {
+
     if (!object.id) {
       var id = Util.uuid();
       object.id = id;

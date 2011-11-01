@@ -180,7 +180,7 @@ _.init = function() {
               }
             });
             
-            now.syncProjects(prepare, function () {
+            now.syncProjects(_.client, prepare, function () {
             
               prepare.forEach(function (project) {
                 joinList.push(project.id);
@@ -218,13 +218,24 @@ _.init = function() {
         now.joinGroups(_.client, [serverProject.id]);
       }
       
-      now.clientUpdateProject = function (serverProject) {
+      now.clientUpdateProject = function (client, serverProject) {
+      
+        console.log ('server-debug(update): project - ' + 
+                     serverProject.id + ', ' + 
+                     serverProject.updated + ', ' +
+                     serverProject.modified);
       
         var clientProject = Project.get(serverProject.id);
-        if (serverProject.updated > clientProject.updated) {
+        if (serverProject.updated > clientProject.updated ||
+            serverProject.modified != clientProject.modified) {
           Project.save(serverProject);
-          
-          $('#project-menu-' + serverProject.id).text(serverProject.name);
+        }
+        
+        clientProject = Project.get(serverProject.id);
+        $('#project-menu-' + clientProject.id).text(clientProject.name);
+        
+        if (_.project.id == clientProject.id) {
+          $('#project-name').text(clientProject.name);
         }
         
       }

@@ -353,6 +353,8 @@ _.table = {
       $('#project-name').text(project.name);
       $('#edit-project-name').val('');      
       
+      $('#project-menu-' + project.id).text(project.name);
+      
       $('.edit-project-name').removeClass('error');
       $('#project-name-help').text('');
       
@@ -386,6 +388,8 @@ _.table = {
       $('#edit-board-save-button').attr('href', '#board/save?'+ (new Date()).getTime());
     
     }
+    
+    window.location.hash = '';
     
   },
   

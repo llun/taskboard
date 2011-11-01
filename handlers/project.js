@@ -8,7 +8,9 @@ var ProjectHandler = {
 
   initial: function (now, everyone, store) {
   
-    everyone.syncProjects = function (projects, callback) {
+    everyone.syncProjects = function (client, projects, callback) {
+      _log.debug ('Sync projects: ' + client + ', ' + util.inspect(projects));
+    
       callback = callback || function () {};
     
       var push = {};
@@ -26,7 +28,7 @@ var ProjectHandler = {
               
               var projectGroup = now.getGroup(serverProject.id);
               var projectNow = projectGroup.now;
-              projectNow.clientUpdateProject(clientProject);
+              projectNow.clientUpdateProject(client, clientProject);
             }
           } else {
             // Create project
@@ -38,7 +40,7 @@ var ProjectHandler = {
             
             var userGroup = now.getGroup(clientProject.owner);
             var userNow = userGroup.now;
-            userNow.clientCreateProject(clientProject);
+            userNow.clientCreateProject(client, clientProject);
           }
           
           index++;

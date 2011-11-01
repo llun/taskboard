@@ -342,16 +342,22 @@ Project.get = function (id) {
     project.sync = object.sync;
     project.updated = object.updated;
     project.owner = object.owner;
+    project.modified = object.modified;
   }
   
   return project;
 }
 Project.save = function (project, push) {
+  console.log ('Save project.');
+  console.trace();
+
   project.updated += 1;
+  project.modified = new Date().getTime();
+  
   _.persistent.save(project);
   
   if (navigator.onLine && now.syncProjects && project.sync && push) {
-    now.syncProjects([project]);
+    now.syncProjects(_.client, [project]);
   }
 }
 Project.remove = function (id) {
