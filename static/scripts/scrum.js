@@ -236,6 +236,7 @@ _.init = function() {
         
         if (_.project.id == clientProject.id) {
           $('#project-name').text(clientProject.name);
+          _.project = clientProject;
         }
         
       }
