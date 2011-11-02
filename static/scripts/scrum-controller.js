@@ -280,7 +280,7 @@ _.table = {
       } else {
         $('#end-iteration-button').removeAttr('disabled');
       }
-    
+      
     } else {
     
       $('.new-project-name').addClass('error');
@@ -289,6 +289,7 @@ _.table = {
       $('#new-project-save-button').attr('href', '#project/save?' + new Date().getTime());
     
     }
+    
   },
   
   // Update controllers

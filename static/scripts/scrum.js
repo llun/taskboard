@@ -206,6 +206,10 @@ _.init = function() {
       // User real-time synchronization
       now.clientUpdateUser = function (user) {
       
+        console.log ('server-debug(create): user - ' + 
+                     user.id + ', ' + 
+                     user.updated);
+      
         if (user.updated > _.user.updated) {    
           User.save(user);
         }
@@ -213,9 +217,21 @@ _.init = function() {
       }
       
       // Project real-time synchronization
-      now.clientCreateProject = function (serverProject) {
-        Project.save(serverProject);
-        now.joinGroups(_.client, [serverProject.id]);
+      now.clientCreateProject = function (client, serverProject) {
+      
+        console.log ('server-debug(create): project - ' + 
+                     serverProject.id + ', ' + 
+                     serverProject.updated + ', ' +
+                     serverProject.modified);
+                     
+        if (client != _.client) {
+          Project.save(serverProject);
+          now.joinGroups(_.client, [serverProject.id]);
+          
+          var list = _.tmpl('project_list', serverProject);
+          $('#projects-list-menu').append(list);
+        }
+        
       }
       
       now.clientUpdateProject = function (client, serverProject) {

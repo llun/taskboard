@@ -329,6 +329,10 @@ Project.create = function (name, owner, sync) {
   project.sync = sync;
   _.persistent.save(project);
   
+  if (navigator.onLine && now.syncProjects && project.sync) {
+    now.syncProjects(_.client, [project]);
+  }
+  
   return project;
 }
 Project.get = function (id) {
@@ -404,7 +408,7 @@ var User = function (username, image, anonymous, project) {
     var project = Project.create(name, _self.id, sync);
     _self.projects.push(project.id);
     
-    User.save(_self);
+    User.save(_self, true);
     
     return project;
   }
