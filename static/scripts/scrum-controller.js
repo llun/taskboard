@@ -400,6 +400,8 @@ _.table = {
     now.user(hashes[2], function (data) {
       
       if (!data.error) {
+        $('.project-list-menu-item').remove();
+      
         $('#logged-in-menu').css('display', 'block');
         $('#logged-out-menu').hide();
         
@@ -426,6 +428,9 @@ _.table = {
             var project = Project.get(projects[key]);
             
             if (project) {
+            
+              var list = _.tmpl('project_list', project);
+              $('#projects-list-menu').append(list);
             
               if (project.id == user.defaultProject && !project.sync) {
                 project.sync = true;
@@ -477,12 +482,18 @@ _.table = {
           var project = data.projects[key];
           Project.save(project);
           
+          var list = _.tmpl('project_list', project);
+          $('#projects-list-menu').append(list);
+          
           joinGroups.push(project.id);
         }
         
         for (var key in data.iterations) {
           var iteration = data.iterations[key];
           Iteration.save(iteration);
+          
+          var list = _.tmpl('iteration_list', iteration);
+          $('#iterations-list-menu').append(list);
           
           joinGroups.push(iteration.id);
         }
