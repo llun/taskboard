@@ -33,16 +33,6 @@ _.init = function() {
   $('#project-name').text(_.project.name);
   $('#iteration-name').text(iteration.name);
   
-  // List projects
-  var projects = _.user.projects;
-  for (var index = 0; index < projects.length; index++) {
-    var project = Project.get(projects[index]);
-    if (project) {
-      var list = _.tmpl('project_list', project);
-      $('#projects-list-menu').append(list);
-    }
-  }
-  
   // List iterations
   var iterations = _.project.iterations.slice(0).reverse()
   for (var index = 0; index < iterations.length; index++) {
@@ -140,6 +130,16 @@ _.init = function() {
       if (_.user.anonymous) {
         $('#logged-out-menu').css('display', 'block');
         
+        // List projects
+        var projects = _.user.projects;
+        for (var index = 0; index < projects.length; index++) {
+          var project = Project.get(projects[index]);
+          if (project) {
+            var list = _.tmpl('project_list', project);
+            $('#projects-list-menu').append(list);
+          }
+        }
+        
         if (_.oldHash) {
           // Parse login
           if (/^#user\/login/i.test(_.oldHash)) {
@@ -168,6 +168,8 @@ _.init = function() {
             if (object.status == 'update') {
               var data = object.data;
               User.save(data);
+              
+              _.user = User.get(data.id);
             }
             
             // Prepare project need to sync
@@ -195,6 +197,17 @@ _.init = function() {
                 now.joinGroups(_.client, joinList, function () {
                   console.log ('Join projects success');
                 });
+                
+              }
+              
+              // List projects
+              var projects = _.user.projects;
+              for (var index = 0; index < projects.length; index++) {
+                var project = Project.get(projects[index]);
+                if (project) {
+                  var list = _.tmpl('project_list', project);
+                  $('#projects-list-menu').append(list);
+                }
               }
               
             });
@@ -349,7 +362,18 @@ _.init = function() {
       
     });
   } else {
+  
+    // List projects
+    var projects = _.user.projects;
+    for (var index = 0; index < projects.length; index++) {
+      var project = Project.get(projects[index]);
+      if (project) {
+        var list = _.tmpl('project_list', project);
+        $('#projects-list-menu').append(list);
+      }
+    }
     
+    // Update login menu
     $('#logging-in-menu').hide();
     if (_.user.anonymous) {
       $('#logged-out-menu').hide();
