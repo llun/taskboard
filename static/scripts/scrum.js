@@ -173,22 +173,30 @@ _.init = function() {
             // Prepare project need to sync
             var projects = _.user.projects;
             var prepare = [];
-            projects.forEach(function (projectID) {
-              var project = Project.get(projectID);
-              if (project.sync) {
+            for (var key in projects) {
+              var project = Project.get(projects[key]);
+              if (project && project.sync) {
                 prepare.push(project);
               }
-            });
+            }
             
-            now.syncProjects(_.client, prepare, function () {
+            now.syncProjects(_.client, _.user.id, prepare, function (object) {
             
-              prepare.forEach(function (project) {
-                joinList.push(project.id);
-              });
+              if (object.status == 'update') {
+                var projects = object.data;
+                
+                for (var key in projects) {
+                  var project = prepare[key];
+                  Project.save(project);
+                  
+                  joinList.push(project.id);
+                }
+                
+                now.joinGroups(_.client, joinList, function () {
+                  console.log ('Join projects success');
+                });
+              }
               
-              now.joinGroups(_.client, joinList, function () {
-                console.log ('Join projects success');
-              });
             });
             
           } else {

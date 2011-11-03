@@ -329,8 +329,8 @@ Project.create = function (name, owner, sync) {
   project.sync = sync;
   _.persistent.save(project);
   
-  if (navigator.onLine && now.syncProjects && project.sync) {
-    now.syncProjects(_.client, [project]);
+  if (navigator.onLine && now.syncProject && project.sync) {
+    now.syncProject(_.client, project);
   }
   
   return project;
@@ -360,8 +360,8 @@ Project.save = function (project, push) {
   
   _.persistent.save(project);
   
-  if (navigator.onLine && now.syncProjects && project.sync && push) {
-    now.syncProjects(_.client, [project]);
+  if (navigator.onLine && now.syncProject && project.sync && push) {
+    now.syncProject(_.client, project);
   }
 }
 Project.remove = function (id) {

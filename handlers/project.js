@@ -1,4 +1,5 @@
 var log4js = require('log4js'),
+    step = require('step'),
     util = require('util');
 
 var _log = log4js.getLogger('project');
@@ -8,30 +9,72 @@ var ProjectHandler = {
 
   initial: function (now, everyone, store) {
   
-    everyone.syncProjects = function (client, projects, callback) {
-      _log.debug ('Sync projects: ' + client + ', ' + util.inspect(projects));
+    everyone.syncProjects = function (client, user, clientProjects, callback) {
+      _log.debug ('Sync projects: ' + client + ', ' + util.inspect(clientProjects));
     
       callback = callback || function () {};
     
-      var push = {};
       var models = _model.get('project', store.getClient());
-      var process = function (clientProject) {
-      
-        models.get(clientProject.id, function (serverProject) {
-          if (serverProject) {
-            if (serverProject.updated > clientProject.updated) {
-              _log.debug ('Push project: ' + serverProject.id);
-              push[serverProject.id] = serverProject;
-            } else {
-              _log.debug ('Update project: ' + serverProject.id);
-              models.edit(serverProject.id, clientProject);
+      step(
+        function() {
+          models.find({ owner: user }, this);
+        },
+        function(serverProjects) {
+        
+          var pushList = [];
+          var createList = [];
+          
+          // Prepare result and send it via callback
+          var clientOnlyList = {};
+          
+          // Prepare result and create on server
+          var serverOnlyList = {};
+          
+          // Prepare result live on both side.
+          var bothList = {};
+          
+          for (var key in clientProjects) {
+            var clientProject = clientProjects[key];
+            clientOnlyList[clientProject.id] = clientProject;
+          }
+          
+          for (var key in serverProjects) {
+            var serverProject = serverProjects[key];
+            serverOnlyList[serverProject.id] = serverProject;
+          }
+          
+          // Find both side result
+          for (var key in clientProjects) {
+            var clientProject = clientProjects[key];
+            if (serverOnlyList[clientProject.id]) {
+              bothList[clientProject.id] = { client: clientProject,
+                                             server: serverOnlyList[clientProject.id] };
               
-              var projectGroup = now.getGroup(serverProject.id);
-              var projectNow = projectGroup.now;
-              projectNow.clientUpdateProject(client, clientProject);
+              delete serverOnlyList[clientProject.id];
             }
-          } else {
-            // Create project
+          }
+          
+          for (var key in serverProjects) {
+            var serverProject = serverProjects[key];
+            if (clientOnlyList[serverProject.id]) {
+              bothList[serverProject.id] = { client: clientOnlyList[serverProject.id],
+                                             server: serverProject };
+              
+              delete clientOnlyList[serverProject.id];
+            }
+          }
+          
+          
+          // Add project to push list from serverOnlyList
+          for (var key in serverOnlyList) {
+            var serverProject = serverOnlyList[key];
+            pushList.push(serverProject);
+          }
+          
+          // Create project from clientOnlyList
+          for (var key in clientOnlyList) {
+            var clientProject = clientOnlyList[key];
+            
             _log.debug ('Create project: ' + clientProject.id);
             _log.trace (clientProject);
             
@@ -41,27 +84,76 @@ var ProjectHandler = {
             var userGroup = now.getGroup(clientProject.owner);
             var userNow = userGroup.now;
             userNow.clientCreateProject(client, clientProject);
+            
+          }
+        
+          // Update project lives on both side.
+          for (var key in bothList) {
+            var object = bothList[key];
+            
+            var clientObject = object.client;
+            var serverObject = object.server;
+            
+            if (serverObject.updated > clientObject.updated) {
+              _log.debug ('Push project: ' + serverObject.id);
+              pushList.push(serverObject);
+            } else {
+              _log.debug ('Update project: ' + clientObject.id);
+              models.edit(serverObject.id, clientObject);
+              
+              var projectGroup = now.getGroup(serverObject.id);
+              var projectNow = projectGroup.now;
+              projectNow.clientUpdateProject(client, clientObject);
+            }
+            
           }
           
-          index++;
-          if (index < projects.length) {
-            process(projects[index]);
+          if (pushList.length > 0) {
+            callback({ status: 'update', data: pushList});
           } else {
-            callback({ status: 'update', data: push });
+            callback({ status: 'keep' });
           }
-        });
-      
-      }
-      
-      var index = 0;
-      if (index < projects.length) {
-        process(projects[index]);
-      } else {
-        callback({ status: 'keep' });
-      } 
+        
+        }
+      );
 
     }
       
+    everyone.syncProject = function (client, clientProject) {
+    
+      _log.debug ('Sync projects: ' + client + ', ' + util.inspect(clientProject));
+      
+      var models = _model.get('project', store.getClient());
+      models.get(clientProject.id, function (serverProject) {
+        if (serverProject) {
+          if (serverProject.updated > clientProject.updated) {
+            _log.debug ('Push project: ' + serverProject.id);
+            push[serverProject.id] = serverProject;
+          } else {
+            _log.debug ('Update project: ' + serverProject.id);
+            models.edit(serverProject.id, clientProject);
+            
+            var projectGroup = now.getGroup(serverProject.id);
+            var projectNow = projectGroup.now;
+            projectNow.clientUpdateProject(client, clientProject);
+          }
+        } else {
+          // Create project
+          _log.debug ('Create project: ' + clientProject.id);
+          _log.trace (clientProject);
+          
+          clientProject._id = clientProject.id;
+          models.create(clientProject);
+          
+          var userGroup = now.getGroup(clientProject.owner);
+          var userNow = userGroup.now;
+          userNow.clientCreateProject(client, clientProject);
+        }
+      });
+      
+    
+    }
+
   }
 
 }
