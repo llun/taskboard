@@ -69,7 +69,8 @@ var UserHandler = {
           _log.debug ('Client user: ' + util.inspect(clientUser));
           _log.debug ('Server user: ' + util.inspect(serverUser));
           
-          if (serverUser.updated > clientUser.updated) {
+          if (serverUser.updated > clientUser.updated ||
+              serverUser.modified > clientUser.modified) {
             _log.debug ('Update client user.');
             callback ({ status: 'update', data: serverUser });
           } else {

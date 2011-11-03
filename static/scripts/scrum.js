@@ -186,7 +186,7 @@ _.init = function() {
                 var projects = object.data;
                 
                 for (var key in projects) {
-                  var project = prepare[key];
+                  var project = projects[key];
                   Project.save(project);
                   
                   joinList.push(project.id);

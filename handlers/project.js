@@ -94,7 +94,8 @@ var ProjectHandler = {
             var clientObject = object.client;
             var serverObject = object.server;
             
-            if (serverObject.updated > clientObject.updated) {
+            if (serverObject.updated > clientObject.updated ||
+                serverObject.modified > clientObject.modified) {
               _log.debug ('Push project: ' + serverObject.id);
               pushList.push(serverObject);
             } else {
@@ -126,7 +127,8 @@ var ProjectHandler = {
       var models = _model.get('project', store.getClient());
       models.get(clientProject.id, function (serverProject) {
         if (serverProject) {
-          if (serverProject.updated > clientProject.updated) {
+          if (serverProject.updated > clientProject.updated ||
+              serverProject.modified > clientProject.modified) {
             _log.debug ('Push project: ' + serverProject.id);
             push[serverProject.id] = serverProject;
           } else {

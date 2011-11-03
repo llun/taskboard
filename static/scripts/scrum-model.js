@@ -275,6 +275,7 @@ var Project = function (name, iteration) {
   this.name = name;
   this.iterations = [];
   this.updated = 0;
+  this.modified = new Date().getTime();
   this.sync = false;
   
   // Private method
@@ -394,6 +395,7 @@ var User = function (username, image, anonymous, project) {
   this.projects = [];
   this.members = [];
   this.updated = 0;
+  this.modified = new Date().getTime();
   this.defaultProject = null;
 
   // Private method
@@ -474,6 +476,7 @@ User.get = function (id) {
     user.anonymous = object.anonymous;
     user.image = object.image;
     user.updated = object.updated;
+    user.modified = object.modified;
   }
   
   return user;
@@ -481,6 +484,7 @@ User.get = function (id) {
 
 User.save = function (user, push) {
   user.updated += 1;
+  user.modified = new Date().getTime();
   _.persistent.save(user);
   
   if (navigator.onLine && now.syncUser && !user.anonymouse && push) {
