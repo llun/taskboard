@@ -4,6 +4,7 @@
   "scripts": {
     "start": "node server.js"
   },
+  "engine": "0.4",
   "dependencies": {
     "log4js": "latest",
     "mime": "latest",

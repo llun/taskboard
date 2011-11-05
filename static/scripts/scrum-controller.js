@@ -268,11 +268,7 @@ _.table = {
       var list = _.tmpl('project_list', project);
       $('#projects-list-menu').append(list);
       
-      $('#new-project-modal').hide();
-      
-      $('.new-project-name').addClass('error');
-      $('#new-project-help').text('Project name can contains only alphabet' +
-                                  ', numeric or white space');
+      $('#new-project-modal').hide();      
       $('#new-project-save-button').attr('href', '#project/save?' + new Date().getTime());
       
       if (_.project.sync && !navigator.onLine && !now.endIteration) {
@@ -280,6 +276,8 @@ _.table = {
       } else {
         $('#end-iteration-button').removeAttr('disabled');
       }
+      
+      window.location.hash = '';
       
     } else {
     
@@ -372,6 +370,8 @@ _.table = {
       $('#edit-board-modal').hide();
       
       $('#edit-board-save-button').attr('href', '#board/save');
+      
+      window.location.hash = '';
     } else {
     
       if (!projectPass) {
@@ -389,8 +389,6 @@ _.table = {
       $('#edit-board-save-button').attr('href', '#board/save?'+ (new Date()).getTime());
     
     }
-    
-    window.location.hash = '';
     
   },
   
@@ -460,7 +458,7 @@ _.table = {
                       
                     }
                     
-                    now.syncAllTask(iteration.id , pushTasks, []);
+                    now.syncTasks(iteration.id , pushTasks, []);
                     
                   }
                   
@@ -499,6 +497,7 @@ _.table = {
         }
         
         _.user = User.get(user.id);
+        _.project = Project.get(_.user.defaultProject);
         
         var current = _.persistent.get('current');
         current.key = user.id;

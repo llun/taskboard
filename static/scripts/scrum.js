@@ -354,7 +354,7 @@ _.init = function() {
       now.joinGroups(_.client, [iteration.id], function() {
       
         $('#sync-status').text('Syncing');
-        now.syncAllTask(iteration.id , prepareSync, prepareRemove, function() {
+        now.syncTasks(iteration.id , prepareSync, prepareRemove, function() {
           $('#sync-status').text('Online');
         });
       

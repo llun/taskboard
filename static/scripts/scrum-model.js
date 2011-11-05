@@ -186,6 +186,7 @@ var Iteration = function(name) {
   this.name = name || 'New Iteration'; // Iteration name
   
   this.updated = 0;
+  this.modified = new Date().getTime();
   
   this.addTask = function addTask(task, push) {
     if (!_self.tasks[task.id]) {
@@ -223,16 +224,19 @@ Iteration.get = function (id) {
     iteration.tasks = object.tasks;
     iteration.name = object.name;
     iteration.owner = object.owner;
+    iteration.updated = object.updated;
+    iteration.modified = object.modified;
   }
   
   return iteration;
 }
 Iteration.save = function (iteration, push) {
   iteration.updated += 1;
+  iteration.modified = new Date().getTime();
   _.persistent.save(iteration);
   
   if (navigator.onLine && now.syncIterations && push) {
-    now.syncIterations([iteration]);
+    now.syncIteration(_.client, iteration);
   }
 }
 Iteration.remove = function (id, push) {

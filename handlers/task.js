@@ -97,7 +97,7 @@ var TaskHandler = {
       }
     }
     
-    everyone.syncAllTask = function (iteration, tasks, removed, callback) {
+    everyone.syncTasks = function (iteration, tasks, removed, callback) {
       _log.debug ('sync all tasks');
       
       var _task = model.get(_type, store.getClient());
