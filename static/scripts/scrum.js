@@ -153,7 +153,6 @@ _.init = function() {
         // If user already login it should sync user.
         now.syncUser(_.user, function(object) {
         
-          console.log ('Sync user success: ' + object.error);
           // How to handler error ?
           if (!object.error) {
           
@@ -274,6 +273,47 @@ _.init = function() {
         if (_.project.id == clientProject.id) {
           $('#project-name').text(clientProject.name);
           _.project = clientProject;
+        }
+        
+      }
+      
+      // Iteration real-time synchronization
+      now.clientCreateIteration = function (client, serverIteration) {
+      
+        console.log ('server-debug(create): iteration - ' + 
+                     serverIteration.id + ', ' + 
+                     serverIteration.updated + ', ' +
+                     serverIteration.modified);
+                     
+        if (client != _.client) {
+          Project.save(serverIteration);
+          now.joinGroups(_.client, [serverIteration.id]);
+          
+          var list = _.tmpl('iteration_list', serverIteration);
+          $('#iterations-list-menu').append(list);
+        }
+        
+      }
+      
+      now.clientUpdateIteration = function (client, serverIteration) {
+      
+        console.log ('server-debug(update): iteration - ' + 
+                     serverIteration.id + ', ' + 
+                     serverIteration.updated + ', ' +
+                     serverIteration.modified);
+      
+        var clientIteration = Iteration.get(serverIteration.id);
+        if (serverIteration.updated > clientIteration.updated ||
+            serverIteration.modified != clientIteration.modified) {
+          Iteration.save(serverIteration);
+        }
+        
+        clientIteration = Iteration.get(serverIteration.id);
+        $('#iteration-menu-' + clientIteration.id).text(clientIteration.name);
+        
+        var currentIteration = Iteration.get(_.project.currentIteration());
+        if (currentIteration.id == clientIteration.id) {
+          $('#iteration-name').text(clientIteration.name);
         }
         
       }
