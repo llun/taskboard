@@ -173,17 +173,17 @@ _.init = function() {
             
             // Prepare project need to sync
             var projects = _.user.projects;
-            var prepare = [];
+            var prepareProject = [];
             for (var key in projects) {
               var project = Project.get(projects[key]);
               if (project && project.sync) {
-                prepare.push(project);
+                prepareProject.push(project);
                 
                 joinList.push(project.id);
               }
             }
             
-            now.syncProjects(_.client, _.user.id, prepare, function (object) {
+            now.syncProjects(_.client, _.user.id, prepareProject, function (object) {
             
               if (object.status == 'update') {
                 var projects = object.data;
