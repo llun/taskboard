@@ -162,6 +162,9 @@ var IterationHandler = {
     
     }
     
+    everyone.endIteration = function (client, clientIteration) {
+    }
+    
   }
   
 }

@@ -181,10 +181,12 @@ _.table = {
       if (isCurrent) {
         // Show new task and end iteration button
         $('#iteration-actions').show();
+        $('#board-name-edit').show();
         $('.task').attr('draggable', true);
       } else {
         // Hide new task and end iteration button
         $('#iteration-actions').hide();
+        $('#board-name-edit').hide();
         $('.task-action').hide();
       }
       

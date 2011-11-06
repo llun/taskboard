@@ -272,7 +272,16 @@ _.init = function() {
       
         if (user.updated > _.user.updated) {    
           User.save(user);
+          _.user = user;
         }
+        
+        _.project = Project.get(user.defaultProject);
+        
+        // Change iteration/project board name.
+        $('#project-name').text(_.project.name);
+        
+        var iteration = Iteration.get(_.project.currentIteration());
+        $('#iteration-name').text(iteration.name);
         
       }
       
