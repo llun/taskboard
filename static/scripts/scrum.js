@@ -33,14 +33,6 @@ _.init = function() {
   $('#project-name').text(_.project.name);
   $('#iteration-name').text(iteration.name);
   
-  // List iterations
-  var iterations = _.project.iterations.slice(0).reverse()
-  for (var index = 0; index < iterations.length; index++) {
-    var iteration = Iteration.get(iterations[index]);
-    var list = _.tmpl('iteration_list', iteration);
-    $('#iterations-list-menu').append(list);
-  }
-  
   // Bind drag & drop on wall
   $('.wall').bind({
     dragenter: function (ev) {
@@ -140,6 +132,14 @@ _.init = function() {
           }
         }
         
+        // List iterations
+        var iterations = _.project.iterations.slice(0).reverse()
+        for (var index = 0; index < iterations.length; index++) {
+          var iteration = Iteration.get(iterations[index]);
+          var list = _.tmpl('iteration_list', iteration);
+          $('#iterations-list-menu').append(list);
+        }
+        
         if (_.oldHash) {
           // Parse login
           if (/^#user\/login/i.test(_.oldHash)) {
@@ -174,15 +174,29 @@ _.init = function() {
             // Prepare project need to sync
             var projects = _.user.projects;
             var prepareProject = [];
+            var prepareIteration = [];
             for (var key in projects) {
               var project = Project.get(projects[key]);
               if (project && project.sync) {
                 prepareProject.push(project);
-                
                 joinList.push(project.id);
+                
+                var iterations = project.iterations;
+                for (var key in iterations) {
+                  var iteration = Iteration.get(iterations[key]);
+                  if (iteration) {
+                    prepareIteration.push(iteration);
+                    joinList.push(iteration.id);
+                  }
+                }
+                
+                // End of prepare iteration.
               }
+              
+              // End of prepare project.
             }
             
+            // Sync projects
             now.syncProjects(_.client, _.user.id, prepareProject, function (object) {
             
               if (object.status == 'update') {
@@ -197,10 +211,6 @@ _.init = function() {
                 
               }
               
-              now.joinGroups(_.client, joinList, function () {
-                console.log ('Join projects success');
-              });
-              
               // List projects
               var projects = _.user.projects;
               for (var index = 0; index < projects.length; index++) {
@@ -210,6 +220,34 @@ _.init = function() {
                   $('#projects-list-menu').append(list);
                 }
               }
+              
+              // Sync iterations
+              now.syncIterations(_.client, _.user.id, prepareIteration, function (object) {
+              
+                if (object.status == 'update') {
+                  var iterations = object.data;
+                  
+                  for (var key in iterations) {
+                    var iteration = iterations[key];
+                    Iteration.save(iteration);
+                    
+                    joinList.push(iteration.id);
+                  }
+                }
+                
+                now.joinGroups(_.client, joinList, function () {
+                  console.log ('Join projects success');
+                });
+                
+                // List iterations
+                var iterations = _.project.iterations.slice(0).reverse()
+                for (var index = 0; index < iterations.length; index++) {
+                  var iteration = Iteration.get(iterations[index]);
+                  var list = _.tmpl('iteration_list', iteration);
+                  $('#iterations-list-menu').append(list);
+                }
+              
+              });
               
             });
             
@@ -413,6 +451,14 @@ _.init = function() {
         var list = _.tmpl('project_list', project);
         $('#projects-list-menu').append(list);
       }
+    }
+    
+    // List iterations
+    var iterations = _.project.iterations.slice(0).reverse()
+    for (var index = 0; index < iterations.length; index++) {
+      var iteration = Iteration.get(iterations[index]);
+      var list = _.tmpl('iteration_list', iteration);
+      $('#iterations-list-menu').append(list);
     }
     
     // Update login menu
