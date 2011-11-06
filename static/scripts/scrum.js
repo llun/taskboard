@@ -178,6 +178,8 @@ _.init = function() {
               var project = Project.get(projects[key]);
               if (project && project.sync) {
                 prepare.push(project);
+                
+                joinList.push(project.id);
               }
             }
             
@@ -193,11 +195,11 @@ _.init = function() {
                   joinList.push(project.id);
                 }
                 
-                now.joinGroups(_.client, joinList, function () {
-                  console.log ('Join projects success');
-                });
-                
               }
+              
+              now.joinGroups(_.client, joinList, function () {
+                console.log ('Join projects success');
+              });
               
               // List projects
               var projects = _.user.projects;

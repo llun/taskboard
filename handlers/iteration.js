@@ -8,53 +8,116 @@ var IterationHandler = {
 
   initial: function(now, everyone, store) {
   
-    everyone.syncIterations = function (client, user, iterations, callback) {
-      _log.debug ('Sync iterations: ' + client + ', ' + util.inspect(iterations));
+    everyone.syncIterations = function (client, user, clientIterations, callback) {
+      _log.debug ('Sync iterations: ' + client + ', ' + util.inspect(clientIterations));
       
       callback = callback || function () {};
       
-      var push = {};
       var models = _model.get('iteration', store.getClient());
-      
-      var process = function (clientIteration) {
-      
-        models.get(clientIteration.id, function (serverIteration) {
+      step(
+        function() {
+          models.find({ owner: user }, this);
+        },
+        function(serverIterations) {
+        
+          var pushList = [];
+          var createList = [];
           
-          if (serverIteration) {
-            if (serverIteration > clientIteration.updated) {
-              _log.debug ('Push iteration: ' + serverIteration.id);
-              push[serverIteration.id] = serverIteration;
-            } else {
-              _log.debug ('Update iteration: ' + serverIteration.id);
-              models.edit(serverIteration.id, clientIteration);
+          // Prepare result and send it via callback
+          var clientOnlyList = {};
+          
+          // Prepare result and create on server
+          var serverOnlyList = {};
+          
+          // Prepare result live on both side.
+          var bothList = {};
+          
+          for (var key in clientIterations) {
+            var clientIteration = clientIterations[key];
+            clientOnlyList[clientIteration.id] = clientIteration;
+          }
+          
+          for (var key in serverIterations) {
+            var serverIteration = serverIterations[key];
+            serverOnlyList[serverIteration.id] = serverIteration;
+          }
+          
+          // Find both side result
+          for (var key in clientIterations) {
+            var clientIteration = clientIterations[key];
+            if (serverOnlyList[clientIteration.id]) {
+              bothList[clientIteration.id] = { client: clientIteration,
+                                               server: serverOnlyList[clientIteration.id] };
+              
+              delete serverOnlyList[clientIteration.id];
             }
-          } else {
-            // Create iteration
+          }
+          
+          for (var key in serverIterations) {
+            var serverIteration = serverIterations[key];
+            if (clientOnlyList[serverIteration.id]) {
+              bothList[serverIteration.id] = { client: clientOnlyList[serverIteration.id],
+                                               server: serverIteration };
+              
+              delete clientOnlyList[serverIteration.id];
+            }
+          }
+          
+          
+          // Add iteration to push list from serverOnlyList
+          for (var key in serverOnlyList) {
+            var serverIteration = serverOnlyList[key];
+            pushList.push(serverIteration);
+          }
+          
+          // Create iteration from clientOnlyList
+          for (var key in clientOnlyList) {
+            var clientIteration = clientOnlyList[key];
+            
             _log.debug ('Create iteration: ' + clientIteration.id);
             _log.trace (clientIteration);
             
             clientIteration._id = clientIteration.id;
             models.create(clientIteration);
+            
+            var userGroup = now.getGroup(clientIteration.owner);
+            var userNow = userGroup.now;
+            userNow.clientCreateIteration(client, clientIteration);
+            
+          }
+        
+          // Update iteration lives on both side.
+          for (var key in bothList) {
+            var object = bothList[key];
+            
+            var clientObject = object.client;
+            var serverObject = object.server;
+            
+            if (serverObject.updated > clientObject.updated ||
+                serverObject.modified > clientObject.modified) {
+              _log.debug ('Push iterationt: ' + serverObject.id);
+              pushList.push(serverObject);
+            } else {
+              _log.debug ('Update iteration: ' + clientObject.id);
+              models.edit(serverObject.id, clientObject);
+              
+              var iterationGroup = now.getGroup(serverObject.id);
+              var iterationNow = iterationGroup.now;
+              iterationNow.clientUpdateIteration(client, clientObject);
+            }
+            
           }
           
-          index++;
-          if (index < iterations.length) {
-            process(iterations[index]);
+          if (pushList.length > 0) {
+            callback({ status: 'update', data: pushList});
           } else {
-            callback({ status: 'update', data: push });
+            callback({ status: 'keep' });
           }
-          
-        });
+        
+        }
+      );
       
-      }
-      
-      var index = 0;
-      if (index < iterations.length) {
-        process(iterations[index]);
-      } else {
-        callback({ status: 'keep' });
-      }
-      
+            
     }
     
     everyone.syncIteration = function (client, clientIteration) {
