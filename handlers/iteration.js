@@ -2,7 +2,8 @@ var log4js = require('log4js'),
     step = require('step'),
     util = require('util');
 
-var _log = log4js.getLogger('iteration');
+var _log = log4js.getLogger('iteration'),
+    _model = require('../model/model.js').Model;
 
 var IterationHandler = {
 
@@ -148,12 +149,8 @@ var IterationHandler = {
           clientIteration._id = clientIteration.id;
           models.create(clientIteration);
           
-          var userGroup = now.getGroup(clientProject.owner);
-          var userNow = userGroup.now;
-          userNow.clientCreateProject(client, clientProject);
-          
           var userGroup = now.getGroup(clientIteration.owner);
-          var userNow = iterationGroup.now;
+          var userNow = userGroup.now;
           userNow.clientCreateProject(client, clientIteration);
         }
                 

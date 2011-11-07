@@ -1,20 +1,20 @@
 TestIt('TestTask', {
   'before each': function(test) {
     
-    this.fixture = new Task('Hello, world +book');
+    this.fixture = new Task('', 'Hello, world +book');
     
   },
   
   'testCreate': function(test) {
     
-    var task = new Task('Hello, World');
+    var task = new Task('', 'Hello, World');
     test.assert(task.getDetail(), 'Task must have detail');
     
   },
   
   'testCreateWithOwner': function(test) {
     
-    var task = new Task('Hello, World +llun +book');
+    var task = new Task('', 'Hello, World +llun +book');
 
     var responders = task.getResponders();
         
@@ -36,7 +36,7 @@ TestIt('TestTask', {
   
   'testCreateMultilineWithOwner': function(test) {
 
-    var task = new Task('Hello, World +book\nThis is a new line\n+llun');
+    var task = new Task('', 'Hello, World +book\nThis is a new line\n+llun');
     
     var responders = task.getResponders();
     

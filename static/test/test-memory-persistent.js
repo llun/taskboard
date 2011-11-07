@@ -2,14 +2,14 @@ TestIt('TestMemoryPersistent', {
   'before each': function(test) {
     this.store = new MemoryPersistent();
     
-    var task = new Task('First Task');
+    var task = new Task('', 'First Task');
     this.store.save(task);
     this.fixture = task.id;
   },
   
   'testSaveNewTask': function(test) {
     
-    var task = new Task('Sample Task +book +llun');
+    var task = new Task('', 'Sample Task +book +llun');
     this.store.save(task);
     test.assert(task.id, 'Task must have an ID after save to persistent');
     
@@ -21,7 +21,7 @@ TestIt('TestMemoryPersistent', {
   
   'testSaveOldTask': function(test) {
         
-    var second = new Task('Hello, World');
+    var second = new Task('', 'Hello, World');
     second.id = this.fixture;
     this.store.save(second);
     

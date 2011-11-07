@@ -3,15 +3,15 @@ TestIt('TestLocalStoragePersistent', {
   'before all': function (test) {
     this.store = new LocalStoragePersistent();
     
-    var task1 = new Task('First Task');
+    var task1 = new Task('', 'First Task');
     task1.id = Util.uuid();
     localStorage.setItem(JSON.stringify(task1.id), JSON.stringify(task1));
     
-    var task2 = new Task('Second Task');
+    var task2 = new Task('', 'Second Task');
     task2.id = Util.uuid();
     localStorage.setItem(JSON.stringify(task2.id), JSON.stringify(task2));
     
-    var task3 = new Task('Third Task');
+    var task3 = new Task('', 'Third Task');
     task3.id = Util.uuid();
     localStorage.setItem(JSON.stringify(task3.id), JSON.stringify(task3));
     
@@ -25,7 +25,7 @@ TestIt('TestLocalStoragePersistent', {
   
   'testSaveNewTask': function(test) {
 
-    var task = new Task('Sample Task +book +llun');
+    var task = new Task('', 'Sample Task +book +llun');
     this.store.save(task);
     test.assert(task.id, 'Task must have an ID after save to persistent');
     
@@ -44,7 +44,7 @@ TestIt('TestLocalStoragePersistent', {
 
     var fixtures = this.fixtures;
 
-    var task = new Task('Hello, World');
+    var task = new Task('', 'Hello, World');
     task.id = fixtures[0];
     this.store.save(task);
     

@@ -8,7 +8,7 @@ TestIt('TestIteration', {
   },
   
   'testAddTask': function (test) {
-    var task = new Task('Hello, world');
+    var task = new Task('', 'Hello, world');
     task.id = '3';
     
     this.iteration.addTask(task);
@@ -22,7 +22,7 @@ TestIt('TestIteration', {
   },
   
   'testAddDuplicateTask': function (test) {
-    var task = new Task('Hello, world');
+    var task = new Task('', 'Hello, world');
     task.id = '1';
     
     this.iteration.addTask(task);

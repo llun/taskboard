@@ -83,7 +83,7 @@ _.table = {
       
         var iteration = Iteration.get(_.project.currentIteration());
         
-        var task = Task.create(taskDetail, true);
+        var task = Task.create(iteration.id, taskDetail, true);
         iteration.addTask(task);
         Iteration.save(iteration, true);
         

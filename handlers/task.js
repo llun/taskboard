@@ -1,69 +1,11 @@
-var model = require('../model/model.js').Model,
-    util = require('util'),
-    log4js = require('log4js');
-    
-var _type = 'task';
-var _log = log4js.getLogger(_type);
+var log4js = require('log4js'),
+    step = require('step'),
+    util = require('util');
+
+var _log = log4js.getLogger('task'),
+    _model = require('../model/model.js').Model;
 
 var TaskHandler = {
-  
-  /**
-   * Sync server and client list
-   */
-  syncAll: function (server, client) {
-    var output = { server: { add: [], remove: [], update: [] },
-                   client: { add: [], remove: [], update: [] } };
-    
-    // Generate server/client task set
-    var _server = {};
-    var _client = {};
-    
-    for (var index = 0; index < server.length; index++) {
-      _server[server[index].id] = server[index];
-    }
-    
-    for (var index = 0; index < client.length; index++) {
-      _client[client[index].id] = client[index];
-    }
-    
-    // Process server list
-    for (var index = 0; index < client.length; index++) {
-      if (!client[index].sync && !client[index].removed) {
-        output.server.add.push(client[index]);
-      } else if (client[index].removed) {
-        output.server.remove.push(client[index]);
-      } else if (_server[client[index].id]) {
-        
-        var onClient = client[index];
-        var onServer = _server[client[index].id];
-        
-        if (onClient.updated > onServer.updated) {
-          output.server.update.push(onClient);
-        }
-        
-      } else if (!_server[client[index].id]) {
-        output.client.remove.push(client[index]);
-      }
-    }
-    
-    // Process client list
-    for (var index = 0; index < server.length; index++) {
-      if (!_client[server[index].id]) {
-        output.client.add.push(server[index]);
-      } else if (_client[server[index].id]) {
-        
-        var onClient = _client[server[index].id];
-        var onServer = server[index];
-        
-        if (onServer.updated > onClient.updated) {
-          output.client.update.push(onServer);
-        }
-        
-      }
-    }
-    
-    return output;
-  },
   
   initial: function(now, everyone, store) {
     
@@ -73,7 +15,7 @@ var TaskHandler = {
       
       var group = now.getGroup(iteration).now;
       
-      var _task = model.get(_type, store.getClient());
+      var _task = model.get('task', store.getClient());
       if (task.removed) {
         // Remove task
         _task.remove(task.id);
@@ -97,89 +39,116 @@ var TaskHandler = {
       }
     }
     
-    everyone.syncTasks = function (iteration, tasks, removed, callback) {
-      _log.debug ('sync all tasks');
-      
-      var _task = model.get(_type, store.getClient());
-      _task.count(function (error, count) {
+    everyone.syncTasks = function (client, iteration, clientTasks, callback) {
+          _log.debug ('Sync tasks: ' + client + ', ' + util.inspect(clientTasks));
         
-        _task.list(0, count, function (error, data) {
-          
-          var master = 'master';
-          
-          var server = data;
-          var client = tasks;
-          
-          _log.debug ('server: ' + util.inspect(server));
-          _log.debug ('client: ' + util.inspect(client));
-          _log.debug ('remove: ' + util.inspect(removed));
-          
-          for (var index = 0; index < removed.length; index++ ) {
-            client.push ({ id: removed[index], removed: true });
-          }
-          
-          var object = TaskHandler.syncAll(server, client);
-          var _server = object.server;
-          var _client = object.client;
-          
-          _log.debug ('after sync(server): ' + util.inspect(_server));
-          _log.debug ('after sync(client): ' + util.inspect(_client));
-          
-          var group = now.getGroup(iteration).now;
-          
-          // Add to server
-          for (var index = 0; index < _server.add.length; index++) {
-            _server.add[index].sync = true;
-            
-            _task.create(_server.add[index]);
-            
-            _log.debug ('sync(create): (' + master + ') ' + util.inspect(_server.add[index]));
-            group.clientCreateTask(master, _server.add[index]);
-          }
-          
-          // Remove from server
-          for (var index = 0; index < _server.remove.length; index++) {
-            _task.remove(_server.remove[index].id);
-            
-            _log.debug ('sync(remove): (' + master + ') ' + util.inspect(_server.remove[index]));
-            group.clientRemoveTask(master, _server.remove[index].id);
-          }
-          
-          // Update on server
-          for (var index = 0; index < _server.update.length; index++) {
-            _task.edit(_server.update[index].id, _server.update[index]);
-            
-            _log.debug ('sync(update): (' + master + ') ' + util.inspect(_server.update[index]));
-            group.clientUpdateTask(master, _server.update[index]);
-          }
-          
-          // Add to client
-          for (var index = 0; index < _client.add.length; index++) {
-            _log.debug ('sync(create): (' + master + ') ' + util.inspect(_client.add[index]));
-            group.clientCreateTask(master, _client.add[index]);
-          }
-          
-          // Remove from client
-          for (var index = 0; index < _client.remove.length; index++) {
-            _log.debug ('sync(remove): (' + master + ') ' + util.inspect(_client.remove[index]));
-            group.clientRemoveTask(master, _client.remove[index].id);
-          }
-          
-          // Update on client
-          for (var index = 0; index < _client.update.length; index++) {
-            _log.debug ('sync(update): (' + master + ') ' + util.inspect(_client.add[index]));
-            group.clientUpdateTask(master, _client.update[index]);
-          }
-          
-          if (callback) {
-            callback();
-          }
-          
-        });
+          callback = callback || function () {};
         
-      });
-      
-    }
+          var models = _model.get('task', store.getClient());
+          step(
+            function() {
+              models.find({ iteration: iteration }, this);
+            },
+            function(serverTasks) {
+            
+              var pushList = [];
+              var createList = [];
+              
+              // Prepare result and send it via callback
+              var clientOnlyList = {};
+              
+              // Prepare result and create on server
+              var serverOnlyList = {};
+              
+              // Prepare result live on both side.
+              var bothList = {};
+              
+              for (var key in clientTasks) {
+                var clientTask = clientTasks[key];
+                clientOnlyList[clientTask.id] = clientTask;
+              }
+              
+              for (var key in serverTasks) {
+                var serverTask = serverTasks[key];
+                serverOnlyList[serverTask.id] = serverTask;
+              }
+              
+              // Find both side result
+              for (var key in clientTasks) {
+                var clientTask = clientTasks[key];
+                if (serverOnlyList[clientTask.id]) {
+                  bothList[clientTask.id] = { client: clientTask,
+                                                 server: serverOnlyList[clientTask.id] };
+                  
+                  delete serverOnlyList[clientTask.id];
+                }
+              }
+              
+              for (var key in serverTasks) {
+                var serverTask = serverTasks[key];
+                if (clientOnlyList[serverTask.id]) {
+                  bothList[serverTask.id] = { client: clientOnlyList[serverTask.id],
+                                                 server: serverTask };
+                  
+                  delete clientOnlyList[serverTask.id];
+                }
+              }
+              
+              
+              // Add project to push list from serverOnlyList
+              for (var key in serverOnlyList) {
+                var serverTask = serverOnlyList[key];
+                pushList.push(serverTask);
+              }
+              
+              // Create project from clientOnlyList
+              for (var key in clientOnlyList) {
+                var clientTask = clientOnlyList[key];
+                
+                _log.debug ('Create task: ' + clientTask.id);
+                _log.trace (clientTask);
+                
+                clientTask._id = clientTask.id;
+                models.create(clientTask);
+                
+                var iterationGroup = now.getGroup(clientIteration.id);
+                var iterationNow = iterationGroup.now;
+                iterationNow.clientCreateTask(client, clientTask);
+                
+              }
+            
+              // Update project lives on both side.
+              for (var key in bothList) {
+                var object = bothList[key];
+                
+                var clientObject = object.client;
+                var serverObject = object.server;
+                
+                if (serverObject.updated > clientObject.updated ||
+                    serverObject.modified > clientObject.modified) {
+                  _log.debug ('Push task: ' + serverObject.id);
+                  pushList.push(serverObject);
+                } else {
+                  _log.debug ('Update task: ' + clientObject.id);
+                  models.edit(serverObject.id, clientObject);
+                  
+                  var iterationGroup = now.getGroup(serverObject.iteration);
+                  var iterationNow = iterationGroup.now;
+                  iterationNow.clientUpdateTask(client, clientObject);
+                }
+                
+              }
+              
+              if (pushList.length > 0) {
+                callback({ status: 'update', data: pushList});
+              } else {
+                callback({ status: 'keep' });
+              }
+            
+            }
+          );
+    
+        }
     
   }
   

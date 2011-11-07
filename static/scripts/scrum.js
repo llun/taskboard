@@ -153,6 +153,8 @@ _.init = function() {
         // If user already login it should sync user.
         now.syncUser(_.user, function(object) {
         
+          $('#sync-status').text('Syncing');
+        
           // How to handler error ?
           if (!object.error) {
           
@@ -175,6 +177,7 @@ _.init = function() {
             var projects = _.user.projects;
             var prepareProject = [];
             var prepareIteration = [];
+            
             for (var key in projects) {
               var project = Project.get(projects[key]);
               if (project && project.sync) {
@@ -188,6 +191,7 @@ _.init = function() {
                     prepareIteration.push(iteration);
                     joinList.push(iteration.id);
                   }
+                  
                 }
                 
                 // End of prepare iteration.
@@ -240,13 +244,43 @@ _.init = function() {
                 });
                 
                 // List iterations
+                var countSync = 0;
                 var iterations = _.project.iterations.slice(0).reverse()
                 for (var index = 0; index < iterations.length; index++) {
                   var iteration = Iteration.get(iterations[index]);
-                  var list = _.tmpl('iteration_list', iteration);
-                  $('#iterations-list-menu').append(list);
+                  if (iteration) {
+                  
+                    var list = _.tmpl('iteration_list', iteration);
+                    $('#iterations-list-menu').append(list);
+                  
+                    var prepareTasks = [];
+                    var tasks = iteration.tasks;  
+                    for (var key in tasks) {
+                      var task = Task.get(tasks[key]);
+                      if (task) {
+                        prepareTasks.push(task);
+                      }
+                    }
+                    
+                    // Sync tasks
+                    now.syncTasks(_.client, iteration.id, prepareTasks, function (object) {
+                    
+                      if (object.status == 'update') {
+                      }
+                    
+                      countSync++;
+                      if (countSync == iterations.length) {
+                        $('#sync-status').text('Online');
+                      }
+                    
+                    });
+                  
+                  } else {
+                    countSync++;
+                  }
+                  
                 }
-              
+                
               });
               
             });
@@ -420,34 +454,6 @@ _.init = function() {
         }
         
       }
-      
-      var iteration = Iteration.get(_.project.currentIteration());
-      var prepareSync = [];
-      var tasks = iteration.tasks;
-      
-      for (var taskID in tasks) {
-        var task = Task.get(taskID);
-        if (task) {
-          prepareSync.push(task);
-        }
-      }
-      
-      var prepareRemove = [];
-      var removed = _.persistent.get('removed');
-      
-      if (removed) {
-        prepareRemove = removed.list;
-        _.persistent.remove('removed');
-      }
-      
-      now.joinGroups(_.client, [iteration.id], function() {
-      
-        $('#sync-status').text('Syncing');
-        now.syncTasks(iteration.id , prepareSync, prepareRemove, function() {
-          $('#sync-status').text('Online');
-        });
-      
-      });
       
     });
   } else {
