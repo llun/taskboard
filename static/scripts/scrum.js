@@ -201,87 +201,90 @@ _.init = function() {
             }
             
             // Sync projects
-            now.syncProjects(_.client, _.user.id, prepareProject, function (object) {
+            now.syncModels(_.client, 'project', { owner: _.client }, prepareProject, 
+              function (object) {
             
-              if (object.status == 'update') {
-                var projects = object.data;
-                
-                for (var key in projects) {
-                  var project = projects[key];
-                  Project.save(project);
-                  
-                  joinList.push(project.id);
-                }
-                
-              }
-              
-              // List projects
-              var projects = _.user.projects;
-              for (var index = 0; index < projects.length; index++) {
-                var project = Project.get(projects[index]);
-                if (project) {
-                  var list = _.tmpl('project_list', project);
-                  $('#projects-list-menu').append(list);
-                }
-              }
-              
-              // Sync iterations
-              now.syncIterations(_.client, _.user.id, prepareIteration, function (object) {
-              
                 if (object.status == 'update') {
-                  var iterations = object.data;
+                  var projects = object.data;
                   
-                  for (var key in iterations) {
-                    var iteration = iterations[key];
-                    Iteration.save(iteration);
+                  for (var key in projects) {
+                    var project = projects[key];
+                    Project.save(project);
                     
-                    joinList.push(iteration.id);
+                    joinList.push(project.id);
+                  }
+                  
+                }
+                
+                // List projects
+                var projects = _.user.projects;
+                for (var index = 0; index < projects.length; index++) {
+                  var project = Project.get(projects[index]);
+                  if (project) {
+                    var list = _.tmpl('project_list', project);
+                    $('#projects-list-menu').append(list);
                   }
                 }
                 
-                now.joinGroups(_.client, joinList, function () {
-                  console.log ('Join projects success');
-                });
+                // Sync iterations
+                now.syncModels(_.client, 'iteration', { owner: _.client }, prepareIteration, 
+                  function (object) {
                 
-                // List iterations
-                var countSync = 0;
-                var iterations = _.project.iterations.slice(0).reverse()
-                for (var index = 0; index < iterations.length; index++) {
-                  var iteration = Iteration.get(iterations[index]);
-                  if (iteration) {
-                  
-                    var list = _.tmpl('iteration_list', iteration);
-                    $('#iterations-list-menu').append(list);
-                  
-                    var prepareTasks = [];
-                    var tasks = iteration.tasks;  
-                    for (var key in tasks) {
-                      var task = Task.get(tasks[key]);
-                      if (task) {
-                        prepareTasks.push(task);
+                    if (object.status == 'update') {
+                      var iterations = object.data;
+                      
+                      for (var key in iterations) {
+                        var iteration = iterations[key];
+                        Iteration.save(iteration);
+                        
+                        joinList.push(iteration.id);
                       }
                     }
                     
-                    // Sync tasks
-                    now.syncTasks(_.client, iteration.id, prepareTasks, function (object) {
-                    
-                      if (object.status == 'update') {
-                      }
-                    
-                      countSync++;
-                      if (countSync == iterations.length) {
-                        $('#sync-status').text('Online');
-                      }
-                    
+                    now.joinGroups(_.client, joinList, function () {
+                      console.log ('Join projects success');
                     });
-                  
-                  } else {
-                    countSync++;
-                  }
-                  
-                }
-                
-              });
+                    
+                    // List iterations
+                    var countSync = 0;
+                    var iterations = _.project.iterations.slice(0).reverse()
+                    for (var index = 0; index < iterations.length; index++) {
+                      var iteration = Iteration.get(iterations[index]);
+                      if (iteration) {
+                      
+                        var list = _.tmpl('iteration_list', iteration);
+                        $('#iterations-list-menu').append(list);
+                      
+                        var prepareTasks = [];
+                        var tasks = iteration.tasks;  
+                        for (var key in tasks) {
+                          var task = Task.get(tasks[key]);
+                          if (task) {
+                            prepareTasks.push(task);
+                          }
+                        }
+                        
+                        // Sync tasks
+                        now.syncModels(_.client, task, { owner: iteration.id }, prepareTasks, 
+                          function (object) {
+                        
+                            if (object.status == 'update') {
+                            }
+                          
+                            countSync++;
+                            if (countSync == iterations.length) {
+                              $('#sync-status').text('Online');
+                            }
+                          
+                          });
+                      
+                      } else {
+                        countSync++;
+                      }
+                      
+                    }
+                    
+                  });
               
             });
             
@@ -318,89 +321,102 @@ _.init = function() {
         $('#iteration-name').text(iteration.name);
         
       }
-      
-      // Project real-time synchronization
-      now.clientCreateProject = function (client, serverProject) {
-      
-        console.log ('server-debug(create): project - ' + 
-                     serverProject.id + ', ' + 
-                     serverProject.updated + ', ' +
-                     serverProject.modified);
+
+      var create = {
+        project: function (client, serverProject) {
+          console.log ('server-debug(create): project - ' + 
+                       serverProject.id + ', ' + 
+                       serverProject.updated + ', ' +
+                       serverProject.modified);
                      
-        if (client != _.client) {
-          Project.save(serverProject);
-          now.joinGroups(_.client, [serverProject.id]);
+          if (client != _.client) {
+            Project.save(serverProject);
+            now.joinGroups(_.client, [serverProject.id]);
+            
+            var list = _.tmpl('project_list', serverProject);
+            $('#projects-list-menu').append(list);
+          }
+        },
+        iteration: function (client, serverIteration) {
+          console.log ('server-debug(create): iteration - ' + 
+                       serverIteration.id + ', ' + 
+                       serverIteration.updated + ', ' +
+                       serverIteration.modified);
+                       
+          if (client != _.client) {
+            Project.save(serverIteration);
+            now.joinGroups(_.client, [serverIteration.id]);
+            
+            var list = _.tmpl('iteration_list', serverIteration);
+            $('#iterations-list-menu').append(list);
+          }
+        },
+        task: function (client, serverTask) {
           
-          var list = _.tmpl('project_list', serverProject);
-          $('#projects-list-menu').append(list);
         }
-        
       }
-      
-      now.clientUpdateProject = function (client, serverProject) {
-      
-        console.log ('server-debug(update): project - ' + 
-                     serverProject.id + ', ' + 
-                     serverProject.updated + ', ' +
-                     serverProject.modified);
-      
-        var clientProject = Project.get(serverProject.id);
-        if (serverProject.updated > clientProject.updated ||
-            serverProject.modified != clientProject.modified) {
-          Project.save(serverProject);
-        }
+
+      var update = {
+        project: function (client, serverProject) {
+          console.log ('server-debug(update): project - ' + 
+                       serverProject.id + ', ' + 
+                       serverProject.updated + ', ' +
+                       serverProject.modified);
         
-        clientProject = Project.get(serverProject.id);
-        $('#project-menu-' + clientProject.id).text(clientProject.name);
-        
-        if (_.project.id == clientProject.id) {
-          $('#project-name').text(clientProject.name);
-          _.project = clientProject;
-        }
-        
-      }
-      
-      // Iteration real-time synchronization
-      now.clientCreateIteration = function (client, serverIteration) {
-      
-        console.log ('server-debug(create): iteration - ' + 
-                     serverIteration.id + ', ' + 
-                     serverIteration.updated + ', ' +
-                     serverIteration.modified);
-                     
-        if (client != _.client) {
-          Project.save(serverIteration);
-          now.joinGroups(_.client, [serverIteration.id]);
+          var clientProject = Project.get(serverProject.id);
+          if (serverProject.updated > clientProject.updated ||
+              serverProject.modified != clientProject.modified) {
+            Project.save(serverProject);
+          }
           
-          var list = _.tmpl('iteration_list', serverIteration);
-          $('#iterations-list-menu').append(list);
-        }
+          clientProject = Project.get(serverProject.id);
+          $('#project-menu-' + clientProject.id).text(clientProject.name);
+          
+          if (_.project.id == clientProject.id) {
+            $('#project-name').text(clientProject.name);
+            _.project = clientProject;
+          }
+        },
+        iteration: function (client, serverIteration) {
+          console.log ('server-debug(update): iteration - ' + 
+                       serverIteration.id + ', ' + 
+                       serverIteration.updated + ', ' +
+                       serverIteration.modified);
         
+          var clientIteration = Iteration.get(serverIteration.id);
+          if (serverIteration.updated > clientIteration.updated ||
+              serverIteration.modified != clientIteration.modified) {
+            Iteration.save(serverIteration);
+          }
+          
+          clientIteration = Iteration.get(serverIteration.id);
+          $('#iteration-menu-' + clientIteration.id).text(clientIteration.name);
+          
+          var currentIteration = Iteration.get(_.project.currentIteration());
+          if (currentIteration.id == clientIteration.id) {
+            $('#iteration-name').text(clientIteration.name);
+          }
+        },
+        task: function (client, serverTask) {
+          
+        }
       }
-      
-      now.clientUpdateIteration = function (client, serverIteration) {
-      
-        console.log ('server-debug(update): iteration - ' + 
-                     serverIteration.id + ', ' + 
-                     serverIteration.updated + ', ' +
-                     serverIteration.modified);
-      
-        var clientIteration = Iteration.get(serverIteration.id);
-        if (serverIteration.updated > clientIteration.updated ||
-            serverIteration.modified != clientIteration.modified) {
-          Iteration.save(serverIteration);
+
+      // Real-time synchronization
+      now.clientCreate = function (client, type, serverModel) {
+        var handler = create[type];
+        if (handler) {
+          handler(client, serverModel);
         }
-        
-        clientIteration = Iteration.get(serverIteration.id);
-        $('#iteration-menu-' + clientIteration.id).text(clientIteration.name);
-        
-        var currentIteration = Iteration.get(_.project.currentIteration());
-        if (currentIteration.id == clientIteration.id) {
-          $('#iteration-name').text(clientIteration.name);
-        }
-        
       }
-      
+
+      now.clientUpdate = function (client, type, serverModel) {
+        var handler = update[type];
+        if (handler) {
+          handler(client, serverModel);
+        }
+      }
+
       // Task real-time synchronization
       now.clientCreateTask = function (from, task) {
         console.log ('server-debug(create): (' + from + ',' + task.id + ') ' + task.detail);

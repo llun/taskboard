@@ -6,11 +6,13 @@
 var Task = function(iteration, detail) {
   // Private properties
   var _responders = [];
+
+  this.type = 'task';
   
   // Public properties
   this.detail = detail;
   this.status = Task.status.TODO;
-  this.iteration = iteration;
+  this.owner = iteration;
   
   this.updated = new Date().getTime();
   this.modified = new Date().getTime();
@@ -110,13 +112,12 @@ Task.status = {
 // CRUD for Task
 Task.create = function(iteration, detail, push) {
   task = new Task(iteration, detail);
-  task.owner = _.user.id;
   
   _.persistent.save(task);
   
   if (push) {
-    if (navigator.onLine && now.syncTask) {
-      now.syncTask(_.project.currentIteration(), _.client, task);
+    if (navigator.onLine && now.syncModel) {
+      now.syncModel(_.client, task);
       task.sync = true;
       _.persistent.save(task);
     }
@@ -144,8 +145,8 @@ Task.save = function(task, push) {
   if (push) {
     task.updated = new Date().getTime();
     
-    if (navigator.onLine && now.syncTask) {
-      now.syncTask(_.project.currentIteration(), _.client, task);
+    if (navigator.onLine && now.syncModel) {
+      now.syncModel(_.client, task);
     }
   }
   
@@ -162,13 +163,6 @@ Task.remove = function(id, push) {
   
   removed.list.push(id);
   _.persistent.save(removed)
-  
-  if (push) {
-    if (navigator.onLine && now.syncTask) {
-      now.syncTask(_.project.currentIteration(), _.client, 
-                   {id: id, removed: true});
-    }
-  }
 }
 
 /**
@@ -180,6 +174,8 @@ var Iteration = function(name) {
   
   // Private variable
   var _self = this;
+
+  this.type = 'iteration';
   
   // Public variable
   this.begin = new Date(); // Begin time
@@ -238,8 +234,8 @@ Iteration.save = function (iteration, push) {
   iteration.modified = new Date().getTime();
   _.persistent.save(iteration);
   
-  if (navigator.onLine && now.syncIterations && push) {
-    now.syncIteration(_.client, iteration);
+  if (navigator.onLine && now.syncModel && push) {
+    now.syncModel(_.client, iteration);
   }
 }
 Iteration.remove = function (id, push) {
@@ -259,12 +255,6 @@ Iteration.remove = function (id, push) {
   
   removed.list.push(id);
   _.persistent.save(removed)
-  
-  if (push) {
-    if (navigator.onLine && now.syncTask) {
-      now.syncTask(id, _.client, {id: id, removed: true});
-    }
-  }
 }
 
 /**
@@ -277,6 +267,8 @@ var Project = function (name, iteration) {
 
   // Private properties
   var _self = this;
+
+  this.type = 'project';
 
   // Public properties
   this.name = name;
@@ -337,8 +329,8 @@ Project.create = function (name, owner, sync) {
   project.sync = sync;
   _.persistent.save(project);
   
-  if (navigator.onLine && now.syncProject && project.sync) {
-    now.syncProject(_.client, project);
+  if (navigator.onLine && now.syncModel && project.sync) {
+    now.syncModel(_.client, project);
   }
   
   return project;
@@ -368,8 +360,8 @@ Project.save = function (project, push) {
   
   _.persistent.save(project);
   
-  if (navigator.onLine && now.syncProject && project.sync && push) {
-    now.syncProject(_.client, project);
+  if (navigator.onLine && now.syncModel && project.sync && push) {
+    now.syncModel(_.client, project);
   }
 }
 Project.remove = function (id) {
@@ -394,6 +386,8 @@ var User = function (username, image, anonymous, project) {
 
   // Private properties
   var _self = this;
+
+  this.type = 'user';
 
   // Public properties
   this.username = username;

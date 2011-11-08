@@ -460,7 +460,7 @@ _.table = {
                       
                     }
                     
-                    now.syncTasks(iteration.id , pushTasks, []);
+                    now.syncModels(_.client, 'task', { owner: iteration.id } , pushTasks);
                     
                   }
                   
