@@ -20,7 +20,8 @@ var SyncHandler = {
      * @param {Function} callback
      */
     everyone.syncModels = function (client, type, parent, clientModels, callback) {
-      _log.debug ('Sync: ' + client + ', ' + util.inspect(clientModels));
+      _log.debug ('Sync: ' + '(' + type + ') ' + util.inspect(parent) +
+                  ' ' + client + ', ' + util.inspect(clientModels));
 
       callback = callback || function() {};
 
@@ -85,7 +86,7 @@ var SyncHandler = {
           for (var key in clientOnlyList) {
             var clientModel = clientOnlyList[key];
             
-            _log.debug ('Create: ' + clientModel.id);
+            _log.debug ('Create: (' + clientModel.type + ') ' + clientModel.id);
             _log.trace (clientModel);
             
             models.create(clientModel);
@@ -105,10 +106,10 @@ var SyncHandler = {
             
             if (serverObject.updated > clientObject.updated ||
                 serverObject.modified > clientObject.modified) {
-              _log.debug ('Push: ' + serverObject.id);
+              _log.debug ('Push: (' + serverObject.type + ') ' + serverObject.id);
               pushList.push(serverObject);
             } else {
-              _log.debug ('Update: ' + clientObject.id);
+              _log.debug ('Update: (' + clientObject.type + ') ' + clientObject.id);
               models.edit(serverObject.id, clientObject);
               
               // Special case
@@ -163,7 +164,7 @@ var SyncHandler = {
             }
 
             var modelNow = modelGroup.now;
-            modelNow.clientUpdate(client, serverModel.type, clientProject);
+            modelNow.clientUpdate(client, serverModel.type, clientModel);
           }
         } else {
           _log.debug ('Create: ' + clientModel.id);

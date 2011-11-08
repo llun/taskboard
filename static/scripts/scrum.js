@@ -201,7 +201,7 @@ _.init = function() {
             }
             
             // Sync projects
-            now.syncModels(_.client, 'project', { owner: _.client }, prepareProject, 
+            now.syncModels(_.client, 'project', { owner: _.user.id }, prepareProject, 
               function (object) {
             
                 if (object.status == 'update') {
@@ -227,7 +227,7 @@ _.init = function() {
                 }
                 
                 // Sync iterations
-                now.syncModels(_.client, 'iteration', { owner: _.client }, prepareIteration, 
+                now.syncModels(_.client, 'iteration', { owner: _.user.id }, prepareIteration, 
                   function (object) {
                 
                     if (object.status == 'update') {
@@ -265,7 +265,7 @@ _.init = function() {
                         }
                         
                         // Sync tasks
-                        now.syncModels(_.client, task, { owner: iteration.id }, prepareTasks, 
+                        now.syncModels(_.client, 'task', { owner: iteration.id }, prepareTasks, 
                           function (object) {
                         
                             if (object.status == 'update') {
