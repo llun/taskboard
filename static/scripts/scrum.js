@@ -309,7 +309,7 @@ _.init = function() {
       
         if (user.updated > _.user.updated) {    
           User.save(user);
-          _.user = user;
+          _.user = User.get(user.id);
         }
         
         _.project = Project.get(user.defaultProject);
