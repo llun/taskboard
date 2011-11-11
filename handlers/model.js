@@ -128,7 +128,7 @@ var SyncHandler = {
           }
           
           if (pushList.length > 0) {
-            callback({ status: 'update', data: pushList});
+            callback({ status: 'update', owner: parent.owner, data: pushList});
           } else {
             callback({ status: 'keep' });
           }

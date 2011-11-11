@@ -269,6 +269,22 @@ _.init = function() {
                           function (object) {
                         
                             if (object.status == 'update') {
+                            
+                              var tasks = object.data;
+                              
+                              for (var key in tasks) {
+                                var task = tasks[key];
+                                Task.save(task);
+
+                                if (object.owner == _.project.currentIteration() &&
+                                    $('#' + task.id).length === 0) {
+                                  task = Task.get(task.id);
+
+                                  $('#' + task.status).append(_.tmpl('task', task));
+                                  $('#' + task.id).attr('draggable', true);
+                                }
+                              }
+                              
                             }
                           
                             countSync++;
