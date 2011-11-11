@@ -158,7 +158,7 @@ var SyncHandler = {
             
             var modelGroup = null;
             if (serverModel.type == 'task') {
-              modelGroup = now.getGroup(serverModel.parent);
+              modelGroup = now.getGroup(serverModel.owner);
             } else {
               modelGroup = now.getGroup(serverModel.id);
             }
@@ -174,7 +174,8 @@ var SyncHandler = {
           
           var modelGroup = null;
           if (clientModel.type == 'task') {
-            modelGroup = now.getGroup(clientModel.parent);
+            _log.debug ('Create task on group: ' + clientModel.owner);
+            modelGroup = now.getGroup(clientModel.owner);
           } else {
             modelGroup = now.getGroup(clientModel.id);
           }

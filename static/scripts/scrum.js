@@ -242,7 +242,7 @@ _.init = function() {
                     }
                     
                     now.joinGroups(_.client, joinList, function () {
-                      console.log ('Join projects success');
+                      console.log ('Join success');
                     });
                     
                     // List iterations
@@ -372,10 +372,11 @@ _.init = function() {
 
           if (client != _.client) {
             Task.save(serverTask);
-            
-            if (serverTask.owner == _.project.currentIteration()) {
-              $('#' + serverTask.status).append(_.tmpl('task', serverTask));
-              $('#' + serverTask.id).attr('draggable', true);
+
+            var clientTask = Task.get(serverTask.id);
+            if (clientTask.owner == _.project.currentIteration()) {
+              $('#' + clientTask.status).append(_.tmpl('task', clientTask));
+              $('#' + clientTask.id).attr('draggable', true);
             }
           }
         }
