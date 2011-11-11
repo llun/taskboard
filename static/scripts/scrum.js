@@ -368,7 +368,16 @@ _.init = function() {
           }
         },
         task: function (client, serverTask) {
-          
+          console.log ('server-debug(create): task - ' + serverTask.id);
+
+          if (client != _.client) {
+            Task.save(serverTask);
+            
+            if (serverTask.owner == _.project.currentIteration()) {
+              $('#' + serverTask.status).append(_.tmpl('task', serverTask));
+              $('#' + serverTask.id).attr('draggable', true);
+            }
+          }
         }
       }
 
@@ -414,7 +423,21 @@ _.init = function() {
           }
         },
         task: function (client, serverTask) {
-          
+          console.log ('server-debug(create): task - ' + task.id);
+
+          var clientTask = Task.get(serverTask.id);
+          if (serverTask.updated > clientTask.updated ||
+              serverTask.modified != clientTask.modified) {
+            Task.save(serverTask);      
+          }
+
+          clientTask = Task.get(serverTask.id);
+          if (clientTask.owner == _.project.currentIteration()) {
+
+            $('#' + clientTask.id).remove();
+            $('#' + clientTask.status).append(_.tmpl('task', clientTask));
+            $('#' + clientTask.id).attr('draggable', true);
+          }
         }
       }
 
@@ -434,42 +457,6 @@ _.init = function() {
       }
 
       // Task real-time synchronization
-      now.clientCreateTask = function (from, task) {
-        console.log ('server-debug(create): (' + from + ',' + task.id + ') ' + task.detail);
-        if (from == _.client) { return; }
-        
-        if (!Task.get(task.id)) {
-          Task.save(task);
-          
-          var iteration = Iteration.get(_.project.currentIteration());
-          iteration.addTask(task);
-          Iteration.save(iteration);
-
-          var _task = Task.get(task.id);
-          $('#' + _task.status).append(_.tmpl('task', _task));
-          $('#' + _task.id).attr('draggable', true);
-          console.log ('server(create): ' + _task.status + ', ' + _task.detail);
-        }
-        
-      };
-      
-      now.clientUpdateTask = function (from, task) {
-        console.log ('server-debug(update): (' + from + ',' + task.id + ') '  + task.detail);
-        if (from == _.client) { return; }
-        
-        var _task = Task.get(task.id);
-        _task.setDetail(task.detail);
-        _task.updated = task.updated;
-        _task.status = task.status;
-        Task.save(_task);
-        
-        console.log ('server(update): ' + _task.status + ', ' + _task.detail);
-        
-        $('#' + _task.id).remove();
-        $('#' + _task.status).append(_.tmpl('task', _task));
-        $('#' + _task.id).attr('draggable', true);
-      }
-      
       now.clientRemoveTask = function (from, id) {
         console.log ('server-debug(remove): (' + from + ',' + id + ')');
         if (from == _.client) { return; }

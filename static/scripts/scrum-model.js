@@ -14,7 +14,7 @@ var Task = function(iteration, detail) {
   this.status = Task.status.TODO;
   this.owner = iteration;
   
-  this.updated = new Date().getTime();
+  this.updated = 0;
   this.modified = new Date().getTime();
   
   // Private methods
@@ -135,6 +135,7 @@ Task.get = function(id) {
     task.status = object.status;
     task.sync = object.sync;
     task.updated = object.updated;
+    task.modified = object.modified;
     task.owner = object.owner;
   }
   
@@ -143,7 +144,8 @@ Task.get = function(id) {
 Task.save = function(task, push) {
   
   if (push) {
-    task.updated = new Date().getTime();
+    task.updated++;
+    task.modified = new Date().getTime();
     
     if (navigator.onLine && now.syncModel) {
       now.syncModel(_.client, task);

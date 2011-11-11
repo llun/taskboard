@@ -172,7 +172,13 @@ var SyncHandler = {
           
           models.create(clientModel);
           
-          var modelGroup = now.getGroup(clientModel.owner);
+          var modelGroup = null;
+          if (clientModel.type == 'task') {
+            modelGroup = now.getGroup(clientModel.parent);
+          } else {
+            modelGroup = now.getGroup(clientModel.id);
+          }
+
           var modelNow = modelGroup.now;
           modelNow.clientCreate(client, clientModel.type, clientModel);
         }
