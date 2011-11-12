@@ -403,60 +403,74 @@ _.init = function() {
                        serverProject.id + ', ' + 
                        serverProject.updated + ', ' +
                        serverProject.modified);
-        
-          var clientProject = Project.get(serverProject.id);
-          if (serverProject.updated > clientProject.updated ||
-              serverProject.modified != clientProject.modified) {
-            Project.save(serverProject);
+                       
+          if (client != _.client) {
+          
+            var clientProject = Project.get(serverProject.id);
+            if (serverProject.updated > clientProject.updated ||
+                serverProject.modified != clientProject.modified) {
+              Project.save(serverProject);
+            }
+            
+            clientProject = Project.get(serverProject.id);
+            $('#project-menu-' + clientProject.id).text(clientProject.name);
+            
+            if (_.project.id == clientProject.id) {
+              $('#project-name').text(clientProject.name);
+              _.project = clientProject;
+            }
+          
           }
           
-          clientProject = Project.get(serverProject.id);
-          $('#project-menu-' + clientProject.id).text(clientProject.name);
-          
-          if (_.project.id == clientProject.id) {
-            $('#project-name').text(clientProject.name);
-            _.project = clientProject;
-          }
         },
         iteration: function (client, serverIteration) {
           console.log ('server-debug(update): iteration - ' + 
                        serverIteration.id + ', ' + 
                        serverIteration.updated + ', ' +
                        serverIteration.modified);
+                       
+          if (client != _.client) {
+          
+            var clientIteration = Iteration.get(serverIteration.id);
+            if (serverIteration.updated > clientIteration.updated ||
+                serverIteration.modified != clientIteration.modified) {
+              Iteration.save(serverIteration);
+            }
+            
+            clientIteration = Iteration.get(serverIteration.id);
+            $('#iteration-menu-' + clientIteration.id).text(clientIteration.name);
+            
+            var currentIteration = Iteration.get(_.project.currentIteration());
+            if (currentIteration.id == clientIteration.id) {
+              $('#iteration-name').text(clientIteration.name);
+            }
+            
+          }
         
-          var clientIteration = Iteration.get(serverIteration.id);
-          if (serverIteration.updated > clientIteration.updated ||
-              serverIteration.modified != clientIteration.modified) {
-            Iteration.save(serverIteration);
-          }
-          
-          clientIteration = Iteration.get(serverIteration.id);
-          $('#iteration-menu-' + clientIteration.id).text(clientIteration.name);
-          
-          var currentIteration = Iteration.get(_.project.currentIteration());
-          if (currentIteration.id == clientIteration.id) {
-            $('#iteration-name').text(clientIteration.name);
-          }
         },
         task: function (client, serverTask) {
           console.log ('server-debug(update): task - ' + serverTask.id);
 
-          if (serverTask.delete) {
-            Task.remove(serverTask.id);
-            $('#' + serverTask.id).remove();
-          } else {
-            var clientTask = Task.get(serverTask.id);
+          if (client != _.client) {
           
-            if (serverTask.updated > clientTask.updated ||
-                serverTask.modified != clientTask.modified) {
-              Task.save(serverTask);
-            }
+            if (serverTask.delete) {
+              Task.remove(serverTask.id);
+              $('#' + serverTask.id).remove();
+            } else {
+              var clientTask = Task.get(serverTask.id);
             
-            clientTask = Task.get(serverTask.id);
-            if (clientTask.owner == _.project.currentIteration()) {
-              $('#' + clientTask.status).append(_.tmpl('task', clientTask));
-              $('#' + clientTask.id).attr('draggable', true);
+              if (serverTask.updated > clientTask.updated ||
+                  serverTask.modified != clientTask.modified) {
+                Task.save(serverTask);
+              }
+              
+              clientTask = Task.get(serverTask.id);
+              if (clientTask.owner == _.project.currentIteration()) {
+                $('#' + clientTask.status).append(_.tmpl('task', clientTask));
+                $('#' + clientTask.id).attr('draggable', true);
+              }
             }
+          
           }
           
         }
