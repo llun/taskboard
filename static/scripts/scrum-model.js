@@ -157,14 +157,13 @@ Task.save = function(task, push) {
 }
 Task.remove = function(id, push) {
   var task = Task.get(id);
-  _.persistent.remove(id);
+  
+  task.updated++;
+  task.modified = new Date().getTime();
+  task.delete = true;
   
   if (push) {
     if (navigator.onLine && now.syncModel) {
-      task.updated++;
-      task.modified = new Date().getTime();
-    
-      task.delete = true;
       now.syncModel(_.client, task);
     }
   }

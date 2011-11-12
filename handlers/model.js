@@ -33,7 +33,7 @@ var SyncHandler = {
         function(serverModels) {
           
           var pushList = [];
-          var createList = [];
+          var removeList = [];
 
           // Prepare result and send it via callback
           var clientOnlyList = {};
@@ -42,19 +42,30 @@ var SyncHandler = {
           var serverOnlyList = {};
 
           // Prepare delete list for remove object from client
-          var deleteList = {};
+          var deleteOnClient = {};
+          var deleteOnServer = {};
           
           // Prepare result live on both side.
           var bothList = {};
           
           for (var key in clientModels) {
             var clientModel = clientModels[key];
-            clientOnlyList[clientModel.id] = clientModel;
+            
+            if (clientModel.delete) {
+              deleteOnClient[clientModel.id] = clientModel;
+            } else {
+              clientOnlyList[clientModel.id] = clientModel;
+            }
           }
           
           for (var key in serverModels) {
             var serverModel = serverModels[key];
-            serverOnlyList[serverModel.id] = serverModel;
+            
+            if (serverModel.delete) {
+              deleteOnServer[serverModel.id] = serverModel;
+            } else {
+              serverOnlyList[serverModel.id] = serverModel;
+            }
           }
           
           // Find both side result
@@ -99,6 +110,24 @@ var SyncHandler = {
             parentNow.clientCreate(client, type, clientModel);
             
           }
+          
+          // Remove task live in delete on client.
+          for (var key in deleteOnClient) {
+            if (!deleteOnServer[key]) {
+              if (serverOnlyList[key] || bothList[key]) {
+                // Live on server
+                var deleteOnServerObject = deleteOnServer[key];
+                models.edit(serverObject.id, deleteOnServer);
+              }
+            }
+          }
+          
+          // Remove task live in delete on server
+          for (var key in deleteOnServer) {
+            if (!deleteOnClient[key]) {
+              removeList.push(deleteOnServer[key]);
+            }
+          }
         
           // Update project lives on both side.
           for (var key in bothList) {
@@ -130,8 +159,8 @@ var SyncHandler = {
             
           }
           
-          if (pushList.length > 0) {
-            callback({ status: 'update', owner: parent.owner, data: pushList});
+          if (pushList.length > 0 || removeList.length > 0) {
+            callback({ status: 'update', owner: parent.owner, data: pushList, remove: removeList });
           } else {
             callback({ status: 'keep' });
           }

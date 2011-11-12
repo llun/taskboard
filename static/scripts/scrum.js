@@ -21,7 +21,7 @@ _.init = function() {
 
     if (iteration.tasks[taskID]) {
       var task = Task.get(taskID);
-      if (task) {
+      if (task && !task.delete) {
         $('#' + task.status).append(_.tmpl('task', task));
         $('#' + task.id).attr('draggable', true);
       }
@@ -214,6 +214,11 @@ _.init = function() {
                     joinList.push(project.id);
                   }
                   
+                  var removed = object.removed;
+                  for (var key in removed) {
+                    _.persistent.remove(removed[key].id);
+                  }
+                  
                 }
                 
                 // List projects
@@ -238,6 +243,11 @@ _.init = function() {
                         Iteration.save(iteration);
                         
                         joinList.push(iteration.id);
+                      }
+                      
+                      var removed = object.removed;
+                      for (var key in removed) {
+                        _.persistent.remove(removed[key].id);
                       }
                     }
                     
@@ -283,6 +293,11 @@ _.init = function() {
                                   $('#' + task.status).append(_.tmpl('task', task));
                                   $('#' + task.id).attr('draggable', true);
                                 }
+                              }
+                              
+                              var removed = object.removed;
+                              for (var key in removed) {
+                                _.persistent.remove(removed[key].id);
                               }
                               
                             }
@@ -428,7 +443,7 @@ _.init = function() {
 
           if (serverTask.delete) {
             Task.remove(serverTask.id);
-            $('#' + clientTask.id).remove();
+            $('#' + serverTask.id).remove();
           } else {
             var clientTask = Task.get(serverTask.id);
           
