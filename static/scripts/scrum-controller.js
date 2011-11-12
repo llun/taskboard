@@ -323,8 +323,8 @@ _.table = {
     $('#edit-iteration-name').val(iteration.name);
     $('#edit-iteration-name').focus();
     
-    var input = $('#edit-iteration-name')[0];
-    input.setSelectionRange(0, iteration.name.length);
+    var input = $('#edit-project-name')[0];
+    input.setSelectionRange(0, project.name.length);
     
   },
   'board/save': function () {

@@ -15,6 +15,23 @@ body {
 #logged-out-menu { display: none; }
 #logged-in-menu img { vertical-align: middle; }
 
+#notification-menu { border-left: 2px solid #333;  }
+#notification-menu > a {
+  padding: 10px 5px 9px;
+}
+#notification-status {
+  background-color: #666;
+  display: inline-block;
+  height: 21px;
+  text-align: center;
+  color: #999;
+  width: 21px;
+  border-radius: 2px;
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: 11px;
+}
+
 .topbar a.user-icon { padding: 10px 10px 8px; border-left: 2px solid #333; }
 .topbar a.login { padding: 10px 10px 10px; border-left: 2px solid #333; }
 .topbar img.login { vertical-align: text-bottom; }
