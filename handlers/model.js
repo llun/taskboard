@@ -40,6 +40,9 @@ var SyncHandler = {
           
           // Prepare result and create on server
           var serverOnlyList = {};
+
+          // Prepare delete list for remove object from client
+          var deleteList = {};
           
           // Prepare result live on both side.
           var bothList = {};

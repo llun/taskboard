@@ -143,10 +143,10 @@ Task.get = function(id) {
 }
 Task.save = function(task, push) {
   
+  task.updated++;
+  task.modified = new Date().getTime();
+  
   if (push) {
-    task.updated++;
-    task.modified = new Date().getTime();
-    
     if (navigator.onLine && now.syncModel) {
       now.syncModel(_.client, task);
     }
@@ -156,15 +156,18 @@ Task.save = function(task, push) {
   
 }
 Task.remove = function(id, push) {
+  var task = Task.get(id);
   _.persistent.remove(id);
   
-  var removed = _.persistent.get('removed');
-  if (!removed) {
-    removed = { id: 'removed', list: [] };    
+  if (push) {
+    if (navigator.onLine && now.syncModel) {
+      task.updated++;
+      task.modified = new Date().getTime();
+    
+      task.delete = true;
+      now.syncModel(_.client, task);
+    }
   }
-  
-  removed.list.push(id);
-  _.persistent.save(removed)
 }
 
 /**

@@ -424,21 +424,26 @@ _.init = function() {
           }
         },
         task: function (client, serverTask) {
-          console.log ('server-debug(create): task - ' + task.id);
+          console.log ('server-debug(update): task - ' + serverTask.id);
 
-          var clientTask = Task.get(serverTask.id);
-          if (serverTask.updated > clientTask.updated ||
-              serverTask.modified != clientTask.modified) {
-            Task.save(serverTask);      
-          }
-
-          clientTask = Task.get(serverTask.id);
-          if (clientTask.owner == _.project.currentIteration()) {
-
+          if (serverTask.delete) {
+            Task.remove(serverTask.id);
             $('#' + clientTask.id).remove();
-            $('#' + clientTask.status).append(_.tmpl('task', clientTask));
-            $('#' + clientTask.id).attr('draggable', true);
+          } else {
+            var clientTask = Task.get(serverTask.id);
+          
+            if (serverTask.updated > clientTask.updated ||
+                serverTask.modified != clientTask.modified) {
+              Task.save(serverTask);
+            }
+            
+            clientTask = Task.get(serverTask.id);
+            if (clientTask.owner == _.project.currentIteration()) {
+              $('#' + clientTask.status).append(_.tmpl('task', clientTask));
+              $('#' + clientTask.id).attr('draggable', true);
+            }
           }
+          
         }
       }
 
@@ -455,24 +460,6 @@ _.init = function() {
         if (handler) {
           handler(client, serverModel);
         }
-      }
-
-      // Task real-time synchronization
-      now.clientRemoveTask = function (from, id) {
-        console.log ('server-debug(remove): (' + from + ',' + id + ')');
-        if (from == _.client) { return; }
-        
-        console.log ('server(remove): ' + id);
-        
-        if ($('#' + id).length > 0) {
-          $('#' + id).remove();
-          Task.remove(id);
-          
-          var iteration = Iteration.get(_.project.currentIteration());
-          iteration.removeTask(id);
-          Iteration.save(iteration);
-        }
-        
       }
       
     });
