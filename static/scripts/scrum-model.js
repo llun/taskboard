@@ -204,13 +204,17 @@ var Iteration = function(name) {
 }
 
 // CRUD for Iteration
-Iteration.create = function (name) {
+Iteration.create = function (name, push) {
   var iteration = new Iteration(name);
   if (_.user) {
     iteration.owner = _.user.id;
   }
   
   _.persistent.save(iteration);
+  
+  if (navigator.onLine && now.syncModel && push) {
+    now.syncModel(_.client, iteration);
+  }
   
   return iteration;
 }
@@ -250,15 +254,13 @@ Iteration.remove = function (id, push) {
     Task.remove(task, push);
   }
   
-  _.persistent.remove(id);
-  
-  var removed = _.persistent.get('removed');
-  if (!removed) {
-    removed = { id: 'removed', list: [] };
+  iteration.updated += 1;
+  iteration.modified = new Date().getTime();
+  iteration.delete = true;
+  _.persistent.save(iteration);
+  if (navigator.onLine && now.syncModel && push) {
+    now.syncModel(_.client, iteration);
   }
-  
-  removed.list.push(id);
-  _.persistent.save(removed)
 }
 
 /**
@@ -306,7 +308,7 @@ var Project = function (name, iteration) {
       }
     }
     
-    iteration = Iteration.create('Iteration ' + (_self.iterations.length + 1));
+    iteration = Iteration.create('Iteration ' + (_self.iterations.length + 1), true);
     _self.iterations.push(iteration.id);
     
     Project.save(_self, true);
@@ -315,7 +317,7 @@ var Project = function (name, iteration) {
   this.cancelIteration = function cancelIteration() {
     Iteration.remove(_self.currentIteration());
     
-    var iteration = Iteration.create();
+    var iteration = Iteration.create(null, true);
     _self.iterations[_self.iterations.length - 1] = iteration.id;
     
     Project.save(_self);
@@ -327,7 +329,7 @@ var Project = function (name, iteration) {
 
 // CRUD for Project
 Project.create = function (name, owner, sync) {
-  var iteration = Iteration.create('Iteration 1');
+  var iteration = Iteration.create('Iteration 1', true);
   var project = new Project(name, iteration.id);
   project.owner = owner;
   project.sync = sync;

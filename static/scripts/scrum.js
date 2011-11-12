@@ -432,6 +432,24 @@ _.init = function() {
             if (_.project.id == clientProject.id) {
               $('#project-name').text(clientProject.name);
               _.project = clientProject;
+              
+              var iteration = Iteration.get(_.project.currentIteration());
+              $('#iteration-name').text(iteration.name);
+              
+              $('.task').remove();
+              for (var taskID in iteration.tasks) {
+              
+                  if (iteration.tasks[taskID]) {
+                    var task = Task.get(taskID);
+                    if (task && !task.delete) {
+                      $('#' + task.status).append(_.tmpl('task', task));
+                      $('#' + task.id).attr('draggable', true);
+                    }
+                    
+                  }
+                  
+                }
+              
             }
           
           }
