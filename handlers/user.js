@@ -43,31 +43,38 @@ var UserHandler = {
         },
         function (iterations) {
           output.iterations = iterations;
+          output.tasks = [];
           
-          var count = 0;
-          var tasks = _model.get('task', store.getClient());
-          for (var key in iterations) {
-            tasks.find({ owner: iterations[key].id }, function (tasks) {
-            
-              if (!output.tasks) {
-                output.tasks = [];
-              }
-            
-              for (var index in tasks) {
-                var task = tasks[index];
-                if (!task.delete) {
-                  output.tasks.push(task);
+          _log.trace ('Total iteration: ' + iterations.length);
+          if (iterations.length > 0) {
+            var count = 0;
+            var tasks = _model.get('task', store.getClient());
+            for (var key in iterations) {
+              tasks.find({ owner: iterations[key].id }, function (tasks) {
+              
+                for (var index in tasks) {
+                  var task = tasks[index];
+                  if (!task.delete) {
+                    output.tasks.push(task);
+                  }
                 }
-              }
-            
-              count++;
-              if (count == iterations.length) {
-                _log.trace(output);
-                callback(output);
-              }
-            
-            });
+              
+                count++;
+                if (count == iterations.length) {
+                  _log.trace(output);
+                  callback(output);
+                }
+              
+              });
+            }
+          
+          } else {
+
+            _log.trace(output);
+            callback(output);
+          
           }
+          
           
         }
       );
