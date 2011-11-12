@@ -296,20 +296,20 @@ var Project = function (name, iteration) {
   this.endIteration = function endIteration() {
     var iteration = Iteration.get(_self.currentIteration());
     iteration.end = new Date();
-    Iteration.save(iteration);
+    Iteration.save(iteration, true);
     
     for (var key in iteration.tasks) {
       var task = Task.get(key);
       if (task) {
         task.status = Task.status.DONE;
-        Task.save(task);
+        Task.save(task, true);
       }
     }
     
     iteration = Iteration.create('Iteration ' + (_self.iterations.length + 1));
     _self.iterations.push(iteration.id);
     
-    Project.save(_self);
+    Project.save(_self, true);
   }
   
   this.cancelIteration = function cancelIteration() {

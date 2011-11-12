@@ -498,12 +498,34 @@ _.table = {
           joinGroups.push(iteration.id);
         }
         
+        for (var key in data.tasks) {
+          var task = data.tasks[key];
+          Task.save(task);
+        }
+        
         _.user = User.get(user.id);
         _.project = Project.get(_.user.defaultProject);
         
         var current = _.persistent.get('current');
         current.key = user.id;
         _.persistent.save(current);
+        
+        var iteration = Iteration.get(_.project.currentIteration());
+        $('#project-name').text(_.project.name);
+        $('#iteration-name').text(iteration.name);
+        
+        for (var taskID in iteration.tasks) {
+        
+          if (iteration.tasks[taskID]) {
+            var task = Task.get(taskID);
+            if (task && !task.delete) {
+              $('#' + task.status).append(_.tmpl('task', task));
+              $('#' + task.id).attr('draggable', true);
+            }
+              
+          }
+            
+        }
         
         now.joinGroups(_.client, joinGroups, function() {
           $('#logged-in-status').css('display', 'block');

@@ -44,8 +44,31 @@ var UserHandler = {
         function (iterations) {
           output.iterations = iterations;
           
-          _log.trace (output);
-          callback(output);
+          var count = 0;
+          var tasks = _model.get('task', store.getClient());
+          for (var key in iterations) {
+            tasks.find({ owner: iterations[key].id }, function (tasks) {
+            
+              if (!output.tasks) {
+                output.tasks = [];
+              }
+            
+              for (var index in tasks) {
+                var task = tasks[index];
+                if (!task.delete) {
+                  output.tasks.push(task);
+                }
+              }
+            
+              count++;
+              if (count == iterations.length) {
+                _log.trace(output);
+                callback(output);
+              }
+            
+            });
+          }
+          
         }
       );
 
