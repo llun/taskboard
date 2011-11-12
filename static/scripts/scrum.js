@@ -334,7 +334,7 @@ _.init = function() {
       // User real-time synchronization
       now.clientUpdateUser = function (user) {
       
-        console.log ('server-debug(create): user - ' + 
+        console.log ('server-debug(update): user - ' + 
                      user.id + ', ' + 
                      user.updated);
       
@@ -350,6 +350,20 @@ _.init = function() {
         
         var iteration = Iteration.get(_.project.currentIteration());
         $('#iteration-name').text(iteration.name);
+        
+        $('.task').remove();
+        for (var taskID in iteration.tasks) {
+        
+          if (iteration.tasks[taskID]) {
+            var task = Task.get(taskID);
+            if (task && !task.delete) {
+              $('#' + task.status).append(_.tmpl('task', task));
+              $('#' + task.id).attr('draggable', true);
+            }
+              
+          }
+            
+        }
         
       }
 

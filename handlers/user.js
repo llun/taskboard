@@ -112,9 +112,6 @@ var UserHandler = {
     
     }
   
-    everyone.remove = function (client, objects, callback) {
-    }
-  
   }
   
 }

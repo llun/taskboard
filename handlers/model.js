@@ -204,14 +204,7 @@ var SyncHandler = {
           
           models.create(clientModel);
           
-          var modelGroup = null;
-          if (clientModel.type == 'task') {
-            _log.debug ('Create task on group: ' + clientModel.owner);
-            modelGroup = now.getGroup(clientModel.owner);
-          } else {
-            modelGroup = now.getGroup(clientModel.id);
-          }
-
+          var modelGroup = now.getGroup(clientModel.owner);
           var modelNow = modelGroup.now;
           modelNow.clientCreate(client, clientModel.type, clientModel);
         }
