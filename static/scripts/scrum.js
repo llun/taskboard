@@ -466,6 +466,8 @@ _.init = function() {
               
               clientTask = Task.get(serverTask.id);
               if (clientTask.owner == _.project.currentIteration()) {
+                $('#' + clientTask.id).remove();
+              
                 $('#' + clientTask.status).append(_.tmpl('task', clientTask));
                 $('#' + clientTask.id).attr('draggable', true);
               }
