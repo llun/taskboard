@@ -253,6 +253,13 @@ _.table = {
       } else {
         $('#end-iteration-button').removeAttr('disabled');
       }
+      
+      $('.iteration-list-menu-item').remove();
+      for (var index in project.iterations) {
+        var iteration = Iteration.get(project.iterations[index]);
+        var list = _.tmpl('iteration_list', iteration);
+        $('#iterations-list-menu').append(list);
+      }
     
     }
   
