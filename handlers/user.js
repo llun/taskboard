@@ -110,12 +110,19 @@ var UserHandler = {
               function(error) {
                 callback ({ status: 'keep' });
               
-                var userGroup = now.getGroup(user.id);
+                var userGroup = now.getGroup(serverUser.id);
                 var userNow = userGroup.now;
-                userNow.clientUpdateUser(clientUser);
+                userNow.updateUser(clientUser);
               });
             
           }
+          
+          var invites = _model.get('invite', store.getClient());
+          invites.find({target: serverUser.username}, function (items) {
+            var userGroup = now.getGroup(serverUser.id);
+            var userNow = userGroup.now;
+            userNow.notifyUser(items);
+          });
         
         } else {
         
@@ -140,6 +147,67 @@ var UserHandler = {
         callback();
       }
     
+    }
+  
+    /**
+     * Invite someone to join project.
+     *
+     * @param {String} from username
+     * @param {String} to username
+     * @param {String} project id
+     * @param {Function} callback
+     */
+    everyone.invite = function (from, to, project, callback) {
+    
+      var projects = _model.get('project', store.getClient());
+      projects.get(project, function (item) {
+        if (item) {
+        
+          var invites = _model.get('invite', store.getClient());
+          var invite = { type: 'invite',
+                         from: user,
+                         to: to,
+                         project: item.name,
+                         target: item.id };
+                         
+           
+          invites.find({to: to, target: item.id}, function (item) {
+          
+            if (items.length == 0) {
+              
+              invites.create(invite, function (error, object) {
+                if (!error) {
+                
+                  var users = _model.get('user', store.getClient());
+                  users.find({username: to}, function(items) {
+                  
+                    if (items.length > 0) {
+                      var user = items[0];
+                      
+                      var userGroup = now.getGroup(user.id);
+                      var userNow = userGroup.now;
+                      userNow.notifyUser([invite]);
+                      
+                      callback({ status: 'invited', who: to });
+                    }
+                  
+                  });
+                
+                }
+              });
+              
+            }
+            
+          });
+        }
+      });
+      
+    }
+    
+    everyone.accept = function (project) {
+    }
+    
+    everyone.invites = function (user) {
     }
   
   }

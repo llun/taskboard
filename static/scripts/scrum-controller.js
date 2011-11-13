@@ -329,7 +329,10 @@ _.table = {
       $('#edit-project-sync-option').attr('checked', true);
       $('#edit-project-sync-option').attr('disabled', true);
       
-      $('#share-user-div').removeClass('not-sync-project');
+      if (now.invite) {
+        $('#share-user-list-input').removeAttr('disabled');
+      }
+      
     }
     
     var iteration = Iteration.get(_.project.currentIteration());
@@ -383,7 +386,8 @@ _.table = {
       
       $('#edit-board-modal').hide();
       
-      $('#share-user-div').addClass('not-sync-project');
+      $('#share-user-list-input').attr('disabled', true);
+      $('#share-user-list-input').val('');
       
       $('#edit-board-save-button').attr('href', '#board/save');
       
@@ -602,7 +606,8 @@ _.table = {
     $('#edit-project-sync-option').removeAttr('checked');
     $('#edit-project-sync-option').removeAttr('disabled');
     
-    $('#share-user-div').addClass('not-sync-project');
+    $('#share-user-list-input').attr('disabled', true);
+    $('#share-user-list-input').val('');
     
     $('#logout-modal').hide();
     

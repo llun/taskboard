@@ -49,6 +49,21 @@
       </div>
     </td>
     </script>
+    
+    <script type="text/html" id="share_list" charset="utf-8">
+      <div id="share-<%=username%>" class="share-user-list-icon">
+        <span class="share-user-list-information">
+          <%=username%>
+          <a href="#share/remove/<%=id%>/<%=username%>">x</a>
+        </span>
+      </div>
+    </script>
+    
+    <script type="text/html" id="notification_list" charset="utf-8">
+      <li class="notification-list-item">
+        <li><a href="#<%=action%>"><%=message%></a></li>
+      </li>
+    </script>
 
   </head>
   
@@ -89,11 +104,8 @@
               <a href="#">
                 <span id="notification-status">0</span>
               </a>
-              <ul class="dropdown-menu">
-                <li><a href="">View all notifications</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Someone invite you to join project X</a></li>
-                <li><a href="#">Someone remove you from project X</a></li>
+              <ul id="notification-list" class="dropdown-menu">
+                <li class="notification-list-item"><a href="#">No notification</a></li>
               </ul>
             </li>
             
@@ -408,52 +420,17 @@
             </div>
           </div>
           
-          <div id="share-user-div" class="clearfix share-user-list not-sync-project">
+          <div id="share-user-div" class="clearfix share-user-list">
             <label for="share-user-list">Members</label>
             <div class="input">
             
-              <input type="text" name="share-user-list" id="share-user-list" 
+              <input type="text" name="share-user-list not-sync-project" 
+                     id="share-user-list-input" 
                      class="xlarge share-user-list">
                      
-               <div id="share-user-list-icons">
-                 <div class="share-user-list-icon">
-                   <span class="share-user-list-information">
-                     hybridknight
-                     <a href="#">x</a>
-                   </span>
-                 </div>
-                 
-                 <div class="share-user-list-icon">
-                   <span class="share-user-list-information">
-                     llun
-                     <a href="#">x</a>
-                   </span>
-                 </div>
-                 
-                 <div class="share-user-list-icon">
-                   <span class="share-user-list-information">
-                     __top
-                     <a href="#">x</a>
-                   </span>
-                 </div>
-                 
-                 <div class="share-user-list-icon">
-                   <span class="share-user-list-information">
-                     chai.k
-                     <a href="#">x</a>
-                   </span>
-                 </div>
-                 
-                 <div class="share-user-list-icon">
-                   <span class="share-user-list-information">
-                     part
-                     <a href="#">x</a>
-                   </span>
-                 </div>
-                 
+               <div id="share-user-list-icons">                 
                </div>
                
-              <span id="share-user-help" class="help-block"></span>
             </div>
           </div>
                     

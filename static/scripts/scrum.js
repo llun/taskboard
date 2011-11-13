@@ -103,6 +103,30 @@ _.init = function() {
       $(this).addClass('open');
     }
   });
+  
+  $('#share-user-list-input').keyup(function(event) {
+    if (event.keyCode === 13) {
+      var to = $('#share-user-list-input').val();
+      var from = _.user.username;
+      var project = _.project.id;
+      
+      now.invite(from, to, project, function (status) {
+      
+        if (!_.project.members) {
+          _.project.members = [];
+        }
+        
+        _.project.members.push({ name: status.who, status: 'invited' });
+        Project.save(_.project);
+        
+        $('#share-user-list-icons').append(_.tmpl('share_list', 
+          { id: _.project.id, username: status.who }));
+      
+      });
+    
+      $('#share-user-list-input').val('');
+    }
+  });
 
   // Update event
   $(applicationCache).bind('updateready', function (e) {
@@ -332,41 +356,6 @@ _.init = function() {
       
       $('#sync-status').text('Online');
       
-      // User real-time synchronization
-      now.clientUpdateUser = function (user) {
-      
-        console.log ('server-debug(update): user - ' + 
-                     user.id + ', ' + 
-                     user.updated);
-      
-        if (user.updated > _.user.updated) {    
-          User.save(user);
-          _.user = User.get(user.id);
-        }
-        
-        _.project = Project.get(user.defaultProject);
-        
-        // Change iteration/project board name.
-        $('#project-name').text(_.project.name);
-        
-        var iteration = Iteration.get(_.project.currentIteration());
-        $('#iteration-name').text(iteration.name);
-        
-        $('.task').remove();
-        for (var taskID in iteration.tasks) {
-        
-          if (iteration.tasks[taskID]) {
-            var task = Task.get(taskID);
-            if (task && !task.delete) {
-              $('#' + task.status).append(_.tmpl('task', task));
-              $('#' + task.id).attr('draggable', true);
-            }
-              
-          }
-            
-        }
-        
-      }
 
       var create = {
         project: function (client, serverProject) {
@@ -525,7 +514,71 @@ _.init = function() {
           handler(client, serverModel);
         }
       }
+
+      // User real-time synchronization
+      now.updateUser = function (user) {
       
+        console.log ('server-debug(update): user - ' + 
+                     user.id + ', ' + 
+                     user.updated);
+      
+        if (user.updated > _.user.updated) {    
+          User.save(user);
+          _.user = User.get(user.id);
+        }
+        
+        _.project = Project.get(user.defaultProject);
+        
+        // Change iteration/project board name.
+        $('#project-name').text(_.project.name);
+        
+        var iteration = Iteration.get(_.project.currentIteration());
+        $('#iteration-name').text(iteration.name);
+        
+        $('.task').remove();
+        for (var taskID in iteration.tasks) {
+        
+          if (iteration.tasks[taskID]) {
+            var task = Task.get(taskID);
+            if (task && !task.delete) {
+              $('#' + task.status).append(_.tmpl('task', task));
+              $('#' + task.id).attr('draggable', true);
+            }
+              
+          }
+            
+        }
+        
+      }
+
+      now.notifyUser = function (notifications) {
+        if (_.notifications) {
+          _.notifications = [];
+        }
+        
+        notifications.reverse();
+        _.notifications = notifications.concat(_.notifications);
+        
+        $('.notification-list-item').remove();
+        if (_.notifications.length > 0) {
+          for (var index in _.notifications) {
+            var notification = _.notifications[index];
+            if (notification.type == 'invite') {
+              $('#notification-list').append(_.tmpl('notification_list',
+                { action: 'share/invite/show/' + index, 
+                  message: notification.from + 
+                           ' invite you to join' + 
+                           notification.project}));
+            }
+          }
+          
+          $('#notification-list').append('<li class="divider notification-list-item"></li>');
+        } else {
+          $('#notification-list').append(_.tmpl('notification_list', 
+            { action: '', message: 'No notifications'}));
+        }
+      }
+
     });
   } else {
   

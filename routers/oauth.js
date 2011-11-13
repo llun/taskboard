@@ -74,44 +74,45 @@ var services = {
     var config = _loadConfig().twitter;
     var service = _getService('twitter');
     service.getProtectedResource(
-      'http://api.twitter.com/1/account/verify_credentials.json',
+      'https://api.twitter.com/1/account/verify_credentials.json',
       'GET',
       config.token,
       config.tokenSecret,
       function (error, data, serviceResponse) {
                                    
-        _log.debug(JSON.parse(data));
+        _log.trace(JSON.parse(data));
         var user = JSON.parse(data);
                                    
-        var users = model.get('user', store.getClient());
-        users.find({username: user.screen_name}, function (items) {
+        var users = model.get('user', store.getClient());      
+        users.find({username: { $regex : '^' + user.screen_name + '$' }}, 
+          function (items) {
                                    
-          if (items.length == 0) {
-            _log.debug ('Create user: ' + user.screen_name);
-            // Create user and return to index
-            users.create({ 
-              username: user.screen_name,
-              image: user.profile_image_url,
-              updated: 0,
-              anonymous: false }, 
-              function (error, user) {
-                _log.trace (user);
-                                           
-                response.writeHead(301, {
-                  'Location': '/index.html#user/login/' + user._id });
-                response.end('');                               
-              });
-          } else {
-            // Get first user and return to index
-            _log.debug (items[0]);
-                                       
-            response.writeHead(301, {
-              'Location': '/index.html#user/login/' + items[0]._id });
-            response.end('');                               
-          }
-                                   
-        });
-        // End verify credentials                           
+            if (items.length == 0) {
+              _log.debug ('Create user: ' + user.screen_name);
+              // Create user and return to index
+              users.create({ 
+                username: user.screen_name,
+                image: user.profile_image_url,
+                updated: 0,
+                anonymous: false }, 
+                function (error, user) {
+                  _log.trace (user);
+                                             
+                  response.writeHead(301, {
+                    'Location': '/index.html#user/login/' + user._id });
+                  response.end('');                               
+                });
+            } else {
+              // Get first user and return to index
+              _log.debug (items[0]);
+                                         
+              response.writeHead(301, {
+                'Location': '/index.html#user/login/' + items[0]._id });
+              response.end('');                               
+            }
+                                     
+          });
+          // End verify credentials                           
         
       });
     
