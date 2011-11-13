@@ -230,10 +230,13 @@ _.table = {
     if (id) {
     
       var user = _.user;
-      user.defaultProject = id;
-      User.save(user, true);
       
-      var project = Project.get(user.defaultProject);
+      var project = Project.get(id);
+      if (user.anonymous || (!user.anonymous && project.sync)) {
+        user.defaultProject = id;
+        User.save(user, true);
+      } 
+      
       var iteration = Iteration.get(project.currentIteration());
       
       _.project = project;
@@ -313,15 +316,17 @@ _.table = {
     
     var project = _.project;
     $('#edit-project-name').val(project.name);
+    $('#edit-project-name').focus();
     
     if (project.sync) {
       $('#edit-project-sync-option').attr('checked', true);
       $('#edit-project-sync-option').attr('disabled', true);
+      
+      $('#share-user-div').removeClass('not-sync-project');
     }
     
     var iteration = Iteration.get(_.project.currentIteration());
     $('#edit-iteration-name').val(iteration.name);
-    $('#edit-iteration-name').focus();
     
     var input = $('#edit-project-name')[0];
     input.setSelectionRange(0, project.name.length);
@@ -370,6 +375,8 @@ _.table = {
       $('#iteration-name-help').text('');
       
       $('#edit-board-modal').hide();
+      
+      $('#share-user-div').addClass('not-sync-project');
       
       $('#edit-board-save-button').attr('href', '#board/save');
       
@@ -587,6 +594,8 @@ _.table = {
     $('#edit-board-modal').hide();
     $('#edit-project-sync-option').removeAttr('checked');
     $('#edit-project-sync-option').removeAttr('disabled');
+    
+    $('#share-user-div').addClass('not-sync-project');
     
     $('#logout-modal').hide();
     
