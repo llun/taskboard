@@ -70,6 +70,43 @@ body {
   display: none;
 }
 
+#share-user-list-icons {
+  width: 310px;
+  vertical-align: middle;
+  overflow: visible;
+  padding: 5px 5px 6px;
+}
+
+.share-user-list-icon {
+  display: inline-block;
+  border: 1px solid #057BAC;
+  background: -webkit-gradient(linear,left top,left bottom,from(#28AFE7),to(#1192C8));
+  vertical-align: middle;
+  
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  
+  margin-top: 2px;
+  margin-right: 2px;
+  line-height: 18px;
+  padding: 2px;
+}
+
+.share-user-list-information {
+  padding-left: 5px;
+  overflow: visible;
+  white-space: nowrap;
+  color: #FFF;
+}
+
+.share-user-list-information > a {
+  text-decoration: none;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.65);
+  margin-left: 3px;
+}
+
 table .task-type{width: 25%;}
 
 table .black{color:#000;border-bottom-color:#000;}
