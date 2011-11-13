@@ -304,6 +304,7 @@ _.init = function() {
                           
                             countSync++;
                             if (countSync == iterations.length) {
+                              $('#notification-menu').show();
                               $('#sync-status').text('Online');
                             }
                           
@@ -573,6 +574,8 @@ _.init = function() {
   $(window).bind('offline', function(e) {
     console.log ('Offline');
     $('#sync-status').text('Offline');
+    $('#notification-menu').hide();
+    $('#log-out-menu').remove();
     
     if (_.project.sync) {
       $('#end-iteration-button').attr('disabled', true);
