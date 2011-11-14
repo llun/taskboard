@@ -164,7 +164,7 @@
               <a class="login dropdown-toggle" href="#">Log in</a>
               <ul class="dropdown-menu">
                 <li id="log-in-menu">
-                  <a href="/oauth/twitter">
+                  <a href="#user/private/show">
                     <img class="login" src="images/twitter.png" alt="login with twitter" />
                     <span>Log in with Twitter</span>
                   </a>
@@ -481,11 +481,47 @@
     </div>
     <!-- End edit board modal -->
     
+    <!-- Login modal -->
+    <div id="login-modal" class="application-modal">
+      <div class="modal-backdrop"></div>
+    
+      <form class="modal ">
+        <div class="modal-header">
+          <h3>Login</h3>
+        </div>
+        <div class="modal-body">
+
+          <div class="clearfix">
+            <p>
+              This application is in private beta. 
+              Please input key to login and use sync service.
+            </p>
+          </div>
+          
+          <div class="clearfix edit-project-name">
+            <label for="invite">Invite key</label>
+            <div class="input">
+              <input type="text" name="invite" id="invite" 
+                     class="xlarge invite">
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <input type="submit" value="Login" class="btn primary" />
+          <a id="login-cancel-button" href="#close" class="btn seconday">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+    <!-- Login modal -->
+    
     <!-- Logout modal -->
     <div id="logout-modal" class="application-modal">
       <div class="modal-backdrop"></div>
     
-      <form class="modal ">
+      <form action="#/oauth/twitter" class="modal ">
         <div class="modal-header">
           <h3>Logout</h3>
         </div>

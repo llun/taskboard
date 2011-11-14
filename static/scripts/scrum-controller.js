@@ -437,6 +437,10 @@ _.table = {
   },
   
   // User controllers
+  'user/private/show': function(hash) {
+    $('#login-modal').show();
+  },
+  
   'user/login': function(hash) {
     var hashes = hash.split('/');
     now.user(hashes[2], function (data) {
@@ -676,6 +680,7 @@ _.table = {
     $('#share-user-list-input').val('');
     $('.share-user-list-icon').remove();
     
+    $('#login-modal').hide();
     $('#logout-modal').hide();
     
     $('#update-modal').hide();
