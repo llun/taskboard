@@ -98,6 +98,8 @@ var services = {
         
         _log.trace (token + ', ' + secret + ', ' + verifier);
         service.getOAuthAccessToken(token, secret, verifier, this);
+        
+        delete _tokens[token];
       
       },
       function (error, oauth_token, oauth_token_secret, results) {
@@ -109,6 +111,7 @@ var services = {
           service.getProtectedResource(
             'https://api.twitter.com/1/account/verify_credentials.json',
             'GET', oauth_token, oauth_token_secret, this);
+          
         
         } else {
           response.writeHead(301, {
