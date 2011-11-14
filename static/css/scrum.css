@@ -42,6 +42,20 @@ body {
   color: #ffffff;
 }
 
+.notification-list-item.btn {
+  padding: 3px 10px;
+}
+
+.notification-list-item-message {
+  font-size: 10pt;
+}
+
+.notification-list-item-action {
+  display: block;
+  margin-top: 5px;
+  text-align: right;
+}
+
 .topbar a.user-icon { padding: 10px 10px 8px; border-left: 2px solid #333; }
 .topbar a.login { padding: 10px 10px 10px; border-left: 2px solid #333; }
 .topbar img.login { vertical-align: text-bottom; }

@@ -104,6 +104,21 @@ _.init = function() {
     }
   });
   
+  $('.notification-list-item.btn').live({
+    click: function (event) {
+      var index = $(event.target).attr('index');
+      var type = $(event.target).attr('type');
+      
+      console.log (index + ', ' + type);
+      
+      var front = _.notifications.slice(0, index);
+      var tail = _.notifications.slice(index + 1);
+      _.notifications = front.concat(tail);
+      
+      console.log (_.notifications);
+    }
+  });
+  
   $('#share-user-list-input').keyup(function(event) {
     if (event.keyCode === 13) {
       var to = $('#share-user-list-input').val();
@@ -195,17 +210,13 @@ _.init = function() {
                   for (var index in _.notifications) {
                     var notification = _.notifications[index];
                     if (notification.type == 'invite') {
-                      $('#notification-list').append(_.tmpl('notification_list', 
-                        { action: 'share/invite/show/' + index,
+                      $('#notification-list').append(_.tmpl('notification_invite_list', 
+                        { index: index,
                           message: notification.from + 
                                    ' invite you to join ' + 
                                    notification.project }));
                     }
                   }
-                  
-                  $('#notification-list').append('<li class="divider notification-list-item"></li>');
-                  $('#notification-list').append('<li class="notification-list-item">' +
-                    '<a href="#share/all">See all notifications</a></li>');
                     
                   $('#notification-status').addClass('alert');
                   $('#notification-status').text(_.notifications.length);
@@ -597,17 +608,13 @@ _.init = function() {
           for (var index in _.notifications) {
             var notification = _.notifications[index];
             if (notification.type == 'invite') {
-              $('#notification-list').append(_.tmpl('notification_list', 
-                { action: 'share/invite/show/' + index,
+              $('#notification-list').append(_.tmpl('notification_invite_list', 
+                { index: index,
                   message: notification.from + 
                            ' invite you to join ' + 
                            notification.project }));
             }
           }
-          
-          $('#notification-list').append('<li class="divider notification-list-item"></li>');
-          $('#notification-list').append('<li class="notification-list-item">' +
-            '<a href="#share/all">See all notifications</a></li>');
             
           $('#notification-status').addClass('alert');
           $('#notification-status').text(_.notifications.length);

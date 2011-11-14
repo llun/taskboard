@@ -583,7 +583,7 @@ _.table = {
                 var notification = _.notifications[index];
                 if (notification.type == 'invite') {
                   $('#notification-list').append(_.tmpl('notification_list', 
-                    { action: 'share/invite/show/' + index,
+                    { index: index,
                       message: notification.from + 
                                ' invite you to join ' + 
                                notification.project }));

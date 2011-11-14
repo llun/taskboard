@@ -59,9 +59,24 @@
       </div>
     </script>
     
-    <script type="text/html" id="notification_list" charset="utf-8">
+    <script type="text/html" id="notification_invite_list" charset="utf-8">
       <li class="notification-list-item">
-        <a href="#<%=action%>"><%=message%></a>
+        <a>
+          <span class="notification-list-item-message">
+            <%=message%>
+          </span>
+          
+          <span class="notification-list-item-action">
+            <button index="<%=index%>" type="accept"
+                    class="btn success notification-list-item">
+              Accept
+            </button>
+            <button index="<%=index%>" type="reject" 
+                    class="btn danger notification-list-item">
+              Reject
+            </button>
+          </span>
+        </a>
       </li>
     </script>
     
