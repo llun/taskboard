@@ -340,12 +340,7 @@ _.table = {
       var member = members[index];
       member.id = project.id;
       
-      if (member.status == 'accepted') {
-        $('#share-user-list-icons').append(_.tmpl('share_list_accept', member));
-      } else {
-        $('#share-user-list-icons').append(_.tmpl('share_list', member));
-      }
-      
+      $('#share-user-list-icons').append(_.tmpl('share_list', member));
     }
     
     var iteration = Iteration.get(_.project.currentIteration());
@@ -401,6 +396,7 @@ _.table = {
       
       $('#share-user-list-input').attr('disabled', true);
       $('#share-user-list-input').val('');
+      $('.share-user-list-icon').remove();
       
       $('#edit-board-save-button').attr('href', '#board/save');
       
@@ -622,6 +618,7 @@ _.table = {
     
     $('#share-user-list-input').attr('disabled', true);
     $('#share-user-list-input').val('');
+    $('.share-user-list-icon').remove();
     
     $('#logout-modal').hide();
     
