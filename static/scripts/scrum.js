@@ -3,6 +3,31 @@ _.init = function() {
   
   _.persistent = new LocalStoragePersistent();
   
+  // Scrum methods
+  var renderNotifications = function () {
+    $('.notification-list-item').remove();
+    
+    if (_.notifications.length > 0) {
+      for (var index in _.notifications) {
+        var notification = _.notifications[index];
+        if (notification.type == 'invite') {
+          $('#notification-list').append(_.tmpl('notification_invite_list', 
+            { index: index,
+              message: notification.from + 
+                       ' invite you to join ' + 
+                       notification.project }));
+        }
+      }
+        
+      $('#notification-status').addClass('alert');
+      $('#notification-status').text(_.notifications.length);
+    } else {
+      $('#notification-list').append(_.tmpl('notification_list', 
+        { action: '', message: 'No notifications'}));
+      $('#notification-status').removeClass('alert');
+    }
+  }
+  
   // Load data
   var current = _.persistent.get('current');
   if (!current) {
@@ -106,16 +131,30 @@ _.init = function() {
   
   $('.notification-list-item.btn').live({
     click: function (event) {
-      var index = $(event.target).attr('index');
+      var index = parseInt($(event.target).attr('index'));
       var type = $(event.target).attr('type');
       
       console.log (index + ', ' + type);
       
-      var front = _.notifications.slice(0, index);
-      var tail = _.notifications.slice(index + 1);
-      _.notifications = front.concat(tail);
+      if (now.accept && now.reject) {
+        
+        var notification = _.notifications[index];
+        if (notification.type == 'invite') {
+        
+          now[type](notification, function () {
+          
+            var front = _.notifications.slice(0, index);
+            var tail = _.notifications.slice(index+1);
+                  
+            _.notifications = front.concat(tail);
+            renderNotifications();
+          
+          });
+        
+        }
+        
+      }
       
-      console.log (_.notifications);
     }
   });
   
@@ -203,29 +242,7 @@ _.init = function() {
                 var notifications = status.data;
                 notifications.reverse();
                 _.notifications = _.notifications.concat(notifications);
-                
-                $('.notification-list-item').remove();
-                
-                if (_.notifications.length > 0) {
-                  for (var index in _.notifications) {
-                    var notification = _.notifications[index];
-                    if (notification.type == 'invite') {
-                      $('#notification-list').append(_.tmpl('notification_invite_list', 
-                        { index: index,
-                          message: notification.from + 
-                                   ' invite you to join ' + 
-                                   notification.project }));
-                    }
-                  }
-                    
-                  $('#notification-status').addClass('alert');
-                  $('#notification-status').text(_.notifications.length);
-                } else {
-                  $('#notification-list').append(_.tmpl('notification_list', 
-                    { action: '', message: 'No notifications'}));
-                  $('#notification-status').removeClass('alert');
-                }
-                
+                renderNotifications();                
               }
             });
           
@@ -602,27 +619,7 @@ _.init = function() {
         console.log ('Someone notified us');
       
         _.notifications = [ notification ].concat(_.notifications);
-        
-        $('.notification-list-item').remove();
-        if (_.notifications.length > 0) {
-          for (var index in _.notifications) {
-            var notification = _.notifications[index];
-            if (notification.type == 'invite') {
-              $('#notification-list').append(_.tmpl('notification_invite_list', 
-                { index: index,
-                  message: notification.from + 
-                           ' invite you to join ' + 
-                           notification.project }));
-            }
-          }
-            
-          $('#notification-status').addClass('alert');
-          $('#notification-status').text(_.notifications.length);
-        } else {
-          $('#notification-list').append(_.tmpl('notification_list', 
-            { action: '', message: 'No notification'}));
-          $('#notification-status').removeClass('alert');
-        }
+        renderNotifications();
       }
 
     });
