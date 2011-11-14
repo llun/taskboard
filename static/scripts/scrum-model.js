@@ -279,6 +279,7 @@ var Project = function (name, iteration) {
   // Public properties
   this.name = name;
   this.iterations = [];
+  this.members = [];
   this.updated = 0;
   this.modified = new Date().getTime();
   this.sync = false;
@@ -353,6 +354,7 @@ Project.get = function (id) {
     project.updated = object.updated;
     project.owner = object.owner;
     project.modified = object.modified;
+    project.members = object.members;
   }
   
   return project;

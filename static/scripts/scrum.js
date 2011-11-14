@@ -111,17 +111,12 @@ _.init = function() {
       var project = _.project.id;
       
       now.invite(from, to, project, function (status) {
-      
-        if (!_.project.members) {
-          _.project.members = [];
-        }
+        var member = { username: status.who, status: 'invited' };
+        _.project.members.push(member);
+        Project.save(_.project, true);
         
-        _.project.members.push({ name: status.who, status: 'invited' });
-        Project.save(_.project);
-        
-        $('#share-user-list-icons').append(_.tmpl('share_list', 
-          { id: _.project.id, username: status.who }));
-      
+        member.id = _.project.id;
+        $('#share-user-list-icons').append(_.tmpl('share_list', member));
       });
     
       $('#share-user-list-input').val('');
@@ -552,6 +547,8 @@ _.init = function() {
       }
 
       now.notifyUser = function (notifications) {
+        console.log ('Someone notified us');
+      
         if (_.notifications) {
           _.notifications = [];
         }

@@ -335,6 +335,19 @@ _.table = {
       
     }
     
+    var members = project.members;
+    for (var index in members) {
+      var member = members[index];
+      member.id = project.id;
+      
+      if (member.status == 'accepted') {
+        $('#share-user-list-icons').append(_.tmpl('share_list_accept', member));
+      } else {
+        $('#share-user-list-icons').append(_.tmpl('share_list', member));
+      }
+      
+    }
+    
     var iteration = Iteration.get(_.project.currentIteration());
     $('#edit-iteration-name').val(iteration.name);
     
@@ -551,6 +564,7 @@ _.table = {
           $('#logged-in-user').text(user.username);
           $('#logged-in-image').attr('src', user.image);
           
+          $('#notification-menu').show();
           $('#sync-status').text('Online');
         });
         

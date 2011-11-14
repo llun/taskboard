@@ -159,49 +159,68 @@ var UserHandler = {
      */
     everyone.invite = function (from, to, project, callback) {
     
-      var projects = _model.get('project', store.getClient());
-      projects.get(project, function (item) {
-        if (item) {
-        
-          var invites = _model.get('invite', store.getClient());
-          var invite = { type: 'invite',
-                         from: user,
-                         to: to,
-                         project: item.name,
-                         target: item.id };
-                         
-           
-          invites.find({to: to, target: item.id}, function (item) {
-          
-            if (items.length == 0) {
-              
-              invites.create(invite, function (error, object) {
-                if (!error) {
-                
-                  var users = _model.get('user', store.getClient());
-                  users.find({username: to}, function(items) {
-                  
-                    if (items.length > 0) {
-                      var user = items[0];
-                      
-                      var userGroup = now.getGroup(user.id);
-                      var userNow = userGroup.now;
-                      userNow.notifyUser([invite]);
-                      
-                      callback({ status: 'invited', who: to });
-                    }
-                  
-                  });
-                
-                }
-              });
-              
-            }
-            
-          });
-        }
-      });
+      var local = {};
       
+      var client = store.getClient();
+      var ObjectID = client.bson_serializer.ObjectID;
+      
+      var projects = _model.get('project', client);
+      var users = _model.get('user', client);
+      var invites = _model.get('invite', client);
+      
+      step(
+        function () {
+          projects.get(project, this);
+        },
+        function (projectInstance) {
+          _log.trace ('Found project: ' + util.inspect(projectInstance));
+          if (projectInstance) {
+            var invite = { type: 'invite',
+                           from: from,
+                           to: to,
+                           project: projectInstance.name,
+                           target: projectInstance.id };
+          
+          
+            local.project = projectInstance;
+            local.invite = invite;
+            
+            users.get(new ObjectID(projectInstance.owner), this);
+          }
+        },
+        function (user) {
+          _log.trace ('Found user: ' + user);
+          if (user) {
+            local.user = user;
+            if (user.username != to) {
+              invites.find({to: to, target: local.project.id}, this);
+            }
+          }
+        },
+        function (items) {
+          _log.trace (items);
+          if (items.length == 0) {
+            invites.create(local.invite, this);
+          }
+        },
+        function (error, object) {
+          if (!error) {
+            users.find({username: to}, this);
+          }
+        },
+        function (items) {
+          if (items.length > 0) {
+            var user = items[0];
+            
+            var userGroup = now.getGroup(user.id);
+            var userNow = userGroup.now;
+            userNow.notifyUser([local.invite]);
+            
+            callback({ status: 'invited', who: to });
+          }
+        }
+      );
+          
     }
     
     everyone.accept = function (project) {
