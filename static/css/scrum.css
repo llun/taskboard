@@ -15,6 +15,11 @@ body {
 #logged-out-menu { display: none; }
 #logged-in-menu img { vertical-align: middle; }
 
+#notification-list {
+  min-width: 230px;
+  max-width: 300px;
+}
+
 #notification-menu { border-left: 2px solid #333; display: none;  }
 #notification-menu > a {
   padding: 10px 5px 9px;

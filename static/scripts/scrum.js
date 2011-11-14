@@ -177,6 +177,47 @@ _.init = function() {
           // How to handler error ?
           if (!object.error) {
           
+            // Fetch notifications
+            now.fetchNotifications(_.user.id, function (status) {
+              if (!status.error) {
+              
+                console.log (status);
+              
+                _.notifications = [];
+                
+                var notifications = status.data;
+                notifications.reverse();
+                _.notifications = _.notifications.concat(notifications);
+                
+                $('.notification-list-item').remove();
+                
+                if (_.notifications.length > 0) {
+                  for (var index in _.notifications) {
+                    var notification = _.notifications[index];
+                    if (notification.type == 'invite') {
+                      $('#notification-list').append(_.tmpl('notification_list', 
+                        { action: 'share/invite/show/' + index,
+                          message: notification.from + 
+                                   ' invite you to join ' + 
+                                   notification.project }));
+                    }
+                  }
+                  
+                  $('#notification-list').append('<li class="divider notification-list-item"></li>');
+                  $('#notification-list').append('<li class="notification-list-item">' +
+                    '<a href="#share/all">See all notifications</a></li>');
+                    
+                  $('#notification-status').addClass('alert');
+                  $('#notification-status').text(_.notifications.length);
+                } else {
+                  $('#notification-list').append(_.tmpl('notification_list', 
+                    { action: '', message: 'No notifications'}));
+                  $('#notification-status').removeClass('alert');
+                }
+                
+              }
+            });
+          
             joinList.push(_.user.id);
           
             $('#logged-in-user').text(_.user.username);
@@ -546,33 +587,34 @@ _.init = function() {
         
       }
 
-      now.notifyUser = function (notifications) {
+      now.notifyUser = function (notification) {
         console.log ('Someone notified us');
       
-        if (_.notifications) {
-          _.notifications = [];
-        }
-        
-        notifications.reverse();
-        _.notifications = notifications.concat(_.notifications);
+        _.notifications = [ notification ].concat(_.notifications);
         
         $('.notification-list-item').remove();
         if (_.notifications.length > 0) {
           for (var index in _.notifications) {
             var notification = _.notifications[index];
             if (notification.type == 'invite') {
-              $('#notification-list').append(_.tmpl('notification_list',
-                { action: 'share/invite/show/' + index, 
+              $('#notification-list').append(_.tmpl('notification_list', 
+                { action: 'share/invite/show/' + index,
                   message: notification.from + 
-                           ' invite you to join' + 
-                           notification.project}));
+                           ' invite you to join ' + 
+                           notification.project }));
             }
           }
           
           $('#notification-list').append('<li class="divider notification-list-item"></li>');
+          $('#notification-list').append('<li class="notification-list-item">' +
+            '<a href="#share/all">See all notifications</a></li>');
+            
+          $('#notification-status').addClass('alert');
+          $('#notification-status').text(_.notifications.length);
         } else {
           $('#notification-list').append(_.tmpl('notification_list', 
-            { action: '', message: 'No notifications'}));
+            { action: '', message: 'No notification'}));
+          $('#notification-status').removeClass('alert');
         }
       }
 

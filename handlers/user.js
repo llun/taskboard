@@ -117,13 +117,6 @@ var UserHandler = {
             
           }
           
-          var invites = _model.get('invite', store.getClient());
-          invites.find({target: serverUser.username}, function (items) {
-            var userGroup = now.getGroup(serverUser.id);
-            var userNow = userGroup.now;
-            userNow.notifyUser(items);
-          });
-        
         } else {
         
           _log.debug ('user not found: ' + util.inspect(user));
@@ -147,6 +140,43 @@ var UserHandler = {
         callback();
       }
     
+    }
+    
+    /**
+     * Fetch notifications event for user
+     *
+     * @param {String} user, user id
+     * @param {Function} callback
+     */
+    everyone.fetchNotifications = function (user, callback) {
+    
+      var _callback = callback || function () {};
+      var notifications = [];
+    
+      var client = store.getClient();
+      var ObjectID = client.bson_serializer.ObjectID;
+    
+      var users = _model.get('user', client);
+      var invites = _model.get('invite', client);
+      
+      step(
+        function () {
+          users.get(new ObjectID(user), this);
+        },
+        function (item) {
+          if (item) {
+            _log.trace ('Fetch invite for user: ' + item.username);
+            invites.find({ to: item.username }, this);
+          } else {
+            _callback({ error: 'notfound' });
+          }
+        },
+        function (items) {
+          _log.trace (items);
+          notifications = notifications.concat(items);
+          _callback({ status: 'ok', data: notifications });
+        });
+      
     }
   
     /**
@@ -214,7 +244,7 @@ var UserHandler = {
             
             var userGroup = now.getGroup(user.id);
             var userNow = userGroup.now;
-            userNow.notifyUser([local.invite]);
+            userNow.notifyUser(local.invite);
             
             callback({ status: 'invited', who: to });
           }
