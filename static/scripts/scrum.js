@@ -324,6 +324,8 @@ _.init = function() {
                 now.shares(_.user.id, function (output) {
                   console.log (output);
                   _.shareProjects = [];
+                  
+                  var joinShareList = [];
                 
                   var projects = output.projects;
                   var iterations = output.iterations;
@@ -331,10 +333,14 @@ _.init = function() {
                   for (var index in projects) {
                     _.shareProjects.push(projects[index].id);
                     Project.save(projects[index]);
+                    
+                    joinShareList.push(projects[index].id);
                   }
                   
                   for (var index in iterations) {
                     Iteration.save(iterations[index]);
+                    
+                    joinShareList.push(iterations[index].id);
                   }
                   
                   if (_.shareProjects.length > 0) {
@@ -346,6 +352,8 @@ _.init = function() {
                       $('#projects-list-menu').append(list);
                     }
                   }
+                  
+                  now.joinGroups(_.client, joinShareList);
                   
                 });
                 
@@ -369,9 +377,7 @@ _.init = function() {
                       }
                     }
                     
-                    now.joinGroups(_.client, joinList, function () {
-                      console.log ('Join success');
-                    });
+                    now.joinGroups(_.client, joinList);
                     
                     // List iterations
                     var countSync = 0;
