@@ -9,9 +9,7 @@ var config = {
   routes: { 'get:/oauth' : require('./routers/oauth.js').oauth.authenticate },
   
   // Now handlers list
-  everyone: [ require('./handlers/task.js').initial,
-              require('./handlers/iteration.js').initial,
-              require('./handlers/project.js').initial,
+  everyone: [ require('./handlers/model.js').initial,
               require('./handlers/user.js').initial ],
   
   // MongoDB configuration
@@ -41,14 +39,14 @@ var config = {
     levels: {
       console: 'info',
       
+      oauth: 'info', 
       router: 'info',
       socketio: 'info',
-      
+       
       store: 'info',
-      
-      task: 'info',
-      iteration: 'info',
-      project: 'info',
+      model: 'info',
+       
+      sync: 'info',
       user: 'info'
     }
   }
