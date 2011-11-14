@@ -192,6 +192,7 @@ var UserHandler = {
       var users = _model.get('user', client);
       var projects = _model.get('project', client);
       var iterations = _model.get('iteration', client);
+      var tasks = _model.get('task', client);
       var shares = _model.get('share', client);
       
       var output = {};
@@ -234,11 +235,22 @@ var UserHandler = {
           iterations.find({ $or: shareIterations }, this);
         
         },
-        function aggregateData(items) {
+        function listTasks(items) {
           
           output.iterations = items;
-          callback(output);
+          var shareIterations = [];
           
+          for (var index in items) {
+            var iteration = items[index];
+            shareIterations.push({ owner: iteration.id });
+          }
+          
+          tasks.find({ $or: shareIterations }, this);
+          
+        },
+        function aggregate(items) {
+          output.tasks = items;
+          callback(output);
         });
     
     }
@@ -324,6 +336,8 @@ var UserHandler = {
     
       var projects = _model.get('project', client);
       var invites = _model.get('invite', client);
+      
+      var local = {};
     
       step(
         function init() {
@@ -346,6 +360,8 @@ var UserHandler = {
                 var projectNow = projectGroup.now;
                 projectNow.clientUpdate('server', item.type, item);
                 
+                local.project = item;
+                
                 break;
               }
             }
@@ -362,11 +378,41 @@ var UserHandler = {
           
         },
         function createShare(error) {
-          if (error) {
-            callback({ error: error });
-          } else {
-            callback({ status: 'ok' });
+          
+          if (!error) {
+            var iterations = _model.get('iteration', store.getClient());
+            
+            var project = local.project;
+            var shareIterations = [];
+            
+            for (var index in project.iterations) {
+              var iteration = project.iterations[index];
+              shareIterations.push({ id: iteration.id });
+            }
+            
+            iterations.find({ $or: shareIterations }, this);
           }
+          
+        },
+        function fetchIterations(items) {
+        
+          var shareIterations = [];
+          for (var index in items) {
+            var iteration = items[index];
+            shareIterations.push({ owner: iteration.id });
+          }
+          
+          local.iterations = items;
+          
+          var tasks = _model.get('task', store.getClient());
+          tasks.find({ $or: shareIterations }, this);
+        
+        },
+        function fetchTasks(items) {
+          
+          local.tasks = items;
+          callback({ status: 'ok', data: local});
+          
         });
     
     }

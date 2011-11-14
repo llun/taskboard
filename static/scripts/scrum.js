@@ -142,13 +142,50 @@ _.init = function() {
         var notification = _.notifications[index];
         if (notification.type == 'invite') {
         
-          now[type](notification, function () {
+          now[type](notification, function (output) {
           
             var front = _.notifications.slice(0, index);
             var tail = _.notifications.slice(index+1);
                   
             _.notifications = front.concat(tail);
             renderNotifications();
+            
+            if (type == 'accept') {
+              var project = output.project;
+              var iterations = output.iterations;
+              var tasks = output.tasks;
+              
+              Project.save(project);
+              
+              for (var index in iterations) {
+                var iteration = iterations[index];
+                Iteration.save(iteration);
+              }
+              
+              for (var index in tasks) {
+                var task = tasks[index];
+                Task.save(task);
+              }
+              
+              if (!_.shareProjects) {
+                _.shareProjects = [];
+              }
+              
+              if (_.shareProjects.length > 1) {
+              
+                var list = _.tmpl('share_project_list', project);
+                $('#projects-list-menu').append(list);
+              
+              } else {
+              
+                $('#projects-list-menu').append('<li class="divider project-list-menu-devider"></li>');
+                
+                var list = _.tmpl('share_project_list', project);
+                $('#projects-list-menu').append(list);
+              
+              }
+              
+            }
           
           });
         
@@ -329,6 +366,7 @@ _.init = function() {
                 
                   var projects = output.projects;
                   var iterations = output.iterations;
+                  var tasks = output.tasks;
                   
                   for (var index in projects) {
                     _.shareProjects.push(projects[index].id);
@@ -341,6 +379,10 @@ _.init = function() {
                     Iteration.save(iterations[index]);
                     
                     joinShareList.push(iterations[index].id);
+                  }
+                  
+                  for (var index in tasks) {
+                    Task.save(tasks[index]);
                   }
                   
                   if (_.shareProjects.length > 0) {

@@ -11,7 +11,9 @@ var config = {
     consumerSecret: '',
     token: '',
     tokenSecret: ''
-  }
+  },
+  
+  key: ''
 
 }
 

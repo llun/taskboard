@@ -291,9 +291,30 @@ _.table = {
     var pattern = /^[\w\d ]+$/;
     if (pattern.test(name)) {
     
-      var project = _.user.createProject(name, isSync);
-      var list = _.tmpl('project_list', project);
-      $('#projects-list-menu').append(list);
+      _.user.createProject(name, isSync);
+      
+      $('.project-list-item').remove();
+      $('.share-project-list-item').remove();
+      $('.project-list-menu-divider').remove();
+      
+      for (var index in _.user.projects) {
+        var projectID = _.user.projects[index];
+        var project = Project.get(projectID);
+        
+        var list = _.tmpl('project_list', project);
+        $('#projects-list-menu').append(list);
+      }
+      
+      if (_.shareProjects && _.shareProjects.length > 0) {
+        $('#projects-list-menu').append('<li class="divider project-list-menu-devider"></li>');
+        
+        for (var index in _.shareProjects) {
+          var project = Project.get(_.shareProjects[index]);
+          var list = _.tmpl('share_project_list', project);
+          $('#projects-list-menu').append(list);
+        }
+      }
+      
       
       $('#new-project-modal').hide();      
       $('#new-project-save-button').attr('href', '#project/save?' + new Date().getTime());
@@ -581,6 +602,48 @@ _.table = {
           
           $('#notification-menu').show();
           $('#sync-status').text('Online');
+        });
+        
+        // Fetch share projects
+        now.shares(_.user.id, function (output) {
+          console.log (output);
+          _.shareProjects = [];
+          
+          var joinShareList = [];
+        
+          var projects = output.projects;
+          var iterations = output.iterations;
+          var tasks = output.tasks;
+          
+          for (var index in projects) {
+            _.shareProjects.push(projects[index].id);
+            Project.save(projects[index]);
+            
+            joinShareList.push(projects[index].id);
+          }
+          
+          for (var index in iterations) {
+            Iteration.save(iterations[index]);
+            
+            joinShareList.push(iterations[index].id);
+          }
+          
+          for (var index in tasks) {
+            Task.save(tasks[index]);
+          }
+          
+          if (_.shareProjects.length > 0) {
+            $('#projects-list-menu').append('<li class="divider project-list-menu-devider"></li>');
+            
+            for (var index in _.shareProjects) {
+              var project = Project.get(_.shareProjects[index]);
+              var list = _.tmpl('share_project_list', project);
+              $('#projects-list-menu').append(list);
+            }
+          }
+          
+          now.joinGroups(_.client, joinShareList);
+          
         });
         
         // Fetch notifications
