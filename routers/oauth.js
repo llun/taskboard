@@ -54,29 +54,39 @@ var services = {
 
   'twitter': function (request, response, store) {
   
-    var service = _getService('twitter');          
-    service.getOAuthRequestToken(
-      function (error, oauth_token, oauth_token_secret, results) {
-        if(error) {
-          _log.debug(error);
-    			response.writeHead(200, {});
-    			response.end('error');
-    		} else { 
-    		
-    		  var config = _loadConfig()['twitter'];
-    		  _log.trace (config.token + ', ' + config.tokenSecret);
-    		  _log.trace (oauth_token + ', ' + oauth_token_secret);
-    		  
-    		  _tokens[oauth_token] = oauth_token_secret;
-    		  
-    			// redirect the user to authorize the token
-    			response.writeHead(302, {
-    			  'Location': 'https://api.twitter.com/oauth/authenticate?oauth_token=' + oauth_token
-    			});
-    			response.end();
-    	  }
-    	});
-          
+    var loginQuery = url.parse(request.url, true).query;
+    if (loginQuery.invite == _loadConfig().key) {
+    
+      var service = _getService('twitter');          
+      service.getOAuthRequestToken(
+        function (error, oauth_token, oauth_token_secret, results) {
+          if(error) {
+            _log.debug(error);
+      			response.writeHead(200, {});
+      			response.end('error');
+      		} else { 
+      		
+      		  var config = _loadConfig()['twitter'];
+      		  _log.trace (config.token + ', ' + config.tokenSecret);
+      		  _log.trace (oauth_token + ', ' + oauth_token_secret);
+      		  
+      		  _tokens[oauth_token] = oauth_token_secret;
+      		  
+      			// redirect the user to authorize the token
+      			response.writeHead(302, {
+      			  'Location': 'https://api.twitter.com/oauth/authenticate?oauth_token=' + oauth_token
+      			});
+      			response.end();
+      	  }
+      	});
+    
+    } else {
+      response.writeHead(301, {
+        'Location': '/'
+      });
+      response.end();
+    }
+       
   },
   
   'twitter/callback': function (request, response, store) {
