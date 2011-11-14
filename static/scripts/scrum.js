@@ -25,6 +25,7 @@ _.init = function() {
       $('#notification-list').append(_.tmpl('notification_list', 
         { action: '', message: 'No notifications'}));
       $('#notification-status').removeClass('alert');
+      $('#notification-status').text(0);
     }
   }
   
