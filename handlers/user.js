@@ -302,6 +302,55 @@ var UserHandler = {
     }
     
     everyone.reject = function (invite, callback) {
+    
+      var client = store.getClient();
+      var ObjectID = client.bson_serializer.ObjectID;
+    
+      var projects = _model.get('project', client);
+      var invites = _model.get('invite', client);
+    
+      step(
+        function init() {
+          projects.get(invite.target, this);
+        },
+        function gotProject(item) {
+        
+          if (item) {
+            
+            var members = item.members;
+            for (var index in members) {
+              var member = members[index];
+              if (member.username == invite.to) {
+              
+                var front = members.slice(0, index);
+                var tail = members.slice(index + 1);
+                
+                item.members = front.concat(tail);
+                item.updated++;
+                item.modified = new Date().getTime();
+                
+                projects.edit(item.id, item);
+                var projectGroup = now.getGroup(item.id);
+                var projectNow = projectGroup.now;
+                projectNow.clientUpdate('server', item.type, item);
+                
+                break;
+              }
+            }
+            
+            invites.remove(new ObjectID(invite._id), this);
+            
+          }
+        
+        },
+        function removeInvite(error) {
+          if (error) {
+            callback({ error: error });
+          } else {
+            callback({ status: 'ok' });
+          }
+        });
+    
     }
     
   }
