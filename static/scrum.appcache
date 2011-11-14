@@ -1,20 +1,22 @@
 CACHE MANIFEST
-#Version 0.4.0
-#2011-10-01
+#Version 0.5.0
+#2011-11-15
 
 CACHE:
 index.html
 scripts/engine-persistent.js
 scripts/engine.js
-scripts/jquery-1.6.2.min.js
-scripts/scrum-model.js
+scripts/jquery-1.7.min.js
 scripts/scrum-controller.js
+scripts/scrum-model.js
 scripts/scrum.js
 
 css/bootstrap.min.css
 css/scrum.css
 
 images/trash.png
+images/twitter.png
+images/user.png
 images/wrench.png
 
 nowjs/now.js
