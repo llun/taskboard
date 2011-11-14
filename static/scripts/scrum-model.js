@@ -361,7 +361,6 @@ Project.get = function (id) {
 }
 Project.save = function (project, push) {
   console.log ('Save project.');
-  console.trace();
 
   project.updated += 1;
   project.modified = new Date().getTime();

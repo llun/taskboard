@@ -178,6 +178,70 @@ var UserHandler = {
         });
       
     }
+    
+    /**
+     * Fetch all share projects and iteration for current user.
+     *
+     * @param {String} user, user id
+     */
+    everyone.shares = function (user, callback) {
+    
+      var client = store.getClient();
+      var ObjectID = client.bson_serializer.ObjectID;
+    
+      var users = _model.get('user', client);
+      var projects = _model.get('project', client);
+      var iterations = _model.get('iteration', client);
+      var shares = _model.get('share', client);
+      
+      var output = {};
+    
+      step(
+        function init() {
+          users.get(new ObjectID(user), this);
+        },
+        function getUser(item) {
+          if (item) {
+            shares.find({ owner: item.username }, this);
+          }
+        },
+        function listShares(items) {
+        
+          var shareProjects = [];
+          var count = 0;
+        
+          for (var index in items) {
+            shareProjects.push({ id: items[index].project });
+          }
+          
+          if (shareProjects.length > 0) {
+            projects.find({ $or: shareProjects }, this);
+          }
+        
+        },
+        function listIterations(items) {
+        
+          output.projects = items;
+          var shareIterations = [];
+        
+          for (var index in items) {
+            var project = items[index];
+            for (var key in project.iterations) {
+              shareIterations.push({ id: project.iterations[key] });
+            }
+          }
+          
+          iterations.find({ $or: shareIterations }, this);
+        
+        },
+        function aggregateData(items) {
+          
+          output.iterations = items;
+          callback(output);
+          
+        });
+    
+    }
   
     /**
      * Invite someone to join project.
@@ -292,6 +356,12 @@ var UserHandler = {
         
         },
         function removeInvite(error) {
+        
+          var shares = _model.get('share', store.getClient());
+          shares.create({ owner: invite.to, project: invite.target }, this);
+          
+        },
+        function createShare(error) {
           if (error) {
             callback({ error: error });
           } else {

@@ -232,7 +232,9 @@ _.table = {
       var user = _.user;
       
       var project = Project.get(id);
-      if (user.anonymous || (!user.anonymous && project.sync)) {
+      if (user.anonymous || 
+          (!user.anonymous && project.sync) &&
+          project.owner == user.id) {
         user.defaultProject = id;
         User.save(user, true);
       } 
@@ -252,6 +254,19 @@ _.table = {
         $('#end-iteration-button').attr('disabled', true);
       } else {
         $('#end-iteration-button').removeAttr('disabled');
+      }
+      
+      if ((_.project.owner != user.id)) {
+        $('#end-iteration-button').attr('disabled', true);
+        $('#board-name-edit').hide();
+        
+        if (!now.syncModel) {
+          $('#new-task-button').attr('disabled', true);
+          $('.task').removeAttr('draggable');
+          $('.task-action').hide();
+        }
+      } else {
+        $('#board-name-edit').show();
       }
       
       $('.iteration-list-menu-item').remove();

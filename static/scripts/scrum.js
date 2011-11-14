@@ -320,6 +320,35 @@ _.init = function() {
                   }
                 }
                 
+                // Fetch share projects
+                now.shares(_.user.id, function (output) {
+                  console.log (output);
+                  _.shareProjects = [];
+                
+                  var projects = output.projects;
+                  var iterations = output.iterations;
+                  
+                  for (var index in projects) {
+                    _.shareProjects.push(projects[index].id);
+                    Project.save(projects[index]);
+                  }
+                  
+                  for (var index in iterations) {
+                    Iteration.save(iterations[index]);
+                  }
+                  
+                  if (_.shareProjects.length > 0) {
+                    $('#projects-list-menu').append('<li class="divider project-list-menu-devider"></li>');
+                    
+                    for (var index in _.shareProjects) {
+                      var project = Project.get(_.shareProjects[index]);
+                      var list = _.tmpl('share_project_list', project);
+                      $('#projects-list-menu').append(list);
+                    }
+                  }
+                  
+                });
+                
                 // Sync iterations
                 now.syncModels(_.client, 'iteration', { owner: _.user.id }, prepareIteration, 
                   function (object) {
