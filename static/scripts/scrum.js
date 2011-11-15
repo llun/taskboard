@@ -142,8 +142,11 @@ _.init = function() {
         var notification = _.notifications[index];
         if (notification.type == 'invite') {
         
+          notification.index = index;
           now[type](notification, function (output) {
           
+            var index = output.input.index;
+            
             var front = _.notifications.slice(0, index);
             var tail = _.notifications.slice(index+1);
                   

@@ -411,7 +411,7 @@ var UserHandler = {
         function fetchTasks(items) {
           
           local.tasks = items;
-          callback({ status: 'ok', data: local});
+          callback({ status: 'ok', data: local, input: invite });
           
         });
     
@@ -463,7 +463,7 @@ var UserHandler = {
           if (error) {
             callback({ error: error });
           } else {
-            callback({ status: 'ok' });
+            callback({ status: 'ok', input: invite });
           }
         });
     
