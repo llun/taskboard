@@ -350,6 +350,7 @@ _.table = {
     console.log ('client(clear)');
     
     applicationCache.swapCache();
+    window.location.reload();
   },
   
   // Board controllers.
