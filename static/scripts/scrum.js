@@ -229,6 +229,12 @@ _.init = function() {
   if (navigator.onLine) {
     now.ready(function() {
     
+      if (!_.ready) {
+        _.ready = true;
+      } else {
+        window.location.reload();
+      }
+    
       _.client = now.core.clientId;
     
       $('#logging-in-menu').hide();

@@ -293,8 +293,8 @@ _.table = {
     
       _.user.createProject(name, isSync);
       
-      $('.project-list-item').remove();
-      $('.share-project-list-item').remove();
+      $('.project-list-menu-item').remove();
+      $('.share-project-list-menu-item').remove();
       $('.project-list-menu-divider').remove();
       
       for (var index in _.user.projects) {
