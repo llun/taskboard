@@ -56,6 +56,7 @@ _.table = {
         
         $('#' + id + '_detail').html(task.getDetail());
         $('#' + id + '_responders').text(task.getResponders().toString());
+        $('#' + id + '_tags').text(task.getTags().toString());
         
         $('#edit-task-detail').val('');
         $('#edit-task-save-button').attr('href', '');

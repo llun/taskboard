@@ -6,6 +6,7 @@
 var Task = function(iteration, detail) {
   // Private properties
   var _responders = [];
+  var _tags = [];
 
   this.type = 'task';
   
@@ -36,6 +37,20 @@ var Task = function(iteration, detail) {
         _responders.push(matches[i].replace(/^\s*([\S\s]*)\b\s*$/, '$1'));
       }      
     }
+  }
+  
+  var _parseTags = function(detail) {
+    _tags = [];
+    
+    var pattern = /(^#\w+|\s+#\w+|\s+#\w+$)/ig;
+    var matches = detail.match(pattern);
+    
+    if (matches) {
+      for (var i = 0; i < matches.length; i++) {
+        _tags.push(matches[i].replace(/^\s*([\S\s]*)\b\s*$/, '$1'));
+      }      
+    }
+    
   }
   
   // Public methods
@@ -74,6 +89,7 @@ var Task = function(iteration, detail) {
    */
   this.setDetail = function setDetail(detail) {
     _parseResponders(detail);
+    _parseTags(detail);
     
     this.detail = detail;
   }
@@ -87,6 +103,10 @@ var Task = function(iteration, detail) {
     return _responders;
   }
   
+  this.getTags = function getTags() {
+    return _tags;
+  }
+  
   /**
    * List of index attributes
    */
@@ -96,6 +116,7 @@ var Task = function(iteration, detail) {
   
   // Constructor part
   _parseResponders(detail);
+  _parseTags(detail);
 }
 
 /**

@@ -166,7 +166,7 @@ table td.wall.over{background-color: #CCC;}
 }
 
 .task.own {
-  background-color: #fde3d9;
+  background-color: #edfdd9;
 }
 
 .task h5 {line-height: 18px;}
@@ -210,8 +210,7 @@ table td.wall.over{background-color: #CCC;}
   text-align: right;
   display: block;
   font-size: 12px;
-  font-weight: 300;
   line-height: 18px;
-  padding-top: 10px;
-  color: #BDBDBD;
+  padding-top: 2px;
+  color: #BBBBBB;
 }
