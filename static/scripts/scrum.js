@@ -50,6 +50,27 @@ _.init = function() {
       if (task && !task.delete) {
         $('#' + task.status).append(_.tmpl('task', task));
         $('#' + task.id).attr('draggable', true);
+        
+        if (!_.user.anonymous) {
+          var responders = task.getResponders();
+          var found = false;
+          
+          for (var index in responders) {
+            var responder = responders[index];
+            if ('+' + _.user.username == responder) {
+              
+              found = true;
+              break;
+            }
+          }
+          
+          if (found) {
+            $('#' + task.id).addClass('own');
+          } else {
+            $('#' + task.id).removeClass('own');
+          }
+        }
+        
       }
       
     }
@@ -88,6 +109,26 @@ _.init = function() {
       var status = $(this)[0].id;
       task.status = status;
       Task.save(task, true);
+      
+      if (!_.user.anonymous) {
+        var responders = task.getResponders();
+        var found = false;
+        
+        for (var index in responders) {
+          var responder = responders[index];
+          if ('+' + _.user.username == responder) {
+            
+            found = true;
+            break;
+          }
+        }
+        
+        if (found) {
+          $('#' + task.id).addClass('own');
+        } else {
+          $('#' + task.id).removeClass('own');
+        }
+      }
       
       console.log ('client(update): ' + task.status + ', ' + task.detail);
       
@@ -547,7 +588,29 @@ _.init = function() {
             if (clientTask.owner == _.project.currentIteration()) {
               $('#' + clientTask.status).append(_.tmpl('task', clientTask));
               $('#' + clientTask.id).attr('draggable', true);
+              
+              if (!_.user.anonymous) {
+                var responders = clientTask.getResponders();
+                var found = false;
+                
+                for (var index in responders) {
+                  var responder = responders[index];
+                  if ('+' + _.user.username == responder) {
+                    
+                    found = true;
+                    break;
+                  }
+                }
+                
+                if (found) {
+                  $('#' + clientTask.id).addClass('own');
+                } else {
+                  $('#' + clientTask.id).removeClass('own');
+                }
+              }
+              
             }
+            
           }
         }
       }
@@ -585,6 +648,26 @@ _.init = function() {
                     if (task && !task.delete) {
                       $('#' + task.status).append(_.tmpl('task', task));
                       $('#' + task.id).attr('draggable', true);
+                      
+                      if (!_.user.anonymous) {
+                        var responders = task.getResponders();
+                        var found = false;
+                        
+                        for (var index in responders) {
+                          var responder = responders[index];
+                          if ('+' + _.user.username == responder) {
+                            
+                            found = true;
+                            break;
+                          }
+                        }
+                        
+                        if (found) {
+                          $('#' + task.id).addClass('own');
+                        } else {
+                          $('#' + task.id).removeClass('own');
+                        }
+                      }
                     }
                     
                   }
@@ -643,6 +726,27 @@ _.init = function() {
               
                 $('#' + clientTask.status).append(_.tmpl('task', clientTask));
                 $('#' + clientTask.id).attr('draggable', true);
+                
+                if (!_.user.anonymous) {
+                  var responders = clientTask.getResponders();
+                  var found = false;
+                  
+                  for (var index in responders) {
+                    var responder = responders[index];
+                    if ('+' + _.user.username == responder) {
+                      
+                      found = true;
+                      break;
+                    }
+                  }
+                  
+                  if (found) {
+                    $('#' + clientTask.id).addClass('own');
+                  } else {
+                    $('#' + clientTask.id).removeClass('own');
+                  }
+                }
+                
               }
             }
           
@@ -694,6 +798,26 @@ _.init = function() {
             if (task && !task.delete) {
               $('#' + task.status).append(_.tmpl('task', task));
               $('#' + task.id).attr('draggable', true);
+              
+              if (!_.user.anonymous) {
+                var responders = task.getResponders();
+                var found = false;
+                
+                for (var index in responders) {
+                  var responder = responders[index];
+                  if ('+' + _.user.username == responder) {
+                    
+                    found = true;
+                    break;
+                  }
+                }
+                
+                if (found) {
+                  $('#' + task.id).addClass('own');
+                } else {
+                  $('#' + task.id).removeClass('own');
+                }
+              }
             }
               
           }

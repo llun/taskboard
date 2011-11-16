@@ -65,6 +65,26 @@ _.table = {
         $('#edit-task-help').text('');
         $('#edit-task-save-button').attr('href', '#task/save');
         
+        if (!_.user.anonymous) {
+          var responders = task.getResponders();
+          var found = false;
+          
+          for (var index in responders) {
+            var responder = responders[index];
+            if ('+' + _.user.username == responder) {
+              
+              found = true;
+              break;
+            }
+          }
+          
+          if (found) {
+            $('#' + task.id).addClass('own');
+          } else {
+            $('#' + task.id).removeClass('own');
+          }
+        }
+        
       } else {
       
         $('.edit-task-detail').addClass('error');
@@ -99,6 +119,26 @@ _.table = {
         $('.new-task-detail').removeClass('error');
         $('#new-task-help').text('');
         $('#new-task-save-button').attr('href', '#task/save');
+        
+        if (!_.user.anonymous) {
+          var responders = task.getResponders();
+          var found = false;
+          
+          for (var index in responders) {
+            var responder = responders[index];
+            if ('+' + _.user.username == responder) {
+              
+              found = true;
+              break;
+            }
+          }
+          
+          if (found) {
+            $('#' + task.id).addClass('own');
+          } else {
+            $('#' + task.id).removeClass('own');
+          }
+        }
         
       } else {
       
@@ -170,6 +210,26 @@ _.table = {
           var task = Task.get(taskID);
           if (task) {
             $('#' + task.status).append(_.tmpl('task', task));
+          }
+          
+          if (!_.user.anonymous) {
+            var responders = task.getResponders();
+            var found = false;
+            
+            for (var index in responders) {
+              var responder = responders[index];
+              if ('+' + _.user.username == responder) {
+                
+                found = true;
+                break;
+              }
+            }
+            
+            if (found) {
+              $('#' + task.id).addClass('own');
+            } else {
+              $('#' + task.id).removeClass('own');
+            }
           }
   
         }

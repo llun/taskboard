@@ -164,6 +164,11 @@ table td.wall.over{background-color: #CCC;}
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+.task.own {
+  background-color: #fde3d9;
+}
+
 .task h5 {line-height: 18px;}
 .task div {
   margin-top: 5px;
