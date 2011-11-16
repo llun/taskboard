@@ -1,10 +1,8 @@
 var fs = require('fs'),
     http = require('http'),
     log4js = require('log4js'),
-    mime = require('mime'),
     nowjs = require('now'),
     path = require('path'),
-    url = require('url'),
     util = require('util');
     
 // Parse configuration
@@ -45,45 +43,10 @@ var store = new Store(config.mongo);
 
 // Initial router
 var Router = require('./router.js').router;
-var router = new Router(config.routes, store);
+var router = new Router(config.base, config.routes, store);
 
 // Initial server and now.js
-var httpServer = http.createServer(
-  function(request, response) {
-    
-    var incoming = request.headers['x-forwarded-for'] || 
-                   request.connection.remoteAddress;
-    console.log ('(' + incoming + ') request: ' + request.url);
-    
-    var target = request.url == '/' ? '/index.html' : request.url;
-    var filePath = path.join(__dirname, config.base, url.parse(target).pathname);
-    
-    if (path.existsSync(filePath)) {
-      // Serve static file
-      var stat = fs.statSync(filePath);
-      if (stat.isDirectory()) {
-        router.notfound(request, response);
-      } else {
-        response.writeHead(200, {
-          'Content-Type': mime.lookup(filePath),
-          'Content-Length': stat.size
-        });
-
-        var stream = fs.createReadStream(filePath);
-        stream.on('data', function (data) {
-          response.write(data);
-        });
-
-        stream.on('end', function() {
-          response.end();
-        });
-      }
-      
-    } else {
-      router.route(request, response);
-    }
-    
-  });
+var httpServer = http.createServer(router.route);
 httpServer.listen(config.port);
 console.info ('Listen to ' + config.port);
 

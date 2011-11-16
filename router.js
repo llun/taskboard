@@ -1,11 +1,16 @@
-var log4js = require('log4js');
+var fs = require('fs'),
+    mime = require('mime'),
+    path = require('path'),
+    log4js = require('log4js'),
+    url = require('url');
 
 var _log = log4js.getLogger('router');
 
-var Router = function(routes, store) {
+var Router = function(base, routes, store) {
   
   var _self = this;
   
+  var _base = base;
   var _store = store;
   var _map = {
     get: {},
@@ -40,33 +45,65 @@ var Router = function(routes, store) {
   }
   
   this.route = function route(request, response) {
-    _log.debug ('route to: ' + request.method.toLowerCase() + ' - ' + request.url);
   
-    var method = _map[request.method.toLowerCase()][request.url];
-    if (method) {
-      method(request, response, _store);
+    var incoming = request.headers['x-forwarded-for'] || 
+                   request.connection.remoteAddress;
+    _log.info ('(' + incoming + ') request: ' + request.url);
+    _log.debug ('route to: ' + request.method.toLowerCase() + ' - ' + request.url);
+    
+    var target = request.url == '/' ? '/index.html' : request.url;
+    var filePath = path.join(__dirname, _base, url.parse(target).pathname);
+        
+    if (path.existsSync(filePath)) {
+      // Serve static file
+      var stat = fs.statSync(filePath);
+      if (stat.isDirectory()) {
+        _self.notfound(request, response);
+      } else {
+        response.writeHead(200, {
+          'Content-Type': mime.lookup(filePath),
+          'Content-Length': stat.size
+        });
+
+        var stream = fs.createReadStream(filePath);
+        stream.on('data', function (data) {
+          response.write(data);
+        });
+
+        stream.on('end', function() {
+          response.end();
+        });
+      }
+      
     } else {
     
-      var methods = _map[request.method.toLowerCase()];
-      var match = null;
-      for (var key in methods) {
-      
-        var pattern = new RegExp('^' + key + '.*$', 'i');
-        _log.debug ('url: ' + request.url + ' pattern: ' + pattern);
-        if (pattern.test(request.url)) {
-          match = methods[key];
-          break;
-        }
-      
-      }
-      
-      if (match) {
-        match(request, response, _store);
+      var method = _map[request.method.toLowerCase()][request.url];
+      if (method) {
+        method(request, response, _store);
       } else {
-        _self.notfound(request, response);
-      }
       
+        var methods = _map[request.method.toLowerCase()];
+        var match = null;
+        for (var key in methods) {
+        
+          var pattern = new RegExp('^' + key + '.*$', 'i');
+          _log.debug ('url: ' + request.url + ' pattern: ' + pattern);
+          if (pattern.test(request.url)) {
+            match = methods[key];
+            break;
+          }
+        
+        }
+        
+        if (match) {
+          match(request, response, _store);
+        } else {
+          _self.notfound(request, response);
+        }
+        
+      }  
     }
+    
   }
   
   _parse(routes);
