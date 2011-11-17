@@ -54,10 +54,6 @@ _.table = {
         
         console.log ('client(update): ' + task.id + ', ' + task.status + ', ' + task.detail);
         
-        $('#' + id + '_detail').html(task.getDetail());
-        $('#' + id + '_responders').text(task.getResponders().toString());
-        $('#' + id + '_tags').text(task.getTags().toString());
-        
         $('#edit-task-detail').val('');
         $('#edit-task-save-button').attr('href', '');
         $('#edit-task-modal').hide();
@@ -66,25 +62,8 @@ _.table = {
         $('#edit-task-help').text('');
         $('#edit-task-save-button').attr('href', '#task/save');
         
-        if (!_.user.anonymous) {
-          var responders = task.getResponders();
-          var found = false;
-          
-          for (var index in responders) {
-            var responder = responders[index];
-            if ('+' + _.user.username == responder) {
-              
-              found = true;
-              break;
-            }
-          }
-          
-          if (found) {
-            $('#' + task.id).addClass('own');
-          } else {
-            $('#' + task.id).removeClass('own');
-          }
-        }
+        // Find the way to use view.
+        new TaskView(task).update();
         
       } else {
       
@@ -108,9 +87,6 @@ _.table = {
         iteration.addTask(task);
         Iteration.save(iteration, true);
         
-        $('#todo').append(_.tmpl('task', task));
-        $('#' + task.id).attr('draggable', true);
-        
         console.log ('client(create): ' + task.id + ', ' + task.status + ', ' + task.detail);
 
         // Clear form and close
@@ -121,26 +97,8 @@ _.table = {
         $('#new-task-help').text('');
         $('#new-task-save-button').attr('href', '#task/save');
         
-        if (!_.user.anonymous) {
-          var responders = task.getResponders();
-          var found = false;
-          
-          for (var index in responders) {
-            var responder = responders[index];
-            if ('+' + _.user.username == responder) {
-              
-              found = true;
-              break;
-            }
-          }
-          
-          if (found) {
-            $('#' + task.id).addClass('own');
-          } else {
-            $('#' + task.id).removeClass('own');
-          }
-        }
-        
+        new TaskView(task).append('#todo').update();
+                
       } else {
       
         $('.new-task-detail').addClass('error');
@@ -210,27 +168,7 @@ _.table = {
         if (iteration.tasks[taskID]) {
           var task = Task.get(taskID);
           if (task) {
-            $('#' + task.status).append(_.tmpl('task', task));
-          }
-          
-          if (!_.user.anonymous) {
-            var responders = task.getResponders();
-            var found = false;
-            
-            for (var index in responders) {
-              var responder = responders[index];
-              if ('+' + _.user.username == responder) {
-                
-                found = true;
-                break;
-              }
-            }
-            
-            if (found) {
-              $('#' + task.id).addClass('own');
-            } else {
-              $('#' + task.id).removeClass('own');
-            }
+            new TaskView(clientTask).append('#' + task.status).update();
           }
   
         }
@@ -648,8 +586,7 @@ _.table = {
           if (iteration.tasks[taskID]) {
             var task = Task.get(taskID);
             if (task && !task.delete) {
-              $('#' + task.status).append(_.tmpl('task', task));
-              $('#' + task.id).attr('draggable', true);
+              new TaskView(clientTask).append('#' + task.status).update();
             }
               
           }

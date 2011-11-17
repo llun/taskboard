@@ -48,29 +48,7 @@ _.init = function() {
     if (iteration.tasks[taskID]) {
       var task = Task.get(taskID);
       if (task && !task.delete) {
-        $('#' + task.status).append(_.tmpl('task', task));
-        $('#' + task.id).attr('draggable', true);
-        
-        if (!_.user.anonymous) {
-          var responders = task.getResponders();
-          var found = false;
-          
-          for (var index in responders) {
-            var responder = responders[index];
-            if ('+' + _.user.username == responder) {
-              
-              found = true;
-              break;
-            }
-          }
-          
-          if (found) {
-            $('#' + task.id).addClass('own');
-          } else {
-            $('#' + task.id).removeClass('own');
-          }
-        }
-        
+        new TaskView(task).append('#' + task.status).update();
       }
       
     }
@@ -586,29 +564,7 @@ _.init = function() {
 
             var clientTask = Task.get(serverTask.id);
             if (clientTask.owner == _.project.currentIteration()) {
-              $('#' + clientTask.status).append(_.tmpl('task', clientTask));
-              $('#' + clientTask.id).attr('draggable', true);
-              
-              if (!_.user.anonymous) {
-                var responders = clientTask.getResponders();
-                var found = false;
-                
-                for (var index in responders) {
-                  var responder = responders[index];
-                  if ('+' + _.user.username == responder) {
-                    
-                    found = true;
-                    break;
-                  }
-                }
-                
-                if (found) {
-                  $('#' + clientTask.id).addClass('own');
-                } else {
-                  $('#' + clientTask.id).removeClass('own');
-                }
-              }
-              
+              new TaskView(clientTask).append('#' + clientTask.status).update();
             }
             
           }
@@ -646,28 +602,7 @@ _.init = function() {
                   if (iteration.tasks[taskID]) {
                     var task = Task.get(taskID);
                     if (task && !task.delete) {
-                      $('#' + task.status).append(_.tmpl('task', task));
-                      $('#' + task.id).attr('draggable', true);
-                      
-                      if (!_.user.anonymous) {
-                        var responders = task.getResponders();
-                        var found = false;
-                        
-                        for (var index in responders) {
-                          var responder = responders[index];
-                          if ('+' + _.user.username == responder) {
-                            
-                            found = true;
-                            break;
-                          }
-                        }
-                        
-                        if (found) {
-                          $('#' + task.id).addClass('own');
-                        } else {
-                          $('#' + task.id).removeClass('own');
-                        }
-                      }
+                      new TaskView(clientTask).append('#' + task.status).update();
                     }
                     
                   }
@@ -723,30 +658,7 @@ _.init = function() {
               clientTask = Task.get(serverTask.id);
               if (clientTask.owner == _.project.currentIteration()) {
                 $('#' + clientTask.id).remove();
-              
-                $('#' + clientTask.status).append(_.tmpl('task', clientTask));
-                $('#' + clientTask.id).attr('draggable', true);
-                
-                if (!_.user.anonymous) {
-                  var responders = clientTask.getResponders();
-                  var found = false;
-                  
-                  for (var index in responders) {
-                    var responder = responders[index];
-                    if ('+' + _.user.username == responder) {
-                      
-                      found = true;
-                      break;
-                    }
-                  }
-                  
-                  if (found) {
-                    $('#' + clientTask.id).addClass('own');
-                  } else {
-                    $('#' + clientTask.id).removeClass('own');
-                  }
-                }
-                
+                new TaskView(clientTask).append('#' + clientTask.status).update();
               }
             }
           
@@ -796,28 +708,7 @@ _.init = function() {
           if (iteration.tasks[taskID]) {
             var task = Task.get(taskID);
             if (task && !task.delete) {
-              $('#' + task.status).append(_.tmpl('task', task));
-              $('#' + task.id).attr('draggable', true);
-              
-              if (!_.user.anonymous) {
-                var responders = task.getResponders();
-                var found = false;
-                
-                for (var index in responders) {
-                  var responder = responders[index];
-                  if ('+' + _.user.username == responder) {
-                    
-                    found = true;
-                    break;
-                  }
-                }
-                
-                if (found) {
-                  $('#' + task.id).addClass('own');
-                } else {
-                  $('#' + task.id).removeClass('own');
-                }
-              }
+              new TaskView(clientTask).append('#' + task.status).update();
             }
               
           }
