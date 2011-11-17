@@ -112,7 +112,9 @@ var UserHandler = {
               
                 var userGroup = now.getGroup(serverUser.id);
                 var userNow = userGroup.now;
-                userNow.updateUser(clientUser);
+                if (userNow.updateUser) {
+                  userNow.updateUser(clientUser);
+                }
               });
             
           }
