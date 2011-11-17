@@ -39,3 +39,41 @@ var TaskView = function (task) {
   }
   
 }
+
+var NotificationsView = function (notifications) {
+
+  this.tmpls = [];
+  
+  if (notifications.length > 0) {
+    for (var index in notifications) {
+      var notification = notifications[index];
+      if (notification.type == 'invite') {
+        this.tmpls.push(_.tmpl('notification_invite_list', 
+          { index: index,
+            message: notification.from + 
+                     ' invite you to join ' + 
+                     notification.project }));
+      }
+    }
+  } else {
+    this.tmpls.push(_.tmpl('notification_list', 
+      {action: '', message: 'No notifications'}));
+  }
+  
+  this.renders = function(parent) {
+    $('.notification-list-item').remove();
+    
+    for (var index in this.tmpls) {
+      $(parent).append(this.tmpls[index]);
+    }
+    
+    $('#notification-status').text(_.notifications.length);
+    
+    if (notifications.length > 0) {
+      $('#notification-status').addClass('alert');
+    } else {
+      $('#notification-status').removeClass('alert');
+    }
+  }
+
+}

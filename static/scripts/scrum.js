@@ -3,32 +3,6 @@ _.init = function() {
   
   _.persistent = new LocalStoragePersistent();
   
-  // Scrum methods
-  var renderNotifications = function () {
-    $('.notification-list-item').remove();
-    
-    if (_.notifications.length > 0) {
-      for (var index in _.notifications) {
-        var notification = _.notifications[index];
-        if (notification.type == 'invite') {
-          $('#notification-list').append(_.tmpl('notification_invite_list', 
-            { index: index,
-              message: notification.from + 
-                       ' invite you to join ' + 
-                       notification.project }));
-        }
-      }
-        
-      $('#notification-status').addClass('alert');
-      $('#notification-status').text(_.notifications.length);
-    } else {
-      $('#notification-list').append(_.tmpl('notification_list', 
-        { action: '', message: 'No notifications'}));
-      $('#notification-status').removeClass('alert');
-      $('#notification-status').text(0);
-    }
-  }
-  
   // Load data
   var current = _.persistent.get('current');
   if (!current) {
@@ -170,7 +144,7 @@ _.init = function() {
             var tail = _.notifications.slice(index+1);
                   
             _.notifications = front.concat(tail);
-            renderNotifications();
+            new NotificationsView(_.notifications).renders('#notification-list');
             
             if (type == 'accept') {
               var project = output.project;
@@ -308,7 +282,7 @@ _.init = function() {
                 var notifications = status.data;
                 notifications.reverse();
                 _.notifications = _.notifications.concat(notifications);
-                renderNotifications();                
+                new NotificationsView(_.notifications).renders('#notification-list');
               }
             });
           
@@ -721,7 +695,7 @@ _.init = function() {
         console.log ('Someone notified us');
       
         _.notifications = [ notification ].concat(_.notifications);
-        renderNotifications();
+        new NotificationsView(_.notifications).renders('#notification-list');
       }
 
     });
