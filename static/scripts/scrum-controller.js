@@ -344,10 +344,6 @@ _.table = {
   'update/confirm': function() {
     $('#update-modal').hide();
     
-    _.persistent.clear();
-    
-    console.log ('client(clear)');
-    
     applicationCache.swapCache();
     window.location.reload();
   },
