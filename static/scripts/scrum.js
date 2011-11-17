@@ -192,6 +192,12 @@ _.init = function() {
     }
   });
   
+  $(document).keyup(function(event) {
+    if (event.keyCode === 27) {
+      _.table['']();
+    }
+  });
+  
   $('#share-user-list-input').keyup(function(event) {
     if (event.keyCode === 13) {
       var to = $('#share-user-list-input').val();
