@@ -163,6 +163,7 @@ table td.wall.over{background-color: #CCC;}
   box-shadow: none;
   margin-top: 5px;
   margin-bottom: 5px;
+  max-width: 235px;
 }
 
 .task.own {
@@ -174,6 +175,7 @@ table td.wall.over{background-color: #CCC;}
   margin-top: 5px;
   margin-bottom: 2px;
   line-height: 28px;
+  overflow: hidden;
 }
 .task .btn {
   -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
