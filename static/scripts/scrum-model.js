@@ -70,6 +70,17 @@ var Task = function(iteration, detail) {
         
         // Remove html tag from text.
         paragraph = paragraph.replace(/<\w+>|<\/\w+>/ig, '');
+        
+        // Make link clickable
+        var linkPattern = /(^\S+:\/\/\S+\s+|\s+\S+:\/\/\S+\s+|\s+\S+:\/\/\S+$|^\S+:\/\/\S+$)/ig;
+
+        var matches = paragraph.match(linkPattern);
+        if (matches) {
+          for (var index in matches) {
+            var match = matches[index].replace(/^\s+|\s+$/g, '');
+            paragraph = paragraph.replace(match, '<a href="' + match + '">' + match + '</a>');
+          }
+        }
 
         if (paragraph.length > 0) {
           output += '<p>' + paragraph + '</p>\n';
