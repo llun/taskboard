@@ -111,18 +111,6 @@ _.init = function() {
     window.location.hash = 'iteration/end';
   });
   
-  $('.dropdown').click(function(event) {
-    var open = false;
-    if (!$(this).hasClass('open')) {
-      open = true;
-    }
-    $('.dropdown').removeClass('open');
-    
-    if (open) {
-      $(this).addClass('open');
-    }
-  });
-  
   $('.notification-list-item.btn').live({
     click: function (event) {
       var index = parseInt($(event.target).attr('index'));
