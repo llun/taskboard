@@ -8,9 +8,7 @@ var config = {
     
     callback: 'http://localhost:8080/oauth/twitter/callback',
     consumerKey: '',
-    consumerSecret: '',
-    token: '',
-    tokenSecret: ''
+    consumerSecret: ''
   },
   
   key: ''

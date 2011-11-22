@@ -67,7 +67,6 @@ var services = {
       		} else { 
       		
       		  var config = _loadConfig()['twitter'];
-      		  _log.trace (config.token + ', ' + config.tokenSecret);
       		  _log.trace (oauth_token + ', ' + oauth_token_secret);
       		  
       		  _tokens[oauth_token] = oauth_token_secret;
