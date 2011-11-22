@@ -69,20 +69,19 @@ body {
 .delete img{height:18px}
 .delete:hover{filter:alpha(opacity=40);-khtml-opacity:0.4;-moz-opacity:0.4;opacity:0.4;}
 
-.board-head h4 { display: inline; cursor: pointer; }
-.board-head img { 
+.project-head h2, .iteration-head h4 { display: inline; cursor: pointer; }
+.project-head img, .iteration-head img { 
   height: 13px; 
   padding-left: 5px; 
+  display: none;
   
   filter: alpha(opacity=40);
   -khtml-opacity: 0.4;
   -moz-opacity: 0.4;
   opacity: 0.4;
 }
-.board-head input {
-  width: 180px;
-  line-height: 36px;
-  display: none;
+.project-head:hover img, .iteration-head:hover img {
+  display: inline;
 }
 
 #share-user-list-icons {
