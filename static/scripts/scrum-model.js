@@ -78,7 +78,7 @@ var Task = function(iteration, detail) {
         if (matches) {
           for (var index in matches) {
             var match = matches[index].replace(/^\s+|\s+$/g, '');
-            paragraph = paragraph.replace(match, '<a href="' + match + '">' + match + '</a>');
+            paragraph = paragraph.replace(match, '<a href="' + match + '" target="_blank">' + match + '</a>');
           }
         }
 

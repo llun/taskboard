@@ -186,6 +186,32 @@ _.init = function() {
     }
   });
   
+  $('#search').focus(function(event) {
+    $(event.target).val('');
+  }).focusout(function(event) {
+    var searchText =  $(event.target).val().replace(/^\s+|\s+$/, '');
+    if (searchText.length == 0) {
+      $(event.target).val('Search');
+    }
+  }).keyup(function(event) {
+    var searchText =  $(event.target).val().replace(/^\s+|\s+$/, '');
+    var pattern = new RegExp(searchText, 'i');
+    
+    var iteration = Iteration.get(_.project.currentIteration());
+    for (var taskID in iteration.tasks) {
+      var task = Task.get(taskID);
+      if (task) {
+        var detail = task.getDetail(true);
+        if (pattern.test(detail)) {
+          $('#' + task.id).show();
+        } else {
+          $('#' + task.id).hide();
+        }
+      }
+    }
+    
+  });
+  
   $('#share-user-list-input').keyup(function(event) {
     if (event.keyCode === 13) {
       var to = $('#share-user-list-input').val();
@@ -268,8 +294,6 @@ _.init = function() {
             // Fetch notifications
             now.fetchNotifications(_.user.id, function (status) {
               if (!status.error) {
-              
-                console.log (status);
               
                 _.notifications = [];
                 

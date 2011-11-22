@@ -180,21 +180,36 @@
     <!-- Begin container -->    
     <div class="container">
 
+      <!-- Project row -->
       <div class="row">
         
-        <div class="span8 columns board-head">
-          <h4 id="project-name">Project name</h4> 
-          <span> - </span>
+        <div class="span4 columns board-head">
+          <h2 id="project-name">Project name</h2> 
+        </div>
+        
+        <div id="iteration-actions" class="span4 offset8 columns">
+          <button id="end-iteration-button" class="btn danger">End Iteration</button>
+          <button id="new-task-button" class="btn primary span2">New Task</button>
+        </div>
+                
+      </div>
+      <!-- End project row -->
+      
+      <!-- Iteration row -->
+      <div class="row">
+        
+        <div class="span4 columns board-head">
           <h4 id="iteration-name">Iteration name</h4>
           <a href="#board/edit" id="board-name-edit"><img src="images/wrench.png" /></a>
         </div>
         
-        <div id="iteration-actions" class="span4 offset4 columns">
-          <button id="new-task-button" class="btn primary">New Task</button>
-          <button id="end-iteration-button" class="btn danger">End Iteration</button>
+        
+        <div class="span6 offset6 columns">
+          <input id="search" type="search" value="Search" class="span6" />
         </div>
         
       </div>
+      <!-- End iteration row -->
       
       <table id="tasks-table" class="zebra-stripped">
         <thead>
