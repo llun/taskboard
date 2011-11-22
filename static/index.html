@@ -176,69 +176,70 @@
         </div>
       </div>
     </div>
-    
+
+    <!-- Begin container -->    
     <div class="container">
-      <div class="tasks">
+
+      <div class="row">
         
-        <div class="row">
-          
-          <div class="span8 columns board-head">
-            <h4 id="project-name">Project name</h4> 
-            <span> - </span>
-            <h4 id="iteration-name">Iteration name</h4>
-            <a href="#board/edit" id="board-name-edit"><img src="images/wrench.png" /></a>
-          </div>
-          
-          <div id="iteration-actions" class="span4 offset4 columns">
-            <button id="new-task-button" class="btn primary">New Task</button>
-            <button id="end-iteration-button" class="btn danger">End Iteration</button>
-          </div>
-          
+        <div class="span8 columns board-head">
+          <h4 id="project-name">Project name</h4> 
+          <span> - </span>
+          <h4 id="iteration-name">Iteration name</h4>
+          <a href="#board/edit" id="board-name-edit"><img src="images/wrench.png" /></a>
         </div>
         
-        <table id="tasks-table" class="zebra-stripped">
-          <thead>
-            <tr>
-              <th class="black header task-type">Todo</th>
-              <th class="blue header task-type">In progress</th>
-              <th class="orange header task-type">Verify</th>
-              <th class="green header task-type">Done</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td id="todo" class="wall">
-                <!-- Task will live here -->
-              </td>
-              
-              <td id="inprogress" class="wall">
-                <!-- Task will live here -->
-              </td>
-              
-              <td id="verify" class="wall">
-                <!-- Task will live here -->
-              </td>
-              
-              <td id="done" class="wall">
-                <!-- Task will live here -->
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <div class="row">
-          
-          <div class="span16">
-            <p>
-              Scrum-board is <a href="http://twitter.com/hybridknight">@hybridknight</a> &amp; 
-              <a href="http://twitter.com/llun">@llun</a> lab project.
-            </p>
-          </div>
-          
+        <div id="iteration-actions" class="span4 offset4 columns">
+          <button id="new-task-button" class="btn primary">New Task</button>
+          <button id="end-iteration-button" class="btn danger">End Iteration</button>
         </div>
         
       </div>
+      
+      <table id="tasks-table" class="zebra-stripped">
+        <thead>
+          <tr>
+            <th class="black header task-type">Todo</th>
+            <th class="blue header task-type">In progress</th>
+            <th class="orange header task-type">Verify</th>
+            <th class="green header task-type">Done</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="todo" class="wall">
+              <!-- Task will live here -->
+            </td>
+            
+            <td id="inprogress" class="wall">
+              <!-- Task will live here -->
+            </td>
+            
+            <td id="verify" class="wall">
+              <!-- Task will live here -->
+            </td>
+            
+            <td id="done" class="wall">
+              <!-- Task will live here -->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="row">
+        
+        <div class="span16">
+          <p>
+            Scrum-board is <a href="http://twitter.com/hybridknight">@hybridknight</a> &amp; 
+            <a href="http://twitter.com/llun">@llun</a> lab project.
+          </p>
+        </div>
+        
+      </div>
+    
+    
     </div>
+    <!-- End container -->
     
     <!-- New task modal -->
     <div id="new-task-modal" class="task-modal">
