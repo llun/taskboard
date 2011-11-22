@@ -582,7 +582,7 @@ _.table = {
           if (iteration.tasks[taskID]) {
             var task = Task.get(taskID);
             if (task && !task.delete) {
-              new TaskView(clientTask).append('#' + task.status).update();
+              new TaskView(task).append('#' + task.status).update();
             }
               
           }
