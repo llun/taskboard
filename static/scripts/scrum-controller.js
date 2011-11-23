@@ -205,6 +205,10 @@ _.table = {
     
     var iteration = Iteration.get(_.project.currentIteration());
     $('#edit-iteration-name').val(iteration.name);
+    $('#edit-iteration-name').focus();
+    
+    var input = $('#edit-iteration-name')[0];
+    input.setSelectionRange(0, iteration.name.length);
   },
   'iteration/save': function () {
   
@@ -306,7 +310,44 @@ _.table = {
     $('#new-project-modal').show();
   },
   'project/edit': function () {
+    $('.edit-project-name').removeClass('error');
+    $('#project-name-help').text('');
+    
+    $('#edit-project-save-button').attr('href', '#project/save');
+    
+    $('#share-user-list-input').attr('disabled', true);
+    $('#share-user-list-input').val('');
+    $('.share-user-list-icon').remove();
+    
+    $('#edit-project-sync-option').removeAttr('checked');
+    $('#edit-project-sync-option').removeAttr('disabled');
+  
     $('#edit-project-modal').show();
+    
+    var project = _.project;
+    $('#edit-project-name').val(project.name);
+    $('#edit-project-name').focus();
+    
+    if (project.sync) {
+      $('#edit-project-sync-option').attr('checked', true);
+      $('#edit-project-sync-option').attr('disabled', true);
+      
+      if (now.invite) {
+        $('#share-user-list-input').removeAttr('disabled');
+      }
+      
+    }
+    
+    var members = project.members;
+    for (var index in members) {
+      var member = members[index];
+      member.id = project.id;
+      
+      $('#share-user-list-icons').append(_.tmpl('share_list', member));
+    }
+    
+    var input = $('#edit-project-name')[0];
+    input.setSelectionRange(0, project.name.length);
   },
   'project/create': function () {
     var name = $('#new-project-name').val();
@@ -361,6 +402,37 @@ _.table = {
     }
     
   },
+  'project/save': function () {
+    // Validate input
+    var pattern = /^[\w\d ]+$/i;
+    var name = $('#edit-project-name').val();
+    
+    if (pattern.test(name)) {
+    
+      var isSyncProject = $('#edit-project-sync-option').attr('checked') ? true : false;
+    
+      // Persist input
+      var project = _.project;
+      project.name = name;
+      project.sync = isSyncProject;
+      
+      Project.save(project, true);
+      
+      $('#project-name').text(project.name);
+      $('#project-menu-' + project.id).text(project.name);
+      
+      $('#edit-project-modal').hide();
+      
+      window.location.hash = '';
+    } else {
+      $('.edit-project-name').addClass('error');
+      $('#project-name-help').text('Project name can contains only alphabet' +
+                                   ', numeric or white space');
+                                   
+      $('#edit-project-save-button').attr('href', '#project/save?'+ (new Date()).getTime());
+    }
+    
+  },
   
   // Update controllers
   'update/ready': function() {
@@ -371,110 +443,6 @@ _.table = {
     
     applicationCache.swapCache();
     window.location.reload();
-  },
-  
-  // Board controllers.
-  'board/edit': function() {
-  
-    $('#edit-iteration-name').val('');
-    $('#edit-project-name').val('');
-        
-    $('.edit-project-name').removeClass('error');
-    $('#project-name-help').text('');
-    
-    $('.edit-iteration-name').removeClass('error');
-    $('#iteration-name-help').text('');
-    
-    $('#edit-board-save-button').attr('href', '#board/save');
-  
-    $('#share-user-list-input').attr('disabled', true);
-    $('#share-user-list-input').val('');
-    $('.share-user-list-icon').remove();
-  
-    $('#edit-board-modal').show();
-    
-    var project = _.project;
-    $('#edit-project-name').val(project.name);
-    $('#edit-project-name').focus();
-    
-    if (project.sync) {
-      $('#edit-project-sync-option').attr('checked', true);
-      $('#edit-project-sync-option').attr('disabled', true);
-      
-      if (now.invite) {
-        $('#share-user-list-input').removeAttr('disabled');
-      }
-      
-    }
-    
-    var members = project.members;
-    for (var index in members) {
-      var member = members[index];
-      member.id = project.id;
-      
-      $('#share-user-list-icons').append(_.tmpl('share_list', member));
-    }
-    
-    var iteration = Iteration.get(_.project.currentIteration());
-    $('#edit-iteration-name').val(iteration.name);
-    
-    var input = $('#edit-project-name')[0];
-    input.setSelectionRange(0, project.name.length);
-    
-  },
-  'board/save': function () {
-    
-    // Validate input
-    var pattern = /^[\w\d ]+$/i;
-    
-    var projectName = $('#edit-project-name').val();
-    var iterationName = $('#edit-iteration-name').val();
-    
-    var projectPass = pattern.test(projectName);
-    var iterationPass = pattern.test(iterationName);
-        
-    if (projectPass && iterationPass) {
-    
-      var isSyncProject = $('#edit-project-sync-option').attr('checked') ? true : false;
-      $('#edit-project-sync-option').removeAttr('checked');
-      $('#edit-project-sync-option').removeAttr('disabled');
-    
-      // Persist input
-      var project = _.project;
-      project.name = projectName;
-      project.sync = isSyncProject;
-      
-      Project.save(project, true);
-      
-      $('#project-name').text(project.name);
-      $('#project-menu-' + project.id).text(project.name);
-      
-      var iteration = Iteration.get(_.project.currentIteration());
-      iteration.name = iterationName;
-      Iteration.save(iteration, true);
-      
-      $('#iteration-name').text(iteration.name);
-      $('#edit-board-modal').hide();
-      
-      window.location.hash = '';
-    } else {
-    
-      if (!projectPass) {
-        $('.edit-project-name').addClass('error');
-        $('#project-name-help').text('Project name can contains only alphabet' +
-                                     ', numeric or white space');
-      }
-      
-      if (!iterationPass) {
-        $('.edit-iteration-name').addClass('error');
-        $('#iteration-name-help').text('Iteration name can contains only alphabet' +
-                                       ', numeric or white space');
-      }
-      
-      $('#edit-board-save-button').attr('href', '#board/save?'+ (new Date()).getTime());
-    
-    }
-    
   },
   
   // User controllers
