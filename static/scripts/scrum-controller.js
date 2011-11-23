@@ -2,10 +2,23 @@
 _.table = {
   // Task controllers
   'task/new': function() {
+    $('#new-task-detail').val('');
+    
+    $('.new-task-detail').removeClass('error');
+    $('#new-task-help').text('');
+    $('#new-task-save-button').attr('href', '#task/save');
+  
     $('#new-task-modal').show();
     $('#new-task-detail').focus();
   },
   'task/edit': function(hash) {
+    $('#edit-task-detail').val('');
+    $('#edit-task-save-button').attr('href', '');
+  
+    $('.edit-task-detail').removeClass('error');
+    $('#edit-task-help').text('');
+    $('#edit-task-save-button').attr('href', '#task/save');
+    
     $('#edit-task-modal').show();
 
     var id = null;    
@@ -54,13 +67,8 @@ _.table = {
         
         console.log ('client(update): ' + task.id + ', ' + task.status + ', ' + task.detail);
         
-        $('#edit-task-detail').val('');
-        $('#edit-task-save-button').attr('href', '');
         $('#edit-task-modal').hide();
         
-        $('.edit-task-detail').removeClass('error');
-        $('#edit-task-help').text('');
-        $('#edit-task-save-button').attr('href', '#task/save');
         
         // Find the way to use view.
         new TaskView(task).update();
@@ -90,13 +98,7 @@ _.table = {
         console.log ('client(create): ' + task.id + ', ' + task.status + ', ' + task.detail);
 
         // Clear form and close
-        $('#new-task-detail').val('');
         $('#new-task-modal').hide();
-        
-        $('.new-task-detail').removeClass('error');
-        $('#new-task-help').text('');
-        $('#new-task-save-button').attr('href', '#task/save');
-        
         new TaskView(task).append('#todo').update();
                 
       } else {
@@ -133,19 +135,6 @@ _.table = {
       
     }
     
-  },
-  'task/clear': function(hash) {
-    $('#clear-task-modal').show();
-  },
-  'task/clear/confirm': function(hash) {
-    _.persistent.clear();
-    
-    console.log ('client(clear)');
-    
-    $('.task').remove();
-    $('#clear-task-modal').hide();
-    
-    window.location.hash = '';
   },
   
   // Iteration controllers
@@ -279,13 +268,20 @@ _.table = {
   
   },
   'project/new': function () {
+    $('#new-project-name').val('');
+    $('#new-project-sync-option').removeAttr('checked');
+    $('#new-project-sync-option').removeAttr('disabled');
+    
+    $('.new-project-name').removeClass('error');
+    $('#new-project-help').text('');
+    
+    $('#new-project-save-button').attr('href', '#project/save');
+    
     $('#new-project-modal').show();
   },
   'project/save': function () {
     var name = $('#new-project-name').val();
     var isSync = $('#new-project-sync-option').attr('checked') ? true : false;
-    $('#new-project-sync-option').removeAttr('checked');
-    $('#new-project-sync-option').removeAttr('disabled');
     
     var pattern = /^[\w\d ]+$/;
     if (pattern.test(name)) {
@@ -351,6 +347,21 @@ _.table = {
   // Board controllers.
   'board/edit': function() {
   
+    $('#edit-iteration-name').val('');
+    $('#edit-project-name').val('');
+        
+    $('.edit-project-name').removeClass('error');
+    $('#project-name-help').text('');
+    
+    $('.edit-iteration-name').removeClass('error');
+    $('#iteration-name-help').text('');
+    
+    $('#edit-board-save-button').attr('href', '#board/save');
+  
+    $('#share-user-list-input').attr('disabled', true);
+    $('#share-user-list-input').val('');
+    $('.share-user-list-icon').remove();
+  
     $('#edit-board-modal').show();
     
     var project = _.project;
@@ -407,30 +418,14 @@ _.table = {
       Project.save(project, true);
       
       $('#project-name').text(project.name);
-      $('#edit-project-name').val('');      
-      
       $('#project-menu-' + project.id).text(project.name);
-      
-      $('.edit-project-name').removeClass('error');
-      $('#project-name-help').text('');
       
       var iteration = Iteration.get(_.project.currentIteration());
       iteration.name = iterationName;
       Iteration.save(iteration, true);
       
       $('#iteration-name').text(iteration.name);
-      $('#edit-iteration-name').val('');
-      
-      $('.edit-iteration-name').removeClass('error');
-      $('#iteration-name-help').text('');
-      
       $('#edit-board-modal').hide();
-      
-      $('#share-user-list-input').attr('disabled', true);
-      $('#share-user-list-input').val('');
-      $('.share-user-list-icon').remove();
-      
-      $('#edit-board-save-button').attr('href', '#board/save');
       
       window.location.hash = '';
     } else {
@@ -455,6 +450,7 @@ _.table = {
   
   // User controllers
   'user/private/show': function(hash) {
+    $('#invite').val('');
     $('#login-modal').show();
   },
   
@@ -697,32 +693,7 @@ _.table = {
   },
   
   // Default state
-  '': function() {
-    $('#new-task-detail').val('');
-    $('#edit-task-detail').val('');
-    $('#edit-task-save-button').attr('href', '');
-    $('#edit-iteration-name').val('');
-    $('#edit-project-name').val('');
-    $('#new-project-name').val('');
-    
-    $('.edit-task-detail').removeClass('error');
-    $('#edit-task-help').text('');
-    $('#edit-task-save-button').attr('href', '#task/save');
-    
-    $('.new-task-detail').removeClass('error');
-    $('#new-task-help').text('');
-    $('#new-task-save-button').attr('href', '#task/save');
-    
-    $('.edit-project-name').removeClass('error');
-    $('#project-name-help').text('');
-    $('#new-project-sync-option').removeAttr('checked');
-    $('#new-project-sync-option').removeAttr('disabled');
-    
-    $('.edit-iteration-name').removeClass('error');
-    $('#iteration-name-help').text('');
-    
-    $('#edit-board-save-button').attr('href', '#board/save');
-    
+  '': function() {    
     $('#clear-task-modal').hide();
     $('#new-task-modal').hide();
     $('#edit-task-modal').hide();
@@ -731,12 +702,7 @@ _.table = {
     $('#new-project-modal').hide();
 
     $('#edit-board-modal').hide();
-    $('#edit-project-sync-option').removeAttr('checked');
-    $('#edit-project-sync-option').removeAttr('disabled');
     
-    $('#share-user-list-input').attr('disabled', true);
-    $('#share-user-list-input').val('');
-    $('.share-user-list-icon').remove();
     
     $('#login-modal').hide();
     $('#logout-modal').hide();
