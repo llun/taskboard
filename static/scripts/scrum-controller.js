@@ -205,6 +205,40 @@ _.table = {
     
     window.location.hash = '';
   },
+  'iteration/edit': function (hash) {
+    $('.edit-iteration-name').removeClass('error');
+    $('#iteration-name-help').text('');
+  
+    $('#edit-iteration-modal').show();
+    
+    var iteration = Iteration.get(_.project.currentIteration());
+    $('#edit-iteration-name').val(iteration.name);
+  },
+  'iteration/save': function () {
+  
+    // Validate input
+    var pattern = /^[\w\d ]+$/i;
+    var name = $('#edit-iteration-name').val();
+    
+    if (pattern.test(name)) {    
+      var iteration = Iteration.get(_.project.currentIteration());
+      iteration.name = name;
+      Iteration.save(iteration);
+      
+      $('#iteration-name').text(name);
+      $('#iteration-menu-' + iteration.id).text(name);
+    
+      $('#edit-iteration-modal').hide();
+    } else {
+      $('.edit-iteration-name').addClass('error');
+      $('#iteration-name-help').text('Iteration name can contains only alphabet' +
+                                     ', numeric or white space');
+                                     
+      $('#edit-iteration-save-button').attr('href', 
+                                            '#iteration/save?'+ (new Date()).getTime());
+    }    
+    
+  },
   
   // Project controllers
   'project/show': function (hash) {
@@ -278,6 +312,9 @@ _.table = {
     $('#new-project-save-button').attr('href', '#project/save');
     
     $('#new-project-modal').show();
+  },
+  'project/edit': function () {
+    $('#edit-project-modal').show();
   },
   'project/save': function () {
     var name = $('#new-project-name').val();
@@ -694,19 +731,7 @@ _.table = {
   
   // Default state
   '': function() {    
-    $('#clear-task-modal').hide();
-    $('#new-task-modal').hide();
-    $('#edit-task-modal').hide();
-    
-    $('#end-iteration-modal').hide();
-    $('#new-project-modal').hide();
-
-    $('#edit-board-modal').hide();
-    
-    
-    $('#login-modal').hide();
-    $('#logout-modal').hide();
-    
-    $('#update-modal').hide();
+    $('.application-modal').hide();
+    $('.task-modal').hide();
   }
 }

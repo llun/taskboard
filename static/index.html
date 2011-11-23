@@ -111,8 +111,6 @@
           <h3><a href="#">Scrum</a></h3>
           <ul class="nav">
             
-            <li class="active"><a href="#">Board</a></li>
-            
             <!-- Project menu -->
             <li id="projects-menu" class="dropdown">
               <a href="#" class="dropdown-toggle">Projects</a>
@@ -185,7 +183,7 @@
         
         <div class="span4 columns project-head">
           <h2 id="project-name">Project name</h2> 
-          <a href="#" id="project-edit"><img src="images/wrench.png" /></a>
+          <a href="#project/edit" id="project-edit"><img src="images/wrench.png" /></a>
         </div>
         
         <div id="iteration-actions" class="span4 offset8 columns">
@@ -201,7 +199,7 @@
         
         <div class="span4 columns iteration-head">
           <h4 id="iteration-name">Iteration name</h4>
-          <a href="#board/edit" id="board-name-edit"><img src="images/wrench.png" /></a>
+          <a href="#iteration/edit" id="board-name-edit"><img src="images/wrench.png" /></a>
         </div>
         
         
@@ -427,30 +425,23 @@
     </div>
     <!-- End new project modal -->
     
-    <!-- Edit board modal -->
-    <div id="edit-board-modal" class="application-modal">
+    <!-- Edit project modal -->
+    <div id="edit-project-modal" class="application-modal">
       <div class="modal-backdrop"></div>
+      
       <form class="modal">
         <div class="modal-header">
-          <h3>Board setting</h3>
+          <h3>Project setting</h3>
         </div>
+        
         <div class="modal-body">
-          
+        
           <div class="clearfix edit-project-name">
-            <label for="edit-project-name">Current project name</label>
+            <label for="edit-project-name">Project name</label>
             <div class="input">
               <input type="text" name="edit-project-name" id="edit-project-name" 
                      class="xlarge edit-project-name">
               <span id="project-name-help" class="help-block"></span>
-            </div>
-          </div>
-          
-          <div class="clearfix edit-iteration-name">
-            <label for="edit-iteration-name">Current iteration name</label>
-            <div class="input">
-              <input type="text" name="edit-iteration-name" id="edit-iteration-name" 
-                     class="xlarge edit-iteration-name">
-              <span id="iteration-name-help" class="help-block"></span>
             </div>
           </div>
           
@@ -487,17 +478,49 @@
           </div>
                     
         </div>
+        
         <div class="modal-footer">
-          <a id="edit-board-save-button" href="#board/save" class="btn primary">
+          <a id="edit-project-save-button" href="#project/save" class="btn primary">
             Save
           </a>
-          <a id="edit-board-cancel-button" href="#close" class="btn seconday">
+          <a id="edit-project-cancel-button" href="#close" class="btn seconday">
             Cancel
           </a>
         </div>
       </form>
     </div>
-    <!-- End edit board modal -->
+    <!-- End edit project modal -->
+    
+    <!-- Edit iteration modal -->
+    <div id="edit-iteration-modal" class="application-modal">
+      <div class="modal-backdrop"></div>
+      <form class="modal">
+        <div class="modal-header">
+          <h3>Iteration setting</h3>
+        </div>
+        <div class="modal-body">
+          
+          <div class="clearfix edit-iteration-name">
+            <label for="edit-iteration-name">Iteration name</label>
+            <div class="input">
+              <input type="text" name="edit-iteration-name" id="edit-iteration-name" 
+                     class="xlarge edit-iteration-name">
+              <span id="iteration-name-help" class="help-block"></span>
+            </div>
+          </div>
+                    
+        </div>
+        <div class="modal-footer">
+          <a id="edit-iteration-save-button" href="#iteration/save" class="btn primary">
+            Save
+          </a>
+          <a id="edit-iteration-cancel-button" href="#close" class="btn seconday">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+    <!-- End edit iteration modal -->
     
     <!-- Login modal -->
     <div id="login-modal" class="application-modal">
