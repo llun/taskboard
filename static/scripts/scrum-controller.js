@@ -6,7 +6,7 @@ _.table = {
     
     $('.new-task-detail').removeClass('error');
     $('#new-task-help').text('');
-    $('#new-task-save-button').attr('href', '#task/save');
+    $('#new-task-save-button').attr('href', '#task/create');
   
     $('#new-task-modal').show();
     $('#new-task-detail').focus();
@@ -43,72 +43,64 @@ _.table = {
     }
     
   },
+  'task/create': function() {
+    // Save new task
+    // Store it to local memory and render new task in todo
+    var taskDetail = $('#new-task-detail').val();
+    taskDetail = taskDetail.replace(/^\s+|\s+$/, '');
+    
+    if (taskDetail.length > 0) {
+    
+      var iteration = Iteration.get(_.project.currentIteration());
+      
+      var task = Task.create(iteration.id, taskDetail, true);
+      iteration.addTask(task);
+      Iteration.save(iteration, true);
+      
+      console.log ('client(create): ' + task.id + ', ' + task.status + ', ' + task.detail);
+
+      // Clear form and close
+      $('#new-task-modal').hide();
+      new TaskView(task).append('#todo').update();
+              
+    } else {
+    
+      $('.new-task-detail').addClass('error');
+      $('#new-task-help').text('Task detail cannot empty');
+      $('#new-task-save-button').attr('href', '#task/create?' + new Date().getTime());
+    
+    }
+  },
   'task/save': function(hash) {
     
-    var id = null;
-    if (hash) {
-      var matches = hash.match(/[0-9a-fA-F-]{36}/);
-      if (matches) {
-        id = matches[0];
-      }
-    }
+    var matches = hash.match(/[0-9a-fA-F-]{36}/);
+    var id = matches[0];
     
-    if (id) {
-      // Validate value
-      var taskDetail = $('#edit-task-detail').val();
-      taskDetail = taskDetail.replace(/^\s+|\s+$/,'');
+    // Validate value
+    var taskDetail = $('#edit-task-detail').val();
+    taskDetail = taskDetail.replace(/^\s+|\s+$/,'');
+    
+    if (taskDetail.length > 0) {
+    
+      // Save old task
+      var task = Task.get(id);
+      task.setDetail(taskDetail);
+      Task.save(task, true);
       
-      if (taskDetail.length > 0) {
+      console.log ('client(update): ' + task.id + ', ' + task.status + ', ' + task.detail);
       
-        // Save old task
-        var task = Task.get(id);
-        task.setDetail(taskDetail);
-        Task.save(task, true);
-        
-        console.log ('client(update): ' + task.id + ', ' + task.status + ', ' + task.detail);
-        
-        $('#edit-task-modal').hide();
-        
-        
-        // Find the way to use view.
-        new TaskView(task).update();
-        
-      } else {
+      $('#edit-task-modal').hide();
       
-        $('.edit-task-detail').addClass('error');
-        $('#edit-task-help').text('Task detail cannot empty');
-        $('#edit-task-save-button').attr('href', '#task/save/' + id + '?' + new Date().getTime());
       
-      }
+      // Find the way to use view.
+      new TaskView(task).update();
       
     } else {
-      // Save new task
-      // Store it to local memory and render new task in todo
-      var taskDetail = $('#new-task-detail').val();
-      taskDetail = taskDetail.replace(/^\s+|\s+$/, '');
-      
-      if (taskDetail.length > 0) {
-      
-        var iteration = Iteration.get(_.project.currentIteration());
-        
-        var task = Task.create(iteration.id, taskDetail, true);
-        iteration.addTask(task);
-        Iteration.save(iteration, true);
-        
-        console.log ('client(create): ' + task.id + ', ' + task.status + ', ' + task.detail);
-
-        // Clear form and close
-        $('#new-task-modal').hide();
-        new TaskView(task).append('#todo').update();
-                
-      } else {
-      
-        $('.new-task-detail').addClass('error');
-        $('#new-task-help').text('Task detail cannot empty');
-        $('#new-task-save-button').attr('href', '#task/save?' + new Date().getTime());
-      
-      }
-      
+    
+      $('.edit-task-detail').addClass('error');
+      $('#edit-task-help').text('Task detail cannot empty');
+      $('#edit-task-save-button').attr('href', '#task/save/' + id + '?' + new Date().getTime());
+    
     }
     
   },
@@ -309,14 +301,14 @@ _.table = {
     $('.new-project-name').removeClass('error');
     $('#new-project-help').text('');
     
-    $('#new-project-save-button').attr('href', '#project/save');
+    $('#new-project-save-button').attr('href', '#project/create');
     
     $('#new-project-modal').show();
   },
   'project/edit': function () {
     $('#edit-project-modal').show();
   },
-  'project/save': function () {
+  'project/create': function () {
     var name = $('#new-project-name').val();
     var isSync = $('#new-project-sync-option').attr('checked') ? true : false;
     
@@ -349,7 +341,7 @@ _.table = {
       
       
       $('#new-project-modal').hide();      
-      $('#new-project-save-button').attr('href', '#project/save?' + new Date().getTime());
+      $('#new-project-save-button').attr('href', '#project/create?' + new Date().getTime());
       
       if (_.project.sync && !navigator.onLine && !now.endIteration) {
         $('#end-iteration-button').attr('disabled', true);
@@ -364,7 +356,7 @@ _.table = {
       $('.new-project-name').addClass('error');
       $('#new-project-help').text('Project name can contains only alphabet' +
                                   ', numeric or white space');
-      $('#new-project-save-button').attr('href', '#project/save?' + new Date().getTime());
+      $('#new-project-save-button').attr('href', '#project/create?' + new Date().getTime());
     
     }
     
