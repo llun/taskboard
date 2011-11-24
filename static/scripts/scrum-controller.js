@@ -638,8 +638,6 @@ _.table = {
         now.fetchNotifications(_.user.id, function (status) {
           if (!status.error) {
           
-            console.log (status);
-          
             _.notifications = [];
             
             var notifications = status.data;
@@ -687,6 +685,21 @@ _.table = {
   'user/logout/confirm': function() {
     _.persistent.clear();
     location.reload();
+  },
+  
+  // Share
+  'share/remove': function (hash) {
+    var hashes = hash.split('/');
+  
+    var project = hashes[2];
+    var user = hashes[3];
+    
+    now.kick(project, user, function (status) {
+      
+      $('#share-' + status.user).remove();
+      
+    });
+    
   },
   
   // Default state

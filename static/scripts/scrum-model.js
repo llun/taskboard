@@ -392,6 +392,8 @@ Project.get = function (id) {
   return project;
 }
 Project.save = function (project, push) {
+
+  console.trace();
   console.log ('Save project.');
 
   project.updated += 1;

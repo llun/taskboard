@@ -331,6 +331,80 @@ var UserHandler = {
           
     }
     
+    everyone.kick = function (project, user, callback) {
+      
+      var client = store.getClient();
+      var ObjectID = client.bson_serializer.ObjectID;
+      
+      var local = {};
+      
+      var shares = _model.get('share', store.getClient());
+      var projects = _model.get('project', client);
+      var users = _model.get('user', client);
+      
+      step(
+        function init() {
+          shares.find({ owner: user, project: project }, this);
+        },
+        function removeShares(items) {
+          if (items.length > 0) {
+            shares.remove(items[0]._id, this);
+          }
+        },
+        function getUser(error) {
+          console.log (error);
+          if (!error) {
+            users.find({ username: user }, this);
+          }
+        },
+        function gotUser(items) {
+          if (items.length > 0) {
+            local.user = items[0];
+            projects.get(project, this);
+          }
+        },
+        function gotProject(item) {
+          if (item) {
+            local.project = item;
+            
+            var target = -1;
+            var members = item.members;
+            for (var index in members) {
+              var member = members[index];
+              if (member.username == local.user.username) {
+                target = index;
+                break;
+              }
+            }
+            
+            var front = members.slice(0, target);
+            var tail = members.slice(target + 1, members.length);
+            
+            members = front.concat(tail);
+            item.members = members;
+            
+            console.log (members);
+            
+            projects.edit(item.id, item);
+            var projectGroup = now.getGroup(item.id);
+            var projectNow = projectGroup.now;
+            projectNow.clientUpdate('server', item.type, item);
+
+            var userGroup = now.getGroup(local.user.id);
+            var userNow = userGroup.now;
+            userNow.notifyUser({ type: 'kick',
+                                 user: local.user.username,
+                                 project: item.name,
+                                 target: item.id });
+            userNow.clientKick(local.project.id);
+            
+            callback({ status: 'removed', user: user });
+
+          }
+        });
+      
+    }
+    
     everyone.accept = function (invite, callback) {
     
       var client = store.getClient();

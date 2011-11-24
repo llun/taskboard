@@ -99,20 +99,16 @@ _.init = function() {
     }
   });
   
-  $('#new-task-button').click(function(event) {
+  $('#new-task-button').click(function newtask(event) {
     window.location.hash = 'task/new';
   });
   
-  $('#clear-task-button').click(function(event) {
-    window.location.hash = 'task/clear';
-  });
-  
-  $('#end-iteration-button').click(function(event) {
+  $('#end-iteration-button').click(function enditeration(event) {
     window.location.hash = 'iteration/end';
   });
   
   $('.notification-list-item.btn').live({
-    click: function (event) {
+    click: function notificationaction(event) {
       var index = parseInt($(event.target).attr('index'));
       var type = $(event.target).attr('type');
       
@@ -124,7 +120,7 @@ _.init = function() {
         if (notification.type == 'invite') {
         
           notification.index = index;
-          now[type](notification, function (output) {
+          now[type](notification, function invite(output) {
           
             var index = output.input.index;
             
@@ -180,20 +176,20 @@ _.init = function() {
     }
   });
   
-  $(document).keyup(function(event) {
+  $(document).keyup(function documentkeyup(event) {
     if (event.keyCode === 27) {
       _.table['']();
     }
   });
   
-  $('#search').focus(function(event) {
+  $('#search').focus(function searchfocus(event) {
     $(event.target).val('');
-  }).focusout(function(event) {
+  }).focusout(function searchfocusout(event) {
     var searchText =  $(event.target).val().replace(/^\s+|\s+$/, '');
     if (searchText.length == 0) {
       $(event.target).val('Search');
     }
-  }).keyup(function(event) {
+  }).keyup(function searchkeyup(event) {
     var searchText =  $(event.target).val().replace(/^\s+|\s+$/, '');
     var pattern = new RegExp(searchText, 'i');
     
@@ -212,13 +208,13 @@ _.init = function() {
     
   });
   
-  $('#share-user-list-input').keyup(function(event) {
+  $('#share-user-list-input').keyup(function sharekeyup(event) {
     if (event.keyCode === 13) {
       var to = $('#share-user-list-input').val();
       var from = _.user.username;
       var project = _.project.id;
       
-      now.invite(from, to, project, function (status) {
+      now.invite(from, to, project, function gotinvite(status) {
         var member = { username: status.who, status: 'invited' };
         _.project.members.push(member);
         Project.save(_.project, true);
@@ -232,7 +228,7 @@ _.init = function() {
   });
 
   // Update event
-  $(applicationCache).bind('updateready', function (e) {
+  $(applicationCache).bind('updateready', function updateready(e) {
     if (applicationCache.status == applicationCache.UPDATEREADY) {
       window.location.hash = 'update/ready';
     }
@@ -240,7 +236,7 @@ _.init = function() {
   
   // Sync data to server if online
   if (navigator.onLine) {
-    now.ready(function() {
+    now.ready(function nowready() {
     
       if (!_.ready) {
         _.ready = true;
@@ -284,7 +280,7 @@ _.init = function() {
         var joinList = [];
         
         // If user already login it should sync user.
-        now.syncUser(_.user, function(object) {
+        now.syncUser(_.user, function syncuser(object) {
         
           $('#sync-status').text('Syncing');
         
@@ -292,7 +288,7 @@ _.init = function() {
           if (!object.error) {
           
             // Fetch notifications
-            now.fetchNotifications(_.user.id, function (status) {
+            now.fetchNotifications(_.user.id, function fetchnotifications(status) {
               if (!status.error) {
               
                 _.notifications = [];
@@ -348,7 +344,7 @@ _.init = function() {
             
             // Sync projects
             now.syncModels(_.client, 'project', { owner: _.user.id }, prepareProject, 
-              function (object) {
+              function syncprojects(object) {
             
                 if (object.status == 'update') {
                   var projects = object.data;
@@ -378,7 +374,7 @@ _.init = function() {
                 }
                 
                 // Fetch share projects
-                now.shares(_.user.id, function (output) {
+                now.shares(_.user.id, function fetchshares(output) {
                   console.log (output);
                   _.shareProjects = [];
                   
@@ -421,7 +417,7 @@ _.init = function() {
                 
                 // Sync iterations
                 now.syncModels(_.client, 'iteration', { owner: _.user.id }, prepareIteration, 
-                  function (object) {
+                  function synciterations(object) {
                 
                     if (object.status == 'update') {
                       var iterations = object.data;
@@ -462,7 +458,7 @@ _.init = function() {
                         
                         // Sync tasks
                         now.syncModels(_.client, 'task', { owner: iteration.id }, prepareTasks, 
-                          function (object) {
+                          function synctasks(object) {
                         
                             if (object.status == 'update') {
                             
@@ -594,7 +590,7 @@ _.init = function() {
                   if (iteration.tasks[taskID]) {
                     var task = Task.get(taskID);
                     if (task && !task.delete) {
-                      new TaskView(clientTask).append('#' + task.status).update();
+                      new TaskView(task).append('#' + task.status).update();
                     }
                     
                   }
@@ -709,6 +705,14 @@ _.init = function() {
         
       }
 
+      // Kick function
+      now.clientKick = function (project) {
+        if (_.project == Project.get(project)) {
+          window.location.hash = '#project/show/' + _.user.defaultProject;
+        }
+      }
+
+      // Notify function
       now.notifyUser = function (notification) {
         console.log ('Someone notified us');
       
@@ -756,12 +760,12 @@ _.init = function() {
   }
   
   // Online/Offline event
-  $(window).bind('online', function (e) {
+  $(window).bind('online', function online(e) {
     console.log ('Online');
     window.location.reload()
   });
   
-  $(window).bind('offline', function(e) {
+  $(window).bind('offline', function offline(e) {
     console.log ('Offline');
     $('#sync-status').text('Offline');
     $('#notification-menu').hide();

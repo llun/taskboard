@@ -53,7 +53,7 @@ var NotificationsView = function (notifications) {
             message: notification.from + 
                      ' invite you to join ' + 
                      notification.project }));
-      }
+      } 
     }
   } else {
     this.tmpls.push(_.tmpl('notification_list', 
