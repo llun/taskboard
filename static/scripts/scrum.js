@@ -131,9 +131,9 @@ _.init = function() {
             new NotificationsView(_.notifications).renders('#notification-list');
             
             if (type == 'accept') {
-              var project = output.project;
-              var iterations = output.iterations;
-              var tasks = output.tasks;
+              var project = output.data.project;
+              var iterations = output.data.iterations;
+              var tasks = output.data.tasks;
               
               Project.save(project);
               

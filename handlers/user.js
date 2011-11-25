@@ -463,9 +463,9 @@ var UserHandler = {
             
             for (var index in project.iterations) {
               var iteration = project.iterations[index];
-              shareIterations.push({ id: iteration.id });
+              shareIterations.push({ id: iteration });
             }
-            
+
             iterations.find({ $or: shareIterations }, this);
           }
           
