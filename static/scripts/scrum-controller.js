@@ -161,12 +161,12 @@ _.table = {
       if (isCurrent) {
         // Show new task and end iteration button
         $('#iteration-actions').show();
-        $('#board-name-edit').show();
+        $('#iteration-name-edit').show();
         $('.task').attr('draggable', true);
       } else {
         // Hide new task and end iteration button
         $('#iteration-actions').hide();
-        $('#board-name-edit').hide();
+        $('#iteration-name-edit').hide();
         $('.task-action').hide();
       }
       
@@ -276,7 +276,8 @@ _.table = {
       
       if ((_.project.owner != user.id)) {
         $('#end-iteration-button').attr('disabled', true);
-        $('#board-name-edit').hide();
+        $('#project-edit').hide();
+        $('#iteration-name-edit').hide();
         
         if (!now.syncModel) {
           $('#new-task-button').attr('disabled', true);
@@ -284,7 +285,8 @@ _.table = {
           $('.task-action').hide();
         }
       } else {
-        $('#board-name-edit').show();
+        $('#project-edit').show();
+        $('#iteration-name-edit').show();
       }
       
       $('.iteration-list-menu-item').remove();
