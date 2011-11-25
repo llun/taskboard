@@ -28,6 +28,8 @@ _.init = function() {
     }
     
   }
+  
+  _.shareProjects = [];
 
   $('#project-name').text(_.project.name);
   $('#iteration-name').text(iteration.name);
@@ -153,10 +155,6 @@ _.init = function() {
               
               now.joinGroups(_.client, joinShareList);
               
-              if (!_.shareProjects) {
-                _.shareProjects = [];
-              }
-              
               if (_.shareProjects.length > 0) {
               
                 var list = _.tmpl('share_project_list', project);
@@ -164,7 +162,8 @@ _.init = function() {
               
               } else {
               
-                $('#projects-list-menu').append('<li class="divider project-list-menu-devider"></li>');
+                $('#projects-list-menu').append(
+                  '<li id="share-project-divider" class="divider project-list-menu-devider"></li>');
                 
                 var list = _.tmpl('share_project_list', project);
                 $('#projects-list-menu').append(list);
@@ -408,7 +407,8 @@ _.init = function() {
                   }
                   
                   if (_.shareProjects.length > 0) {
-                    $('#projects-list-menu').append('<li class="divider project-list-menu-devider"></li>');
+                    $('#projects-list-menu').append(
+                      '<li id="share-project-divider" class="divider project-list-menu-devider"></li>');
                     
                     for (var index in _.shareProjects) {
                       var project = Project.get(_.shareProjects[index]);
@@ -713,7 +713,29 @@ _.init = function() {
 
       // Kick function
       now.clientKick = function (project) {
-        if (_.project == Project.get(project)) {
+        _.shareProjects = [];
+        
+        var target = -1;
+        for (var index in _.shareProjects) {
+          if (_.shareProjects[index] == project) {
+            target = index;
+            break;
+          }
+        }
+        
+        if (target >= 0) {
+          var front = _.shareProjects.slice(0, target);
+          var tail = _.shareProjects.slice(target + 1, _.shareProjects.length);
+          
+          _.shareProjects = front.concat(tail);
+        }
+        
+        $('#project-list-' + project).remove();
+        if (_.shareProjects.length == 0) {
+          $('#share-project-divider').remove();
+        }
+      
+        if (_.project.id == project) {
           window.location.hash = '#project/show/' + _.user.defaultProject;
         }
       }
