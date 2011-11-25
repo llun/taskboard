@@ -367,11 +367,17 @@ var UserHandler = {
             }
             
             if (target >= 0) {
+              var member = members[target];
+              local.action = member.status;
+              
               var front = members.slice(0, target);
               var tail = members.slice(target + 1, members.length);
               
               members = front.concat(tail);
               item.members = members;
+              
+              item.updated++;
+              item.modified = new Date().getTime();
               
               projects.edit(item.id, item, this);
             }
@@ -381,7 +387,25 @@ var UserHandler = {
         },
         function getShare(error) {
           if (!error) {
-            shares.find({ owner: user, project: project }, this);
+            if (local.action == 'accepted') {
+              shares.find({ owner: user, project: project }, this);
+            } else {
+              var invites = _model.get('invite', client);
+              invites.find({ to: user, target: project }, function (items) {
+                if (items.length > 0) {
+                  invites.remove(items[0]._id);
+                  
+                  var userGroup = now.getGroup(local.user.id);
+                  var userNow = userGroup.now;
+                  userNow.notifyUser({ type: 'kick',
+                                       user: local.user.username,
+                                       project: local.project.name,
+                                       target: local.project.id });
+                }
+              });
+              
+              callback({ status: 'removed', user: user, project: local.project });
+            }
           } else {
             _log.debug(error);
           }
@@ -389,6 +413,8 @@ var UserHandler = {
         function removeShare(items) {
           if (items.length > 0) {
             shares.remove(items[0]._id, this);
+          } else {
+            console.log ('dont found share');
           }
         },
         function notifyUser(error) {

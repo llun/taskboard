@@ -50,10 +50,16 @@ var NotificationsView = function (notifications) {
       if (notification.type == 'invite') {
         this.tmpls.push(_.tmpl('notification_invite_list', 
           { index: index,
+            type: notification.type, 
             message: notification.from + 
                      ' invite you to join ' + 
                      notification.project }));
-      } 
+      } else if (notification.type == 'kick') {
+        this.tmpls.push(_.tmpl('notification_list', 
+          { action: '', 
+            type: notification.type, 
+            message: notification.user + ' removed you from ' + notification.project}));
+      }
     }
   } else {
     this.tmpls.push(_.tmpl('notification_list', 
