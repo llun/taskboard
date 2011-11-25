@@ -315,13 +315,16 @@ _.table = {
     
     $('#edit-project-save-button').attr('href', '#project/save');
     
+    $('#edit-project-sync-option').removeAttr('checked');
+    $('#edit-project-sync-option').attr('disabled', true);
     $('#share-user-list-input').attr('disabled', true);
     $('#share-user-list-input').val('');
     $('.share-user-list-icon').remove();
     
-    $('#edit-project-sync-option').removeAttr('checked');
-    $('#edit-project-sync-option').removeAttr('disabled');
-  
+    if (!_.user.anonymous) {
+      $('#edit-project-sync-option').removeAttr('disabled');
+    }
+    
     $('#edit-project-modal').show();
     
     var project = _.project;
@@ -336,7 +339,7 @@ _.table = {
         $('#share-user-list-input').removeAttr('disabled');
       }
       
-    }
+    } 
     
     var members = project.members;
     for (var index in members) {
