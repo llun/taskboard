@@ -451,7 +451,12 @@ var UserHandler = {
     
       step(
         function init() {
-          projects.get(invite.target, this);
+          invites.get(new ObjectID(invite._id), this);
+        },
+        function getProject(item) {
+          if (item) {
+            projects.get(invite.target, this);
+          }
         },
         function gotProject(item) {
         
