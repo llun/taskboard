@@ -135,11 +135,15 @@ _.init = function() {
               var iterations = output.data.iterations;
               var tasks = output.data.tasks;
               
+              var joinShareList = [ project.id ];
+              
               Project.save(project);
               
               for (var index in iterations) {
                 var iteration = iterations[index];
                 Iteration.save(iteration);
+                
+                joinShareList.push(iteration.id);
               }
               
               for (var index in tasks) {
@@ -147,11 +151,13 @@ _.init = function() {
                 Task.save(task);
               }
               
+              now.joinGroups(_.client, joinShareList);
+              
               if (!_.shareProjects) {
                 _.shareProjects = [];
               }
               
-              if (_.shareProjects.length > 1) {
+              if (_.shareProjects.length > 0) {
               
                 var list = _.tmpl('share_project_list', project);
                 $('#projects-list-menu').append(list);

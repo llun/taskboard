@@ -699,6 +699,9 @@ _.table = {
     
     now.kick(project, user, function (status) {
       
+      var project = status.project;
+      Project.save(project);
+      
       $('#share-' + status.user).remove();
       
     });

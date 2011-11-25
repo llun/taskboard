@@ -344,26 +344,15 @@ var UserHandler = {
       
       step(
         function init() {
-          shares.find({ owner: user, project: project }, this);
+          users.find({ username: user }, this);
         },
-        function removeShares(items) {
-          if (items.length > 0) {
-            shares.remove(items[0]._id, this);
-          }
-        },
-        function getUser(error) {
-          console.log (error);
-          if (!error) {
-            users.find({ username: user }, this);
-          }
-        },
-        function gotUser(items) {
+        function getProject(items) {
           if (items.length > 0) {
             local.user = items[0];
             projects.get(project, this);
           }
         },
-        function gotProject(item) {
+        function removeMember(item) {
           if (item) {
             local.project = item;
             
@@ -371,35 +360,54 @@ var UserHandler = {
             var members = item.members;
             for (var index in members) {
               var member = members[index];
-              if (member.username == local.user.username) {
+              if (member.username == user) {
                 target = index;
                 break;
               }
             }
             
-            var front = members.slice(0, target);
-            var tail = members.slice(target + 1, members.length);
+            if (target >= 0) {
+              var front = members.slice(0, target);
+              var tail = members.slice(target + 1, members.length);
+              
+              members = front.concat(tail);
+              item.members = members;
+              
+              projects.edit(item.id, item, this);
+            }
             
-            members = front.concat(tail);
-            item.members = members;
-            
-            console.log (members);
-            
-            projects.edit(item.id, item);
-            var projectGroup = now.getGroup(item.id);
+          }
+          
+        },
+        function getShare(error) {
+          if (!error) {
+            shares.find({ owner: user, project: project }, this);
+          } else {
+            _log.debug(error);
+          }
+        },
+        function removeShare(items) {
+          if (items.length > 0) {
+            shares.remove(items[0]._id, this);
+          }
+        },
+        function notifyUser(error) {
+          if (!error) {
+            var projectGroup = now.getGroup(local.project.id);
             var projectNow = projectGroup.now;
-            projectNow.clientUpdate('server', item.type, item);
-
+            projectNow.clientUpdate('server', local.project.type, local.project);
+            
             var userGroup = now.getGroup(local.user.id);
             var userNow = userGroup.now;
             userNow.notifyUser({ type: 'kick',
                                  user: local.user.username,
-                                 project: item.name,
-                                 target: item.id });
+                                 project: local.project.name,
+                                 target: local.project.id });
+                                 
             userNow.clientKick(local.project.id);
             
-            callback({ status: 'removed', user: user });
-
+            callback({ status: 'removed', user: user, project: local.project });
+                                 
           }
         });
       
