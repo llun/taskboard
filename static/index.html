@@ -111,6 +111,16 @@
         <div class="container">
           <h3><a href="#">Scrum</a></h3>
           <ul class="nav">
+          
+            <!-- Board -->
+            <li id="table-menu" class="active">
+              <a href="#board/table">Board</a>
+            </li>
+            
+            <!-- Story -->
+            <li id="story-menu">
+              <a href="#board/story">Story</a>
+            </li>
             
             <!-- Project menu -->
             <li id="projects-menu" class="dropdown">
@@ -183,67 +193,90 @@
     <!-- Begin container -->    
     <div class="container">
 
-      <!-- Project row -->
-      <div class="row">
-        
-        <div class="span4 columns project-head">
-          <h2 id="project-name">Project name</h2> 
-          <a href="#project/edit" id="project-edit"><img src="images/wrench.png" /></a>
+      <!-- Begin table view -->
+      <div id="table-view">
+
+        <!-- Project row -->
+        <div class="row">
+          
+          <div class="span4 columns project-head">
+            <h2 class="project-name">Project name</h2> 
+            <a href="#project/edit" id="project-edit"><img src="images/wrench.png" /></a>
+          </div>
+          
+          <div id="iteration-actions" class="span4 offset8 columns">
+            <button id="end-iteration-button" class="btn danger">End Iteration</button>
+            <button id="new-task-button" class="btn primary span2">New Task</button>
+          </div>
+                  
         </div>
+        <!-- End project row -->
         
-        <div id="iteration-actions" class="span4 offset8 columns">
-          <button id="end-iteration-button" class="btn danger">End Iteration</button>
-          <button id="new-task-button" class="btn primary span2">New Task</button>
+        <!-- Iteration row -->
+        <div class="row">
+          
+          <div class="span4 columns iteration-head">
+            <h4 id="iteration-name">Iteration name</h4>
+            <a href="#iteration/edit" id="iteration-name-edit"><img src="images/wrench.png" /></a>
+          </div>
+          
+          
+          <div class="span6 offset6 columns">
+            <input id="search" type="search" value="Search" class="span6" />
+          </div>
+          
         </div>
-                
-      </div>
-      <!-- End project row -->
+        <!-- End iteration row -->
+        
+        <table id="tasks-table" class="zebra-stripped">
+          <thead>
+            <tr>
+              <th class="black header task-type">Todo</th>
+              <th class="blue header task-type">In progress</th>
+              <th class="orange header task-type">Verify</th>
+              <th class="green header task-type">Done</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="todo" class="wall">
+                <!-- Task will live here -->
+              </td>
+              
+              <td id="inprogress" class="wall">
+                <!-- Task will live here -->
+              </td>
+              
+              <td id="verify" class="wall">
+                <!-- Task will live here -->
+              </td>
+              
+              <td id="done" class="wall">
+                <!-- Task will live here -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
       
-      <!-- Iteration row -->
-      <div class="row">
-        
-        <div class="span4 columns iteration-head">
-          <h4 id="iteration-name">Iteration name</h4>
-          <a href="#iteration/edit" id="iteration-name-edit"><img src="images/wrench.png" /></a>
+      </div>
+      <!-- End table view -->
+      
+      <!-- Begin story view -->
+      <div id="story-view">
+      
+        <!-- Project row -->
+        <div class="row">
+          
+          <div class="span4 columns project-head">
+            <h2 class="project-name">Project name</h2> 
+            <a href="#project/edit" id="project-edit"><img src="images/wrench.png" /></a>
+          </div>
+                  
         </div>
-        
-        
-        <div class="span6 offset6 columns">
-          <input id="search" type="search" value="Search" class="span6" />
-        </div>
+        <!-- End project row -->
         
       </div>
-      <!-- End iteration row -->
-      
-      <table id="tasks-table" class="zebra-stripped">
-        <thead>
-          <tr>
-            <th class="black header task-type">Todo</th>
-            <th class="blue header task-type">In progress</th>
-            <th class="orange header task-type">Verify</th>
-            <th class="green header task-type">Done</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td id="todo" class="wall">
-              <!-- Task will live here -->
-            </td>
-            
-            <td id="inprogress" class="wall">
-              <!-- Task will live here -->
-            </td>
-            
-            <td id="verify" class="wall">
-              <!-- Task will live here -->
-            </td>
-            
-            <td id="done" class="wall">
-              <!-- Task will live here -->
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- End story view -->
       
       <div class="row">
         

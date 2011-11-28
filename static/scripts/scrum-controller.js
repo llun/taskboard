@@ -264,7 +264,7 @@ _.table = {
       
       $('.task').remove();
       
-      $('#project-name').text(project.name);
+      $('.project-name').text(project.name);
       $('#iteration-name').text(iteration.name);
       
       _.table['iteration/show']('#iteration/show/' + iteration.id);
@@ -424,7 +424,7 @@ _.table = {
       
       Project.save(project, true);
       
-      $('#project-name').text(project.name);
+      $('.project-name').text(project.name);
       $('#project-menu-' + project.id).text(project.name);
       
       $('#edit-project-modal').hide();
@@ -577,7 +577,7 @@ _.table = {
         _.persistent.save(current);
         
         var iteration = Iteration.get(_.project.currentIteration());
-        $('#project-name').text(_.project.name);
+        $('.project-name').text(_.project.name);
         $('#iteration-name').text(iteration.name);
         
         for (var taskID in iteration.tasks) {
@@ -695,6 +695,23 @@ _.table = {
   'user/logout/confirm': function() {
     _.persistent.clear();
     location.reload();
+  },
+  
+  // Board action
+  'board/table': function (hash) {
+    $('#table-menu').addClass('active');
+    $('#story-menu').removeClass('active');
+  
+    $('#table-view').show();
+    $('#story-view').hide();
+  },
+  
+  'board/story': function (hash) {
+    $('#table-menu').removeClass('active');
+    $('#story-menu').addClass('active');
+    
+    $('#table-view').hide();
+    $('#story-view').show();
   },
   
   // Share

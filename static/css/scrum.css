@@ -136,6 +136,14 @@ body {
   display: block;
 }
 
+#table-view {
+  display: block;
+}
+
+#story-view {
+  display: none;
+}
+
 table .task-type{width: 25%;}
 
 table .black{color:#000;border-bottom-color:#000;}

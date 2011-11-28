@@ -32,7 +32,7 @@ _.init = function() {
   
   _.shareProjects = [];
 
-  $('#project-name').text(_.project.name);
+  $('.project-name').text(_.project.name);
   $('#iteration-name').text(iteration.name);
   
   // Bind drag & drop on wall
@@ -585,7 +585,7 @@ _.init = function() {
             $('#project-menu-' + clientProject.id).text(clientProject.name);
             
             if (_.project.id == clientProject.id) {
-              $('#project-name').text(clientProject.name);
+              $('.project-name').text(clientProject.name);
               _.project = clientProject;
               
               var iteration = Iteration.get(_.project.currentIteration());
@@ -692,7 +692,7 @@ _.init = function() {
         _.project = Project.get(user.defaultProject);
         
         // Change iteration/project board name.
-        $('#project-name').text(_.project.name);
+        $('.project-name').text(_.project.name);
         
         var iteration = Iteration.get(_.project.currentIteration());
         $('#iteration-name').text(iteration.name);
