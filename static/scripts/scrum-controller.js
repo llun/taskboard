@@ -141,6 +141,7 @@ _.table = {
     if (id) {
     
       var isCurrent = id == _.project.currentIteration();
+      _.iteration = id;
     
       $('.task').remove();
       var iteration = Iteration.get(id);

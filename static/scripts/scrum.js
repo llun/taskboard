@@ -15,6 +15,7 @@ _.init = function() {
     _.user = User.get(current.key);
     _.project = Project.get(_.user.defaultProject);
   }
+  _.iteration = _.project.currentIteration();
   
   var iteration = Iteration.get(_.project.currentIteration());
   for (var taskID in iteration.tasks) {
@@ -198,7 +199,7 @@ _.init = function() {
     var searchText =  $(event.target).val().replace(/^\s+|\s+$/, '');
     var pattern = new RegExp(searchText, 'i');
     
-    var iteration = Iteration.get(_.project.currentIteration());
+    var iteration = Iteration.get(_.iteration);
     for (var taskID in iteration.tasks) {
       var task = Task.get(taskID);
       if (task) {
