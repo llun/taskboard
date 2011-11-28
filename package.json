@@ -1,6 +1,6 @@
 {
   "name": "scrum",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "scripts": {
     "start": "node server.js"
   },
