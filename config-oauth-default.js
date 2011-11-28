@@ -11,6 +11,24 @@ var config = {
     consumerSecret: ''
   },
   
+  github: {
+    id: '',
+    secret: '',
+    base: 'https://github.com/login',
+    version: '2.0',
+    
+    callback: 'http://localhost:8080/oauth/github/callback'
+  },
+  
+  facebook: {
+    id: '',
+    secret: '',
+    base: 'https://graph.facebook.com',
+    version: '2.0',
+    
+    callbackAuthen: 'http://localhost:8080/oauth/facebook/authen'
+  },
+  
   key: ''
 
 }

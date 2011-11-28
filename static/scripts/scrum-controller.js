@@ -452,6 +452,10 @@ _.table = {
   
   // User controllers
   'user/private/show': function(hash) {
+    var fragments = hash.split('/');
+    var service = fragments[3];
+    
+    $('#loginForm').attr('action', '/oauth/' + service);
     $('#invite').val('');
     $('#login-modal').show();
   },

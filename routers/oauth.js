@@ -1,6 +1,7 @@
 var crypto = require ('crypto'),
     log4js = require ('log4js'),
     oauth = require ('oauth').OAuth,
+    oauth2 = require('oauth').OAuth2,
     path = require ('path'),
     step = require('step'),
     url = require ('url');
@@ -11,6 +12,8 @@ var _log = log4js.getLogger('oauth');
 var _config = null;
 var _services = {};
 var _tokens = {};
+
+var _fbStates = {};
 
 var _loadConfig = function () {
   if (!_config) {
@@ -36,13 +39,22 @@ var _getService = function (name) {
 
   if (!_services[name]) {
     var config = _loadConfig()[name];
-    var service = new oauth(config.request, 
-                            config.access,
-                            config.consumerKey,
-                            config.consumerSecret, 
-                            config.version,
-                            config.callback, 
-                            config.signature);
+    var service = null;
+    
+    if (config.version == '1.0') {
+      service = new oauth(config.request, 
+                          config.access,
+                          config.consumerKey,
+                          config.consumerSecret, 
+                          config.version,
+                          config.callback, 
+                          config.signature);
+    } else if (config.version == '2.0') {
+      service = new oauth2(config.id,
+                           config.secret,
+                           config.base);
+    }
+    
     _services[name] = service;
   }
   
@@ -80,7 +92,7 @@ var services = {
       	});
     
     } else {
-      response.writeHead(301, {
+      response.writeHead(302, {
         'Location': '/'
       });
       response.end();
@@ -123,7 +135,7 @@ var services = {
           
         
         } else {
-          response.writeHead(301, {
+          response.writeHead(302, {
             'Location': '/'
           });
           response.end();
@@ -133,9 +145,8 @@ var services = {
       
         if (!error) {
         
-          _log.trace(JSON.parse(data));
-          
           var user = JSON.parse(data);
+          _log.trace(user);
                                      
           var users = model.get('user', store.getClient());      
           users.find({username: user.screen_name}, 
@@ -160,7 +171,7 @@ var services = {
                 // Get first user and return to index
                 _log.debug (items[0]);
                                            
-                response.writeHead(301, {
+                response.writeHead(302, {
                   'Location': '/index.html#user/login/' + items[0]._id });
                 response.end('');                               
               }
@@ -169,7 +180,7 @@ var services = {
             // End verify credentials          
         
         } else {
-          response.writeHead(301, {
+          response.writeHead(302, {
             'Location': '/'
           });
           response.end();
@@ -178,6 +189,129 @@ var services = {
       }
     );
       
+  },
+  
+  'github': function (request, response, store) {
+  
+    var loginQuery = url.parse(request.url, true).query;
+    if (loginQuery.invite == _loadConfig().key) {
+    
+      var config = _loadConfig()['github'];
+      var service = _getService('github');
+      response.writeHead(301, {
+        'Location': service.getAuthorizeUrl({ redirect_uri: config.callback })
+      });
+      response.end();
+      
+    } else {
+      response.writeHead(302, {
+        'Location': '/'
+      });
+      response.end();
+    }  
+  
+  },
+  
+  'github/callback': function (request, response, store) {
+    var code = url.parse(request.url, true).query.code;
+    
+    var service = _getService('github');
+    
+    step(
+      function init() {
+        service.getOAuthAccessToken(code, null, this);
+      },
+      function gotAccessToken(error, access_token, refresh_token) {
+        if (!error) {
+          service.get('https://api.github.com/user', access_token, this);    
+        } else {
+          response.writeHead(302, {
+            'Location': '/'
+          });
+          response.end();
+        }
+      },
+      function gotUser(error, result) {
+      
+        if (!error) {
+          var user = JSON.parse(result);
+          _log.trace(user);
+          
+          var users = model.get('user', store.getClient());      
+          users.find({username: user.login}, 
+            function (items) {
+                                     
+              if (items.length == 0) {
+                _log.debug ('Create user: ' + user.login);
+                // Create user and return to index
+                users.create({ 
+                  username: user.login,
+                  image: user.avatar_url,
+                  updated: 0,
+                  anonymous: false }, 
+                  function (error, user) {
+                    _log.trace (user);
+                                               
+                    response.writeHead(302, {
+                      'Location': '/index.html#user/login/' + user._id });
+                    response.end('');                               
+                  });
+              } else {
+                // Get first user and return to index
+                _log.debug (items[0]);
+                                           
+                response.writeHead(302, {
+                  'Location': '/index.html#user/login/' + items[0]._id });
+                response.end('');                               
+              }
+                                       
+            });
+            // End verify credentials   
+        } else {
+          response.writeHead(302, {
+            'Location': '/'
+          });
+          response.end();
+        }
+      
+        
+      });
+  
+  },
+  
+  'facebook': function (request, response, store) {
+  
+    var loginQuery = url.parse(request.url, true).query;
+    if (loginQuery.invite == _loadConfig().key) {
+    
+      var md5 = crypto.createHash('md5');
+      md5.update(new Date().getTime().toString());
+      var digest = md5.digest('hex');
+      
+      _fbStates[digest] = true;
+    
+      var config = _loadConfig()['facebook'];
+      var redirect = 'https://www.facebook.com/dialog/oauth?client_id=' +
+                     config.id + '&redirect_url=' + 
+                     encodeURIComponent(config.callbackAuthen) + '&state=' +
+                     digest;
+      response.writeHead(302, {
+        'Location': redirect
+      });
+      response.end();
+    
+    } else {
+      response.writeHead(302, {
+        'Location': '/'
+      });
+      response.end();
+    }
+    
+  },
+  
+  'facebook/authen': function (request, response, store) {
+    response.writeHead(200, {});
+    response.end('Hello, world');
   },
 
   'authenticate': function (request, response, store) {
@@ -195,7 +329,7 @@ var services = {
     if (method) {
       method(request, response, store);
     } else {
-      response.writeHead(301, { 'Location': '/notfound' });
+      response.writeHead(302, { 'Location': '/notfound' });
       response.end();
     }
   
