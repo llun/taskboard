@@ -164,9 +164,13 @@
               <a class="login dropdown-toggle" href="#">Log in</a>
               <ul class="dropdown-menu">
                 <li id="log-in-menu">
-                  <a href="#user/private/show">
-                    <img class="login" src="images/twitter.png" alt="login with twitter" />
+                  <a href="#user/private/show/twitter">
+                    <img class="login" src="images/twitter.png" alt="Login with Twitter" />
                     <span>Log in with Twitter</span>
+                  </a>
+                  <a href="#user/private/show/github">
+                    <img class="login" src="images/github.png" alt="Login with Github" />
+                    <span>Log in with Github</span>
                   </a>
                 </li>
               </ul>
@@ -245,8 +249,8 @@
         
         <div class="span16">
           <p>
-            Scrum-board is <a href="http://twitter.com/hybridknight">@hybridknight</a> &amp; 
-            <a href="http://twitter.com/llun">@llun</a> lab project.
+            Scrumboard is <a href="http://twitter.com/llun">@llun</a> &amp; 
+            <a href="http://twitter.com/hybridknight">@hybridknight</a> lab project.
           </p>
         </div>
         
@@ -527,7 +531,7 @@
     <div id="login-modal" class="application-modal">
       <div class="modal-backdrop"></div>
     
-      <form action="/oauth/twitter" method="get" class="modal ">
+      <form id="loginForm" action="/oauth/service" method="get" class="modal ">
         <div class="modal-header">
           <h3>Login</h3>
         </div>

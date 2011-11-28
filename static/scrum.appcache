@@ -1,5 +1,5 @@
 CACHE MANIFEST
-#Version 0.5.4
+#Version 0.6.0
 #2011-11-28
 
 CACHE:
@@ -15,6 +15,7 @@ scripts/scrum.js
 css/bootstrap.min.css
 css/scrum.css
 
+images/github.png
 images/trash.png
 images/twitter.png
 images/user.png
