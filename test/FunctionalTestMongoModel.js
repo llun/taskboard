@@ -386,5 +386,70 @@ testit('TestMongoModel', {
         test.assertEqual('Project 31', output[0].name);
         test.assertEqual('Project 32', output[1].name);
       });
+  },
+  
+  'test get with valid key': function (test) {
+    var model;
+    
+    var done = false;
+    var output = null;
+    
+    step(
+      function begin () {
+        test.waitFor(
+          function () {
+            return require['find with key create'];
+          }, this)
+      },
+      function logic () {
+        model = local.model;
+        model.get(fixtures[0]._id, this);
+      },
+      function found (item) {
+        output = item;
+        done = true;
+      });
+      
+    test.waitFor(
+      function (time) {
+        return done;
+      },
+      function () {
+        require['get with valid key'] = true;
+        test.assert(output);
+        test.assertEqual('Project 1', output.name);
+      });
+  },
+  
+  'test get with invalid key': function (test) {
+    var model;
+    
+    var done = false;
+    var output = null;
+    
+    step(
+      function begin () {
+        test.waitFor(
+          function () {
+            return require['get with valid key'];
+          }, this)
+      },
+      function logic () {
+        model = local.model;
+        model.get('no id', this);
+      },
+      function found (item) {
+        output = item;
+        done = true;
+      });
+      
+    test.waitFor(
+      function (time) {
+        return done;
+      },
+      function () {
+        require['get with invalid key'] = true;
+        test.assert(!output);
+      });
   }
 });
