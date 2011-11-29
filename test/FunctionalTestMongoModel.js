@@ -451,5 +451,150 @@ testit('TestMongoModel', {
         require['get with invalid key'] = true;
         test.assert(!output);
       });
+  },
+  
+  'test remove with valid key': function (test) {
+    var collections;
+    var model;
+    
+    var done = false;
+    var output = null;
+    
+    step(
+      function begin () {
+        test.waitFor(
+          function () {
+            return require['get with invalid key'];
+          }, this)
+      },
+      function logic () {
+        collections = local.collections;
+        model = local.model;
+        
+        model.remove(fixtures[0]._id, this);
+      },
+      function removed (error) {
+        collections.count(this);
+      },
+      function count (error, total) {
+        output = total;
+        done = true;
+      });
+      
+    test.waitFor(
+      function (time) {
+        return done;
+      },
+      function () {
+        require['remove with valid key'] = true;
+        test.assertEqual(31, output);
+      });
+  },
+  
+  'test remove with invalid key': function (test) {
+    var collections;
+    var model;
+    
+    var done = false;
+    var output = null;
+    
+    step(
+      function begin () {
+        test.waitFor(
+          function () {
+            return require['remove with valid key'];
+          }, this)
+      },
+      function logic () {
+        collections = local.collections;
+        model = local.model;
+        
+        model.remove(fixtures[0]._id, this);
+      },
+      function removed (error) {
+        collections.count(this);
+      },
+      function count (error, total) {
+        output = total;
+        done = true;
+      });
+      
+    test.waitFor(
+      function (time) {
+        return done;
+      },
+      function () {
+        require['remove with invalid key'] = true;
+        test.assertEqual(31, output);
+      });
+  },
+  
+  'test exists on valid key': function (test) {
+    var model;
+    
+    var done = false;
+    var output = null;
+    
+    step(
+      function begin () {
+        test.waitFor(
+          function () {
+            return require['remove with invalid key'];
+          }, this)
+      },
+      function logic () {
+        collections = local.collections;
+        model = local.model;
+        
+        model.exists(fixtures[1]._id, this);
+      },
+      function validate (error, exists) {
+        output = exists;
+        done = true;
+      });
+      
+    test.waitFor(
+      function (time) {
+        return done;
+      },
+      function () {
+        require['exists on valid key'] = true;
+        test.assert(output);
+      });
+  },
+  
+  'test exists on invalid key': function (test) {
+    var model;
+    
+    var done = false;
+    var output = null;
+    var success = false;
+    
+    step(
+      function begin () {
+        test.waitFor(
+          function () {
+            return require['exists on valid key'];
+          }, this)
+      },
+      function logic () {
+        collections = local.collections;
+        model = local.model;
+        
+        model.exists(fixtures[0]._id, this);
+      },
+      function validate (error, exists) {
+        output = exists;
+        done = true;
+      });
+      
+    test.waitFor(
+      function (time) {
+        return done;
+      },
+      function () {
+        require['exists on invalid key'] = true;
+        test.assert(!output);
+      });
   }
 });
