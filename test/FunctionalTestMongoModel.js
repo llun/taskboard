@@ -8,12 +8,7 @@ var Model = require('../model/model.js').Model;
 var logger = log4js.getLogger('test');
     
 var local = {};
-
-var require = {
-  begin: false,
-  create: false,
-  edit: false
-}
+var require = {};
 
 testit('TestMongoModel', {
   'before all': function (test) {
@@ -106,11 +101,63 @@ testit('TestMongoModel', {
         return done;
       },
       function () {
-        require.create = true;
+        require['create with uuid'] = true;
         
         test.assert(3, output.count);
         test.assertEqual(output.target.id, output.target._id);
       });
+    
+  },
+  
+  'test create without uuid': function (test) {
+    var collections;
+    var model;
+    
+    var done = false;
+    var output = {};
+    
+    step(
+      function begin () {
+        test.waitFor(
+          function () {
+            return require['create with uuid'];
+          }, this)
+      },
+      function logic () {
+        collections = local.collections;
+        model = local.model;
+        
+        model.create({
+          name: 'Project 4',
+          children: []
+        }, this);
+      },
+      function get (error) {
+        collections.find().toArray(this);
+      },
+      function found (error, docs) {
+        if (!error) {
+          output.count = docs.length;
+          output.target = docs[docs.length - 1];
+        } else {
+          logger.error (error);
+        }
+        
+        done = true;
+      });
+      
+    test.waitFor(
+      function (time) {
+        return done;
+      },
+      function () {
+        require['create without uuid'] = true;
+        
+        test.assert(4, output.count);
+      });
+  },
+  
+  'test list': function (test) {
     
   }
 });
