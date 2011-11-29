@@ -9,6 +9,61 @@ var Model = function(name, client){
   this.collection = new mongodb.Collection(client, name + '_collection');
 }
 
+Model.prototype.create = function(object, callback){
+  callback = callback || function(){};
+  
+  if(!object){
+    callback('invalid args');
+    return;
+  }
+  
+  object._id = object.id;
+  
+  var collection = this.collection;
+  collection.insert(object, {safe:true},
+                    function(err, objects) {
+    if (err){
+      _log.error ('Create error');
+      _log.error (err.message);
+      console.trace();
+      
+      callback(err.message);
+    }else{
+      callback(null, objects[0] || null);
+    }
+  });
+}
+
+Model.prototype.edit = function(id, object, callback){
+  callback = callback || function(){};
+  
+  if(!id || !object){
+    callback('invalid args - id:'+id+', model:'+object);
+    return;
+  }
+  
+  // Don't change object._id property
+  if (object._id) {
+    delete object._id;
+  }
+  
+  var client = this.client;
+  
+  var collection = this.collection;
+  collection.update({ '_id': id}, {'$set': object}, {safe:true},
+                    function(err, objects) {
+    if (err){
+      _log.error ('Edit error');
+      _log.error (err.message);
+      _log.error (object);
+      
+      callback(err.message);
+    }else{
+      callback(null, objects);
+    }
+  });
+}
+
 Model.prototype.list = function(offset, limit, callback){
   callback = callback || function(){};
   offset = offset || 0;
@@ -71,60 +126,6 @@ Model.prototype.get = function (id, callback) {
   });
 }
 
-Model.prototype.create = function(object, callback){
-  callback = callback || function(){};
-  
-  if(!object){
-    callback('invalid args');
-    return;
-  }
-  
-  object._id = object.id;
-  
-  var collection = this.collection;
-  collection.insert(object, {safe:true},
-                    function(err, objects) {
-    if (err){
-      _log.error ('Create error');
-      _log.error (err.message);
-      console.trace();
-      
-      callback(err.message);
-    }else{
-      callback(null, objects[0] || null);
-    }
-  });
-}
-
-Model.prototype.edit = function(id, object, callback){
-  callback = callback || function(){};
-  
-  if(!id || !object){
-    callback('invalid args - id:'+id+', model:'+object);
-    return;
-  }
-  
-  // Don't change object._id property
-  if (object._id) {
-    delete object._id;
-  }
-  
-  var client = this.client;
-  
-  var collection = this.collection;
-  collection.update({ '_id': id}, {'$set': object}, {safe:true},
-                    function(err, objects) {
-    if (err){
-      _log.error ('Edit error');
-      _log.error (err.message);
-      _log.error (object);
-      
-      callback(err.message);
-    }else{
-      callback(null, objects);
-    }
-  });
-}
 
 Model.prototype.remove = function(id, callback){
   callback = callback || function(){};

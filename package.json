@@ -11,5 +11,9 @@
     "now": "latest",
     "oauth": "latest",
     "step": "latest"
+  },
+  "devDependencies": {
+    "node-uuid": "latest",
+    "test_it": "latest"
   }
 }
