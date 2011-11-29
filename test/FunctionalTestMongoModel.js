@@ -9,6 +9,7 @@ var logger = log4js.getLogger('test');
     
 var local = {};
 var require = {};
+var fixtures = [];
 
 testit('TestMongoModel', {
   'before all': function (test) {
@@ -24,9 +25,9 @@ testit('TestMongoModel', {
         local.client = client;
         local.collections = new mongodb.Collection(client, 'item_collection');
         
-        var fixtures = [];
         for (var index = 1; index <= 30; index++) {
           fixtures.push({
+            _id: uuid.v4(),
             name: 'Project ' + index
           })
         }
@@ -78,7 +79,8 @@ testit('TestMongoModel', {
         model.create({
           id: uuid.v4(),
           name: 'Project 31',
-          children: []
+          children: [],
+          create: 'self'
         }, this);
       },
       function get (error) {
@@ -102,7 +104,7 @@ testit('TestMongoModel', {
       function () {
         require['create with uuid'] = true;
         
-        test.assert(31, output.count);
+        test.assertEqual(31, output.count);
         test.assertEqual(output.target.id, output.target._id);
       });
     
@@ -128,7 +130,8 @@ testit('TestMongoModel', {
         
         model.create({
           name: 'Project 32',
-          children: []
+          children: [],
+          create: 'self'
         }, this);
       },
       function get (error) {
@@ -152,7 +155,7 @@ testit('TestMongoModel', {
       function () {
         require['create without uuid'] = true;
         
-        test.assert(32, output.count);
+        test.assertEqual(32, output.count);
       });
   },
   
@@ -191,7 +194,7 @@ testit('TestMongoModel', {
       function () {
         require['list from 0 with limit 2'] = true;
         
-        test.assert(2, output.count);
+        test.assertEqual(2, output.count);
         test.assertEqual('Project 1', output.items[0].name);
         test.assertEqual('Project 2', output.items[1].name);
       });
@@ -231,7 +234,7 @@ testit('TestMongoModel', {
       function () {
         require['list without limit'] = true;
         
-        test.assert(25, output.count);
+        test.assertEqual(25, output.count);
       });
   },
   
@@ -276,6 +279,112 @@ testit('TestMongoModel', {
           var position = Number(index) + 6;
           test.assertEqual('Project ' + position, item.name);
         }
+      });
+  },
+  
+  'test count': function (test) {
+    var model;
+    
+    var done = false;
+    var output = null;
+    
+    step(
+      function begin () {
+        test.waitFor(
+          function () {
+            return require['list with offset 5 and limit 9'];
+          }, this)
+      },
+      function logic () {
+        model = local.model;
+        model.count(this);
+      },
+      function count (error, total) {
+        if (!error) {
+          output = total;
+        } else {
+          logger.error (error);
+        }
+        
+        done = true;
+      });
+      
+    test.waitFor(
+      function (time) {
+        return done;
+      },
+      function () {
+        require['count'] = true;
+        
+        test.assertEqual(32, output);
+      });
+  },
+  
+  'test find with no result': function (test) {
+    var model;
+    
+    var done = false;
+    var output = null;
+    
+    step(
+      function begin () {
+        test.waitFor(
+          function () {
+            return require['count'];
+          }, this)
+      },
+      function logic () {
+        model = local.model;
+        model.find({ nokey: 'test' }, this);
+      },
+      function found (items) {
+        output = items;
+        
+        done = true;
+      });
+      
+    test.waitFor(
+      function (time) {
+        return done;
+      },
+      function () {
+        require['find with no result'] = true;
+        
+        test.assertEqual(0, output.length);
+      });
+  },
+  
+  'test find with key create': function (test) {
+    var model;
+    
+    var done = false;
+    var output = null;
+    
+    step(
+      function begin () {
+        test.waitFor(
+          function () {
+            return require['find with no result'];
+          }, this)
+      },
+      function logic () {
+        model = local.model;
+        model.find({ create: 'self' }, this);
+      },
+      function found (items) {
+        output = items;
+        done = true;
+      });
+      
+    test.waitFor(
+      function (time) {
+        return done;
+      },
+      function () {
+        require['find with key create'] = true;
+        test.assertEqual(2, output.length);
+        test.assertEqual('Project 31', output[0].name);
+        test.assertEqual('Project 32', output[1].name);
       });
   }
 });
