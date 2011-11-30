@@ -18,8 +18,6 @@ _.table = {
     $('.edit-task-detail').removeClass('error');
     $('#edit-task-help').text('');
     $('#edit-task-save-button').attr('href', '#task/save');
-    
-    $('#edit-task-modal').show();
 
     var id = null;    
     var matches = hash.match(/[0-9a-fA-F-]{36}/);
@@ -27,8 +25,8 @@ _.table = {
       id = matches[0];
     }
     
-    if (id) {
-    
+    if (id && _.iteration == _.project.currentIteration()) {
+      $('#edit-task-modal').show();
       var task = Task.get(id);
       
       var value = task.getDetail(true);
@@ -40,6 +38,8 @@ _.table = {
       
       $('#edit-task-save-button').attr('href', '#task/save/' + id);
       
+    } else {
+      window.location.hash = '';
     }
     
   },
@@ -168,7 +168,7 @@ _.table = {
         // Hide new task and end iteration button
         $('#iteration-actions').hide();
         $('#iteration-name-edit').hide();
-        $('.task-action').hide();
+        $('.task-actions').hide();
       }
       
       window.location.hash = '';
