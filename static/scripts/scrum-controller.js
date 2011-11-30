@@ -369,6 +369,7 @@ _.table = {
       $('.share-project-list-menu-item').remove();
       $('.project-list-menu-divider').remove();
       
+      $('#projects-list-menu').append('<li class="divider project-list-menu-devider"></li>');
       for (var index in _.user.projects) {
         var projectID = _.user.projects[index];
         var project = Project.get(projectID);
