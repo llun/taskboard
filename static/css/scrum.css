@@ -167,7 +167,7 @@ table td.wall.over{background-color: #CCC;}
 .task-modal .input {margin-left: 0px}
 .task-modal textarea {width:500px}
 
-.task {
+.task, .story {
   background-image: none;
   background-color: #fdf5d9;
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
@@ -178,25 +178,25 @@ table td.wall.over{background-color: #CCC;}
   box-shadow: none;
   margin-top: 5px;
   margin-bottom: 5px;
-  max-width: 215px;
+  max-width: 90%;
 }
 
-.task.own {
+.task.own, .story.own {
   background-color: #edfdd9;
 }
 
-.task h5 {line-height: 18px;}
-.task div {
+.task h5, .story h5 {line-height: 18px;}
+.task div, .story div {
   margin-top: 5px;
   margin-bottom: 2px;
   overflow: hidden;
 }
-.task .btn {
+.task .btn, .story .btn {
   -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
   -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
 }
-.task .close {
+.task .close, .story .close {
   display: none;
   float: right;
   margin-top: -2px;
@@ -209,7 +209,7 @@ table td.wall.over{background-color: #CCC;}
   -moz-opacity: 0.2;
   opacity: 0.2;
 }
-.task:hover .close {
+.task:hover .close, .story:hover .close {
   display: block;
   color: #000000;
   text-decoration: none;
@@ -218,9 +218,9 @@ table td.wall.over{background-color: #CCC;}
   -moz-opacity: 0.4;
   opacity: 0.4;
 }
-.task p {margin-right: 30px;}
+.task p, .story p {margin-right: 30px;}
 
-.task small {
+.task small, .story small {
   text-align: left;
   display: block;
   font-size: 12px;
