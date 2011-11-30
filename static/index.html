@@ -45,14 +45,16 @@
     <script type="text/html" id="task" charset="utf-8">    
       <div id="<%=id%>" class="task">
         
-        <a href="#task/remove/<%=id%>" class="task-action delete">
-          <img src="images/trash.png" />
-        </a>
-        <a href="#task/edit/<%=id%>" class="task-action edit">
-          <img src="images/wrench.png" />
-        </a>
+        <div class="task-actions">
+          <a href="#task/remove/<%=id%>" class="delete">
+            <img src="images/trash.png" />
+          </a>
+          <a href="#task/edit/<%=id%>" class="edit">
+            <img src="images/wrench.png" />
+          </a>
+        </div>
         
-        <div id="<%=id%>_detail">
+        <div id="<%=id%>_detail" class="task-detail">
           <%=getDetail()%>
         </div>
       
@@ -269,11 +271,44 @@
           
           <div class="span4 columns project-head">
             <h2 class="project-name">Project name</h2> 
-            <a href="#project/edit" id="project-edit"><img src="images/wrench.png" /></a>
+            <a href="#project/edit"><img src="images/wrench.png" /></a>
+          </div>
+          
+          <div class="span6 offset4 columns">
+            <input id="story-search" type="search" placeholder="Search" class="span6" />
+          </div>
+          
+          <div id="iteration-actions" class="span2 columns">
+            <button id="new-story-button" class="btn primary span2">New Story</button>
           </div>
                   
         </div>
         <!-- End project row -->
+        
+        <table id="story-table" class="zebra-stripped">
+          <thead>
+            <tr>
+              <th class="blue header task-type">Story</th>
+              <th class="red header task-type">QA</th>
+              <th class="green header task-type">Done</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="story" class="wall">
+                <!-- Task will live here -->
+              </td>
+              
+              <td id="qa" class="wall">
+                <!-- Task will live here -->
+              </td>
+              
+              <td id="finished" class="wall">
+                <!-- Task will live here -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
         
       </div>
       <!-- End story view -->

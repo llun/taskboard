@@ -189,7 +189,6 @@ table td.wall.over{background-color: #CCC;}
 .task div {
   margin-top: 5px;
   margin-bottom: 2px;
-  line-height: 28px;
   overflow: hidden;
 }
 .task .btn {
@@ -220,14 +219,25 @@ table td.wall.over{background-color: #CCC;}
   opacity: 0.4;
 }
 .task p {margin-right: 30px;}
-.task .task-actions {
-  margin-top: 5px;
-}
+
 .task small {
-  text-align: right;
+  text-align: left;
   display: block;
   font-size: 12px;
   line-height: 18px;
   padding-top: 2px;
   color: #BBBBBB;
+}
+
+div.task-detail {
+  margin-bottom: 20px;
+}
+
+div.task-actions {
+  float: right;
+  width: 30px;
+}
+div.task-actions a {
+  margin-left: auto;
+  margin-right: auto;
 }
