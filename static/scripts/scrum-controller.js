@@ -291,8 +291,9 @@ _.table = {
       }
       
       $('.iteration-list-menu-item').remove();
-      for (var index in project.iterations) {
-        var iteration = Iteration.get(project.iterations[index]);
+      var iterations = _.project.iterations.slice(0).reverse();
+      for (var index in iterations) {
+        var iteration = Iteration.get(iterations[index]);
         var list = _.tmpl('iteration_list', iteration);
         $('#iterations-list-menu').append(list);
       }
