@@ -219,6 +219,11 @@ table td.wall.over{background-color: #CCC;}
   color: #BBBBBB;
 }
 
+.highlight {
+  color: black;
+  background-color: orange;
+}
+
 div.task-detail, div.story-detail {
   margin-bottom: 20px;
 }

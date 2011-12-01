@@ -59,7 +59,7 @@ var Task = function(iteration, detail) {
    *
    * @return {String} detail string.
    */
-  this.getDetail = function getDetail(edit) {
+  this.getDetail = function getDetail(edit, highlight) {
     var output = '';
     
     if (!edit) {
@@ -79,6 +79,25 @@ var Task = function(iteration, detail) {
           for (var index in matches) {
             var match = matches[index].replace(/^\s+|\s+$/g, '');
             paragraph = paragraph.replace(match, '<a href="' + match + '" target="_blank">' + match + '</a>');
+          }
+        }
+        
+        if (highlight) {
+          // Highlight on filter
+          var filterPattern = new RegExp(highlight, 'ig');
+          var matches = paragraph.match(filterPattern);
+          if (matches) {
+            var match = matches[0];
+            var encode = matches[0].replace(/^\s+|\s+$/g, '').replace(/\\/g, '\\\\')
+                                   .replace(/\+/g, '\\+').replace(/\*/g, '\\*')
+                                   .replace(/\(/g, '\\(').replace(/\)/g, '\\)')
+                                   .replace(/\[/g, '\\[').replace(/\]/g, '\\]')
+                                   .replace(/\./g, '\\.').replace(/\|/g, '\\|')
+                                   .replace(/\^/g, '\\^').replace(/\$/g, '\\$')
+                                   .replace(/\?/g, '\\?').replace(/\!/g, '\\!')
+                                   .replace(/\=/g, '\\=').replace(/\,/g, '\\,');
+            var matchPattern = new RegExp(encode, 'ig');
+            paragraph = paragraph.replace(matchPattern, '<span class="highlight">' + match + '</span>');
           }
         }
 

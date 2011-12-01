@@ -193,23 +193,23 @@ _.init = function() {
   // Search
   var _filterFunction = function () {
     var searchText =  $(event.target).val();
-    searchText = searchText.replace(/^\s+|\s+$/, '').replace(/\+/g,'\\+')
-                           .replace(/\\/g, '\\\\').replace(/\*/g, '\\*')
+    searchText = searchText.replace(/^\s+|\s+$/, '').replace(/\\/g, '\\\\')
+                           .replace(/\+/g, '\\+').replace(/\*/g, '\\*')
                            .replace(/\(/g, '\\(').replace(/\)/g, '\\)')
                            .replace(/\[/g, '\\[').replace(/\]/g, '\\]')
                            .replace(/\./g, '\\.').replace(/\|/g, '\\|')
                            .replace(/\^/g, '\\^').replace(/\$/g, '\\$')
                            .replace(/\?/g, '\\?').replace(/\!/g, '\\!')
                            .replace(/\=/g, '\\=').replace(/\,/g, '\\,');
-    
+
     var pattern = new RegExp(searchText, 'i');
-    
     var iteration = Iteration.get(_.iteration);
     for (var taskID in iteration.tasks) {
       var task = Task.get(taskID);
       if (task) {
         var detail = task.getDetail(true);
         if (pattern.test(detail)) {
+          $('#' + task.id + '_detail').html(task.getDetail(false, searchText));
           $('#' + task.id).show();
         } else {
           $('#' + task.id).hide();
