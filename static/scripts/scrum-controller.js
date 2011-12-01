@@ -251,13 +251,6 @@ _.table = {
       var user = _.user;
       
       var project = Project.get(id);
-      if (user.anonymous || 
-          (!user.anonymous && project.sync) &&
-          project.owner == user.id) {
-        user.defaultProject = id;
-        User.save(user, true);
-      } 
-      
       var iteration = Iteration.get(project.currentIteration());
       
       _.project = project;
@@ -319,19 +312,32 @@ _.table = {
     
     $('#edit-project-save-button').attr('href', '#project/save');
     
+    $('#edit-project-default-option').removeAttr('checked');
+    $('#edit-project-default-option').attr('disabled', true);
+    
     $('#edit-project-sync-option').removeAttr('checked');
     $('#edit-project-sync-option').attr('disabled', true);
     $('#share-user-list-input').attr('disabled', true);
     $('#share-user-list-input').val('');
     $('.share-user-list-icon').remove();
     
-    if (!_.user.anonymous) {
-      $('#edit-project-sync-option').removeAttr('disabled');
-    }
-    
     $('#edit-project-modal').show();
     
     var project = _.project;
+    
+    if (!_.user.anonymous) {
+      $('#edit-project-sync-option').removeAttr('disabled');
+    } 
+    
+    if (_.user.anonymous || project.owner == _.user.id) {
+      $('#edit-project-default-option').removeAttr('disabled');
+    }
+    
+    if (_.user.defaultProject == project.id) {
+      $('#edit-project-default-option').attr('disabled', true);
+      $('#edit-project-default-option').attr('checked', true);
+    }
+    
     $('#edit-project-name').val(project.name);
     $('#edit-project-name').focus();
     
@@ -397,7 +403,7 @@ _.table = {
       } else {
         $('#end-iteration-button').removeAttr('disabled');
       }
-      
+
       window.location.hash = '';
       
     } else {
@@ -418,13 +424,21 @@ _.table = {
     if (pattern.test(name)) {
     
       var isSyncProject = $('#edit-project-sync-option').attr('checked') ? true : false;
-    
+      var isDefaultProject = $('#edit-project-default-option').attr('checked') ? true : false;
+      
       // Persist input
       var project = _.project;
       project.name = name;
       project.sync = isSyncProject;
       
       Project.save(project, true);
+      
+      if (isDefaultProject) {
+        var user = _.user;
+        user.defaultProject = project.id;
+        
+        User.save(user, true);
+      }
       
       $('.project-name').text(project.name);
       $('#project-menu-' + project.id).text(project.name);
