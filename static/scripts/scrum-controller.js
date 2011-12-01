@@ -738,5 +738,7 @@ _.table = {
   '': function() {    
     $('.application-modal').hide();
     $('.task-modal').hide();
+    
+    window.location.hash = '';
   }
 }
