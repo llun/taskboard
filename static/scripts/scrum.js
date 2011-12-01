@@ -196,7 +196,16 @@ _.init = function() {
       $(event.target).val('Search');
     }
   }).keyup(function searchkeyup(event) {
-    var searchText =  $(event.target).val().replace(/^\s+|\s+$/, '');
+    var searchText =  $(event.target).val();
+    searchText = searchText.replace(/^\s+|\s+$/, '').replace(/\+/g,'\\+')
+                           .replace(/\\/g, '\\\\').replace(/\*/g, '\\*')
+                           .replace(/\(/g, '\\(').replace(/\)/g, '\\)')
+                           .replace(/\[/g, '\\[').replace(/\]/g, '\\]')
+                           .replace(/\./g, '\\.').replace(/\|/g, '\\|')
+                           .replace(/\^/g, '\\^').replace(/\$/g, '\\$')
+                           .replace(/\?/g, '\\?').replace(/\!/g, '\\!')
+                           .replace(/\=/g, '\\=').replace(/\,/g, '\\,');
+    
     var pattern = new RegExp(searchText, 'i');
     
     var iteration = Iteration.get(_.iteration);
