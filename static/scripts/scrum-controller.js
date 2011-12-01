@@ -171,8 +171,6 @@ _.table = {
         $('.task-actions').hide();
       }
       
-      window.location.hash = '';
-    
     }
     
   },

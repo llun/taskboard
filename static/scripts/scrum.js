@@ -277,7 +277,7 @@ _.init = function() {
         
         if (_.oldHash) {
           var shouldRedirectToOldHash = false;
-          
+
           // Parse login
           if (/^#user\/login/i.test(_.oldHash)) {
             shouldRedirectToOldHash = true
@@ -286,11 +286,15 @@ _.init = function() {
           else if (/^#board\/story$/.test(_.oldHash)) {
             shouldRedirectToOldHash = true
           }
-          
+          // Parse show project
+          else if (/^#project\/show/i.test(_.oldHash)) {
+            shouldRedirectToOldHash = true
+          }
+
           if (shouldRedirectToOldHash) {
             window.location.hash = _.oldHash;
           }
-          
+
         }
       } else {
         
@@ -515,6 +519,10 @@ _.init = function() {
                                 } 
                                 // Parse board
                                 else if (/^#board\/story$/.test(_.oldHash)) {
+                                  shouldRedirectToOldHash = true
+                                }
+                                // Parse show project
+                                else if (/^#project\/show/i.test(_.oldHash)) {
                                   shouldRedirectToOldHash = true
                                 }
 
