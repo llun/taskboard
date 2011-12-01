@@ -637,6 +637,16 @@ _.init = function() {
             $('#project-menu-' + clientProject.id).text(clientProject.name);
             
             if (_.project.id == clientProject.id) {
+              
+              $('.share-user-list-icon').remove();
+              var members = clientProject.members;
+              for (var index in members) {
+                var member = members[index];
+                member.id = clientProject.id;
+
+                $('#share-user-list-icons').append(_.tmpl('share_list', member));
+              }
+              
               $('.project-name').text(clientProject.name);
               _.project = clientProject;
               

@@ -7,6 +7,10 @@ body {
   padding-top: 50px;
 }
 
+ul.user-menu {
+  list-style: none;
+}
+
 #logged-in-status { display: none; }
 #logged-in-menu { display: none; }
 #logged-out-menu { display: none; }
