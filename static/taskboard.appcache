@@ -7,13 +7,13 @@ index.html
 scripts/engine-persistent.js
 scripts/engine.js
 scripts/jquery-1.7.min.js
-scripts/scrum-controller.js
-scripts/scrum-model.js
-scripts/scrum-view.js
-scripts/scrum.js
+scripts/tb-controller.js
+scripts/tb-model.js
+scripts/tb-view.js
+scripts/taskboard.js
 
 css/bootstrap.min.css
-css/scrum.css
+css/taskboard.css
 
 images/github.png
 images/trash.png

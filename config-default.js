@@ -31,7 +31,7 @@ var config = {
   // Log facility
   log: {
     appenders: [ { type: 'file', 
-                   filename: 'scrum.log', 
+                   filename: 'taskboard.log', 
                    maxLogSize: 10485760,
                    backups: 3,
                    pollInterval: 15 },

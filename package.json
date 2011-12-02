@@ -1,5 +1,5 @@
 {
-  "name": "scrum",
+  "name": "taskboard",
   "version": "0.6.0",
   "scripts": {
     "start": "node server.js"
