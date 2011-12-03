@@ -129,6 +129,18 @@ _.table = {
     
   },
   
+  // Story controllers
+  'story/new': function (hash) {
+    $('#new-story-detail').val('');
+    
+    $('.new-story-detail').removeClass('error');
+    $('#new-story-help').text('');
+    $('#new-story-save-button').attr('href', '#task/create');
+  
+    $('#new-story-modal').show();
+    $('#new-story-detail').focus();
+  },
+  
   // Iteration controllers
   'iteration/show': function(hash) {
   

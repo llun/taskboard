@@ -159,6 +159,10 @@ table .header::after{
 table td.wall{vertical-align: top; background-color: #EEE;}
 table td.wall.over{background-color: #CCC;}
 
+.modal.form-stacked {
+  padding-left: 0px;
+}
+
 .application-modal {display:none;}
 .task-modal {display: none;}
 .task-modal .input {margin-left: 0px}

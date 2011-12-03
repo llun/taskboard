@@ -64,6 +64,38 @@
     </td>
     </script>
     
+    <script type="text/html" id="story" charset="utf-8">
+      <div id="" class="story">
+
+        <div class="story-actions">
+          <a href="#story/remove/<%=id%>" class="delete">
+            <img src="images/trash.png" />
+          </a>
+          <a href="#story/edit/<%=id%>" class="edit">
+            <img src="images/wrench.png" />
+          </a>
+        </div>
+
+        <div id="<%=id%>_summary" class="story-summary">
+          <h4><%=getSummary%></h4>
+        </div>
+
+        <div id="<%=id%>_detail" class="story-detail">
+          <%=getDetail()%>
+        </div>
+
+        <small id="<%=id%>_responders"><%=getResponders%></small>
+        <small id="<%=id%>_tags"><%=getTags()%></small>
+        
+        <ul class="story-children">
+          <% for (var i = 0; i < children.length; i++) { %>
+          <li><%=children[i]%></li>
+          <% } %>
+        </ul>
+        
+      </div>
+    </script>
+    
     <script type="text/html" id="share_list" charset="utf-8">
       <div id="share-<%=username%>" class="share-user-list-icon <%=status%>">
         <span class="share-user-list-information">
@@ -278,8 +310,8 @@
             <input id="story-search" type="search" placeholder="Search" class="span6" />
           </div>
           
-          <div id="iteration-actions" class="span2 columns">
-            <button id="new-story-button" class="btn primary span2">New Story</button>
+          <div id="story-actions" class="span2 columns">
+            <a id="new-story-button" class="btn primary" href="#story/new">New Story</a>
           </div>
                   
         </div>
@@ -300,29 +332,30 @@
                 <div id="" class="story">
 
                   <div class="story-actions">
-                    <a href="#story/remove" class="delete">
+                    <a href="#story/remove/id" class="delete">
                       <img src="images/trash.png" />
                     </a>
-                    <a href="#story/edit" class="edit">
+                    <a href="#story/edit/id" class="edit">
                       <img src="images/wrench.png" />
                     </a>
                   </div>
 
-                  <div id="_detail" class="story-detail">
-                    <h4>Story head</h4>
-                    <p>Hello, Story</p>
-                    <p>Hello, Story2</p>
+                  <div id="id_summary" class="story-summary">
+                    <h4>Summary</h4>
                   </div>
 
-                  <small id="_responders">llun</small>
-                  <small id="_tags">#ui</small>
-                  
+                  <div id="id_detail" class="story-detail">
+                    <p>Hello, World</p>
+                    <p>This is matrix</p>
+                  </div>
+
+                  <small id="id_responders">+llun, +hybridknight</small>
+                  <small id="id_tags">#tag, #tag2</small>
+
                   <ul class="story-children">
-                    <li><a href="">Task 1</a></li>
-                    <li><a href="">Task 2</a></li>
-                    <li><a href="">Task 3</a></li>
+                    <li>Task 1</li>
                   </ul>
-                  
+
                 </div>
               </td>
               
@@ -356,10 +389,10 @@
     <!-- End container -->
     
     <!-- New task modal -->
-    <div id="new-task-modal" class="task-modal">
+    <div id="new-task-modal" class="application-modal">
       <div class="modal-backdrop"></div>
       
-      <form class="modal">
+      <form class="modal form-stacked">
         <div class="modal-header">
           <h3>New Task</h3>
         </div>
@@ -369,7 +402,7 @@
             <div class="input">
               <textarea id="new-task-detail" 
                         name="detail" rows="8" cols="45"
-                        class="new-task-detail"></textarea>
+                        class="new-task-detail span9"></textarea>
                         
               <span id="new-task-help" class="help-block"></span>
             </div>
@@ -378,7 +411,7 @@
         </div>
         <div class="modal-footer">
           <a id="new-task-save-button" href="#task/create" class="btn primary">
-            Save
+            Create
           </a>
           <a id="new-task-cancel-button" href="#" class="btn seconday">
             Cancel
@@ -418,7 +451,7 @@
         </div>
       </form>
     </div>
-    <!-- End new task modal -->
+    <!-- End edit task modal -->
     
     <!-- Clear task modal -->
     <div id="clear-task-modal" class="task-modal">
@@ -445,6 +478,45 @@
       </form>
     </div>
     <!-- End clear task modal -->
+    
+    <!-- New story modal -->
+    <div id="new-story-modal" class="application-modal">
+      <div class="modal-backdrop"></div>
+      
+      <form class="modal form-stacked">
+        <div class="modal-header">
+          <h3>New Story</h3>
+        </div>
+        <div class="modal-body">
+        
+          <div class="clearfix new-story-summary">
+            <label for="summary">Summary</label>
+            <div class="input">
+              <input class="span9" id="story-summary" name="summary" type="text" />
+              <span id="new-story-summary-help" class="help-block"></span>
+            </div>
+          </div>
+          
+          <div class="clearfix new-story-detail">
+            <label for="detail">Detail</label>
+            <div class="input">
+              <textarea id="story-detail" name="detail" class="span9" rows="5"></textarea>
+              <span id="new-story-detail-help" class="help-block"></span>
+            </div>
+          </div>
+                  
+        </div>
+        <div class="modal-footer">
+          <a id="new-story-create-button" href="#story/create" class="btn primary">
+            Create
+          </a>
+          <a id="new-story-cancel-button" href="#" class="btn seconday">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+    <!-- End new story modal -->
     
     <!-- Iteration end modal -->
     <div id="end-iteration-modal" class="application-modal">
