@@ -101,15 +101,7 @@ _.init = function() {
       window.location.hash = 'task/edit/' + $(this).attr('id');
     }
   });
-  
-  $('#new-task-button').click(function newtask(event) {
-    window.location.hash = 'task/new';
-  });
-  
-  $('#end-iteration-button').click(function enditeration(event) {
-    window.location.hash = 'iteration/end';
-  });
-  
+    
   // Notification
   $('.notification-list-item.btn').live({
     click: function notificationaction(event) {
