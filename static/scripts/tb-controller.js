@@ -175,6 +175,8 @@ _.table = {
     }
     
     if (id) {
+      
+      $('.search').val('Search');
     
       var isCurrent = id == _.project.currentIteration();
       _.iteration = id;
