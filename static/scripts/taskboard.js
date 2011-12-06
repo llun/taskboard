@@ -240,6 +240,15 @@ _.init = function() {
       $('#share-user-list-input').val('');
     }
   });
+  
+  // Board actions
+  $('#new-task-button').click (function () {
+    window.location.hash = '#task/new';
+  });
+  
+  $('#end-iteration-button').click (function () {
+    window.location.hash = '#iteration/end';
+  });
 
   // Update event
   $(applicationCache).bind('updateready', function updateready(e) {
