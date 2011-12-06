@@ -176,8 +176,7 @@ table td.wall.over{background-color: #CCC;}
   box-shadow: none;
   margin-top: 5px;
   margin-bottom: 5px;
-  width: 215px;
-  max-width: 215px;
+  max-width: 180px;
 }
 
 .task.own, .story.own {
