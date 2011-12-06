@@ -64,38 +64,6 @@
     </td>
     </script>
     
-    <script type="text/html" id="story" charset="utf-8">
-      <div id="" class="story">
-
-        <div class="story-actions">
-          <a href="#story/remove/<%=id%>" class="delete">
-            <img src="images/trash.png" />
-          </a>
-          <a href="#story/edit/<%=id%>" class="edit">
-            <img src="images/wrench.png" />
-          </a>
-        </div>
-
-        <div id="<%=id%>_summary" class="story-summary">
-          <h4><%=getSummary%></h4>
-        </div>
-
-        <div id="<%=id%>_detail" class="story-detail">
-          <%=getDetail()%>
-        </div>
-
-        <small id="<%=id%>_responders"><%=getResponders%></small>
-        <small id="<%=id%>_tags"><%=getTags()%></small>
-        
-        <ul class="story-children">
-          <% for (var i = 0; i < children.length; i++) { %>
-          <li><%=children[i]%></li>
-          <% } %>
-        </ul>
-        
-      </div>
-    </script>
-    
     <script type="text/html" id="share_list" charset="utf-8">
       <div id="share-<%=username%>" class="share-user-list-icon <%=status%>">
         <span class="share-user-list-information">
@@ -148,12 +116,12 @@
           
             <!-- Board -->
             <li id="table-menu" class="active">
-              <a href="#board/table">Board</a>
+              <a href="#board/task">Task</a>
             </li>
             
-            <!-- Story -->
-            <li id="story-menu">
-              <a href="#board/story">Story</a>
+            <!-- Pending -->
+            <li id="pending-menu">
+              <a href="#board/pending">Pending</a>
             </li>
             
             <!-- Project menu -->
@@ -295,8 +263,8 @@
       </div>
       <!-- End table view -->
       
-      <!-- Begin story view -->
-      <div id="story-view">
+      <!-- Begin pending view -->
+      <div id="pending-view">
       
         <!-- Project row -->
         <div class="row">
@@ -307,71 +275,33 @@
           </div>
           
           <div class="span6 offset4 columns">
-            <input id="story-search" type="search" placeholder="Search" class="span6" />
+            <input id="pending-search" type="search" placeholder="Search" class="span6" />
           </div>
           
-          <div id="story-actions" class="span2 columns">
-            <a class="btn primary" href="#story/new">New Story</a>
+          <div id="pending-actions" class="span2 columns">
+            <a class="btn primary" href="#pending/new">New Task</a>
           </div>
                   
         </div>
         <!-- End project row -->
         
-        <table id="story-table" class="zebra-stripped">
+        <table id="pending-table" class="zebra-stripped">
           <thead>
             <tr>
-              <th class="blue header task-type">Story</th>
-              <th class="red header task-type">QA</th>
-              <th class="green header task-type">Done</th>
+              <th class="black header task-type">Pending</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td id="story" class="wall">
-                <!-- Story will live here -->
-                <div id="" class="story">
-
-                  <div class="story-actions">
-                    <a href="#story/remove/id" class="delete">
-                      <img src="images/trash.png" />
-                    </a>
-                    <a href="#story/edit/id" class="edit">
-                      <img src="images/wrench.png" />
-                    </a>
-                  </div>
-
-                  <div id="id_summary" class="story-summary">
-                    <h4>Summary</h4>
-                  </div>
-
-                  <div id="id_detail" class="story-detail">
-                    <p>Hello, World</p>
-                    <p>This is matrix</p>
-                  </div>
-
-                  <small id="id_responders">+llun, +hybridknight</small>
-                  <small id="id_tags">#tag, #tag2</small>
-
-                  <ul class="story-children">
-                    <li>Task 1</li>
-                  </ul>
-
-                </div>
-              </td>
-              
-              <td id="qa" class="wall">
-                <!-- Story will live here -->
-              </td>
-              
-              <td id="finished" class="wall">
-                <!-- Story will live here -->
+              <td id="pending" class="wall">
+                <!-- Task will live here -->
               </td>
             </tr>
           </tbody>
         </table>
         
       </div>
-      <!-- End story view -->
+      <!-- End pending view -->
       
       <div class="row">
         
@@ -421,6 +351,39 @@
     </div>
     <!-- End new task modal -->
     
+    <!-- New pending task modal -->
+    <div id="new-pending-task-modal" class="application-modal">
+      <div class="modal-backdrop"></div>
+      
+      <form class="modal form-stacked">
+        <div class="modal-header">
+          <h3>New Task</h3>
+        </div>
+        <div class="modal-body">
+        
+          <div class="clearfix new-pending-task-detail">
+            <div class="input">
+              <textarea id="new-pending-task-detail" 
+                        name="detail" rows="8" cols="45"
+                        class="new-pending-task-detail span9"></textarea>
+                        
+              <span id="new-pending-task-help" class="help-block"></span>
+            </div>
+          </div>
+                  
+        </div>
+        <div class="modal-footer">
+          <a href="#pending/create" class="btn primary">
+            Create
+          </a>
+          <a href="#" class="btn seconday">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+    <!-- End new task modal -->
+    
     <!-- Edit task modal -->
     <div id="edit-task-modal" class="task-modal">
       <div class="modal-backdrop"></div>
@@ -452,71 +415,6 @@
       </form>
     </div>
     <!-- End edit task modal -->
-    
-    <!-- Clear task modal -->
-    <div id="clear-task-modal" class="task-modal">
-      <div class="modal-backdrop"></div>
-      <form class="modal">
-        <div class="modal-header">
-          <h3>Remove all task</h3>
-        </div>
-        <div class="modal-body">
-
-          <div class="clearfix">
-            <p>Do you really want to remove every task from board?</p>
-          </div>
-
-        </div>
-        <div class="modal-footer">
-          <a id="clear-task-confirm-button" href="#task/clear/confirm" class="btn danger">
-            Clear
-          </a>
-          <a id="clear-task-cancel-button" href="#close" class="btn seconday">
-            Cancel
-          </a>
-        </div>
-      </form>
-    </div>
-    <!-- End clear task modal -->
-    
-    <!-- New story modal -->
-    <div id="new-story-modal" class="application-modal">
-      <div class="modal-backdrop"></div>
-      
-      <form class="modal form-stacked">
-        <div class="modal-header">
-          <h3>New Story</h3>
-        </div>
-        <div class="modal-body">
-        
-          <div class="clearfix new-story-summary">
-            <label for="summary">Summary</label>
-            <div class="input">
-              <input class="span9" id="story-summary" name="summary" type="text" />
-              <span id="new-story-summary-help" class="help-block"></span>
-            </div>
-          </div>
-          
-          <div class="clearfix new-story-detail">
-            <label for="detail">Detail</label>
-            <div class="input">
-              <textarea id="story-detail" name="detail" class="span9" rows="5"></textarea>
-              <span id="new-story-detail-help" class="help-block"></span>
-            </div>
-          </div>
-                  
-        </div>
-        <div class="modal-footer">
-          <a id="new-story-create-button" href="#story/create" class="btn primary">
-            Create
-          </a>
-          <a id="new-story-cancel-button" href="#" class="btn seconday">
-            Cancel
-          </a>
-        </div>
-      </form>
-    </div>
-    <!-- End new story modal -->
     
     <!-- Iteration end modal -->
     <div id="end-iteration-modal" class="application-modal">

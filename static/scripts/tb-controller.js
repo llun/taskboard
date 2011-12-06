@@ -129,16 +129,40 @@ _.table = {
     
   },
   
-  // Story controllers
-  'story/new': function (hash) {
-    $('#new-story-detail').val('');
+  // Pending controllers
+  'pending/new': function (hash) {
+    $('#new-pending-task-detail').val('');
     
-    $('.new-story-detail').removeClass('error');
-    $('#new-story-help').text('');
-    $('#new-story-save-button').attr('href', '#task/create');
+    $('.new-pending-task-detail').removeClass('error');
+    $('#new-pending-task-help').text('');
+    $('#new-pending-task-save-button').attr('href', '#pending/create');
   
-    $('#new-story-modal').show();
-    $('#new-story-detail').focus();
+    $('#new-pending-task-modal').show();
+    $('#new-pending-task-detail').focus();
+  },
+  
+  'pending/create': function (hash) {
+    // Save new task
+    // Store it to local memory and render new task in pending
+    var taskDetail = $('#new-pending-task-detail').val();
+    taskDetail = taskDetail.replace(/^\s+|\s+$/, '');
+    
+    if (taskDetail.length > 0) {
+    
+      var task = new Task('pending', taskDetail);
+      task.id = new Date().getTime();
+      
+      // Clear form and close
+      $('#new-pending-task-modal').hide();
+      new TaskView(task).append('#pending').update();
+              
+    } else {
+    
+      $('.new-pending-task-detail').addClass('error');
+      $('#new-pending-task-help').text('Task detail cannot empty');
+      $('#new-pending-task-save-button').attr('href', '#pending/create?' + new Date().getTime());
+    
+    }
   },
   
   // Iteration controllers
@@ -724,20 +748,20 @@ _.table = {
   },
   
   // Board action
-  'board/table': function (hash) {
+  'board/task': function (hash) {
     $('#table-menu').addClass('active');
-    $('#story-menu').removeClass('active');
+    $('#pending-menu').removeClass('active');
   
     $('#table-view').show();
-    $('#story-view').hide();
+    $('#pending-view').hide();
   },
   
-  'board/story': function (hash) {
+  'board/pending': function (hash) {
     $('#table-menu').removeClass('active');
-    $('#story-menu').addClass('active');
+    $('#pending-menu').addClass('active');
     
     $('#table-view').hide();
-    $('#story-view').show();
+    $('#pending-view').show();
   },
   
   // Share

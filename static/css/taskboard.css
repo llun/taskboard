@@ -137,7 +137,7 @@ ul.user-menu {
   display: block;
 }
 
-#story-view {
+#pending-view {
   display: none;
 }
 
@@ -176,7 +176,8 @@ table td.wall.over{background-color: #CCC;}
   box-shadow: none;
   margin-top: 5px;
   margin-bottom: 5px;
-  max-width: 90%;
+  width: 215px;
+  max-width: 215px;
 }
 
 .task.own, .story.own {

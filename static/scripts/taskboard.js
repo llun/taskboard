@@ -291,7 +291,7 @@ _.init = function() {
             shouldRedirectToOldHash = true
           } 
           // Parse board
-          else if (/^#board\/story$/.test(_.oldHash)) {
+          else if (/^#board\/pending$/.test(_.oldHash)) {
             shouldRedirectToOldHash = true
           }
           // Parse show project
@@ -526,7 +526,7 @@ _.init = function() {
                                   shouldRedirectToOldHash = true
                                 } 
                                 // Parse board
-                                else if (/^#board\/story$/.test(_.oldHash)) {
+                                else if (/^#board\/pending$/.test(_.oldHash)) {
                                   shouldRedirectToOldHash = true
                                 }
                                 // Parse show project

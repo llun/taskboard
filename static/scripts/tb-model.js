@@ -157,6 +157,7 @@ Task.status = {
   INPROGRESS: 'inprogress',
   VERIFY: 'verify',
   DONE: 'done',
+  PENDING: 'pending',
   OTHER: 'other'
 };
 
