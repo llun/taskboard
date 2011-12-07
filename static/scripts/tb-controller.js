@@ -149,8 +149,13 @@ _.table = {
     
     if (taskDetail.length > 0) {
     
-      var task = new Task('pending', taskDetail);
-      task.id = new Date().getTime();
+      var pendings = _.persistent.get('pending');
+      if (!pendings) {
+        
+      }
+      
+      
+      var task = Task.create('pending', taskDetail, true);
       
       // Clear form and close
       $('#new-pending-task-modal').hide();
@@ -764,6 +769,8 @@ _.table = {
     
     $('#table-view').hide();
     $('#pending-view').show();
+    
+    
   },
   
   // Share

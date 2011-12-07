@@ -3,7 +3,7 @@
  *
  * @param {String} detail Task detail.
  */
-var Task = function(iteration, detail) {
+var Task = function(owner, detail) {
   // Private properties
   var _responders = [];
   var _tags = [];
@@ -13,7 +13,7 @@ var Task = function(iteration, detail) {
   // Public properties
   this.detail = detail;
   this.status = Task.status.TODO;
-  this.owner = iteration;
+  this.owner = owner;
   
   this.updated = 0;
   this.modified = new Date().getTime();
@@ -162,8 +162,8 @@ Task.status = {
 };
 
 // CRUD for Task
-Task.create = function(iteration, detail, push) {
-  task = new Task(iteration, detail);
+Task.create = function(owner, detail, push) {
+  task = new Task(owner, detail);
   
   _.persistent.save(task);
   
@@ -182,13 +182,12 @@ Task.get = function(id) {
   
   var object = _.persistent.get(id);
   if (object) {
-    task = new Task(object.iteration, object.detail);
+    task = new Task(object.owner, object.detail);
     task.id = object.id;
     task.status = object.status;
     task.sync = object.sync;
     task.updated = object.updated;
     task.modified = object.modified;
-    task.owner = object.owner;
   }
   
   return task;
