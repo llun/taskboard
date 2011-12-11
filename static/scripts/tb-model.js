@@ -13,7 +13,7 @@ var Task = function(owner, detail) {
   
   // Public properties
   this.detail = detail;
-  this.status = Task.status.TODO;
+  this.status = owner == 'pending' ? Task.status.PENDING : Task.status.TODO;
   this.owner = owner;
   
   this.updated = 0;

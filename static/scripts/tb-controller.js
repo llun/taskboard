@@ -29,6 +29,8 @@ _.table = {
       $('#edit-task-modal').show();
       var task = Task.get(id);
       
+      $('#edit-task-status').val(task.status);
+      
       var value = task.getDetail(true);
       $('#edit-task-detail').val(value);
       $('#edit-task-detail').focus();
