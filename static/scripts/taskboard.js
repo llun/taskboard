@@ -30,6 +30,15 @@ _.init = function() {
     
   }
   
+  for (var pendingID in _.project.pendings) {
+    if (_.project.pendings[pendingID]) {
+      var task = Task.get(pendingID);
+      if (task && !task.delete) {
+        new TaskView(task).append('#pending').update();
+      }
+    }
+  }
+  
   _.shareProjects = [];
 
   $('.project-name').text(_.project.name);

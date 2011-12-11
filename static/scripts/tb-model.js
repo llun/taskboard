@@ -335,6 +335,8 @@ var Project = function (name, iteration) {
   this.modified = new Date().getTime();
   this.sync = false;
   
+  this.pendings = {};
+  
   // Private method
   var _constructor = function () {
     if (iteration) {
@@ -406,6 +408,7 @@ Project.get = function (id) {
     project.owner = object.owner;
     project.modified = object.modified;
     project.members = object.members;
+    project.pendings = object.pendings;
   }
   
   return project;

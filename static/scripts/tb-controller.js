@@ -149,13 +149,16 @@ _.table = {
     
     if (taskDetail.length > 0) {
     
-      var pendings = _.persistent.get('pending');
-      if (!pendings) {
-        
+      var task = Task.create('pending', taskDetail, true);
+      
+      // Keep project model compatible
+      var project = _.project;
+      if (!project.pendings) {
+        project.pendings = {};
       }
       
-      
-      var task = Task.create('pending', taskDetail, true);
+      project.pendings[task.id] = true;
+      Project.save(project, true);
       
       // Clear form and close
       $('#new-pending-task-modal').hide();
@@ -769,8 +772,6 @@ _.table = {
     
     $('#table-view').hide();
     $('#pending-view').show();
-    
-    
   },
   
   // Share
