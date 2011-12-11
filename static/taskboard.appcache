@@ -1,12 +1,13 @@
 CACHE MANIFEST
 #Version 0.6.0
-#2011-12-06
+#2011-12-11
 
 CACHE:
 index.html
 scripts/engine-persistent.js
 scripts/engine.js
 scripts/jquery-1.7.min.js
+scripts/step.js
 scripts/tb-controller.js
 scripts/tb-model.js
 scripts/tb-view.js
