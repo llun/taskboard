@@ -1,6 +1,7 @@
 /**
  * Task model constructor
  *
+ * @param {String} owner, Task owner is iteration id or 'pendings'
  * @param {String} detail Task detail.
  */
 var Task = function(owner, detail) {

@@ -105,7 +105,6 @@ _.table = {
     
   },
   'task/remove': function(hash) {
-    var iteration = Iteration.get(_.project.currentIteration());
     
     var id = null;    
     var matches = hash.match(/[0-9a-fA-F-]{36}/);
@@ -114,11 +113,20 @@ _.table = {
     }
     
     if (id) {
-    
-      Task.remove(id, true);
-      iteration.removeTask(id);
-      Iteration.save(iteration, true);
+
+      var task = Task.get(id);
       
+      Task.remove(id, true);
+      if (task.owner == 'pending') {
+        var project = _.project;
+        delete project.pendings[id];
+        
+        Project.save(project, true);
+      } else {
+        iteration.removeTask(id);
+        Iteration.save(iteration, true);
+      }
+    
       console.log ('client(remove): ' + id);
       
       $('#' + id).remove();
