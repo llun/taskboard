@@ -439,7 +439,7 @@ _.table = {
     var pattern = /^[\w\d ]+$/;
     if (pattern.test(name)) {
     
-      _.user.createProject(name, isSync);
+      var createdProject = _.user.createProject(name, isSync);
       
       $('.project-list-menu-item').remove();
       $('.share-project-list-menu-item').remove();
@@ -474,7 +474,7 @@ _.table = {
         $('#end-iteration-button').removeAttr('disabled');
       }
 
-      window.location.hash = '';
+      window.location.hash = '#project/show/' + createdProject.id;
       
     } else {
     
