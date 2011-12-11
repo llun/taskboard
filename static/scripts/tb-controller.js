@@ -87,15 +87,31 @@ _.table = {
       // Save old task
       var task = Task.get(id);
       task.setDetail(taskDetail);
+      task.status = $('#edit-task-status').val();
+      
       Task.save(task, true);
+      
+      var project = _.project;
+      var iteration = Iteration.get(_.project.currentIteration());
+      if (task.status == 'pending') {
+        // Move to pending tasks
+        delete iteration.tasks[task.id];
+        project.pendings[task.id] = true;
+      } else {
+        // Move to current iteration tasks
+        delete project.pendings[task.id];
+        iteration.tasks[task.id] = true;
+      }
+      
+      Project.save(project, true);
+      Iteration.save(iteration, true);
       
       console.log ('client(update): ' + task.id + ', ' + task.status + ', ' + task.detail);
       
       $('#edit-task-modal').hide();
       
-      
-      // Find the way to use view.
-      new TaskView(task).update();
+      $('#' + task.id).remove();
+      new TaskView(task).append('#' + task.status).update();
       
     } else {
     
@@ -172,7 +188,7 @@ _.table = {
       
       // Clear form and close
       $('#new-pending-task-modal').hide();
-      new TaskView(task).append('#pending').update();
+      new TaskView(task).append('#' + task.status).update();
               
     } else {
     
