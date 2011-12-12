@@ -55,7 +55,7 @@ _.table = {
     
       var iteration = Iteration.get(_.project.currentIteration());
       
-      var task = Task.create(iteration.id, taskDetail, true);
+      var task = Task.create(iteration.id, taskDetail, Task.status.TODO, true);
       iteration.addTask(task);
       Iteration.save(iteration, true);
       
@@ -135,7 +135,7 @@ _.table = {
       var task = Task.get(id);
       
       Task.remove(id, true);
-      if (task.owner == 'pending') {
+      if (task.owner == _.project.id) {
         var project = _.project;
         delete project.pendings[id];
         
@@ -175,13 +175,13 @@ _.table = {
     
     if (taskDetail.length > 0) {
     
-      var task = Task.create('pending', taskDetail, true);
-      
       // Keep project model compatible
       var project = _.project;
       if (!project.pendings) {
         project.pendings = {};
       }
+      
+      var task = Task.create(project.id, taskDetail, Task.status.PENDING, true);
       
       project.pendings[task.id] = true;
       Project.save(project, true);

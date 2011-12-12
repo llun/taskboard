@@ -6,7 +6,7 @@ TestIt('TestProject', {
     var iteration = Iteration.create();
     this.project.iterations.push(iteration.id);
     
-    var task = Task.create('test');
+    var task = Task.create('', 'test', Task.status.TODO);
     iteration.addTask(task);
     
     this.task = task.id;

@@ -13,7 +13,7 @@ var Task = function(owner, detail) {
   
   // Public properties
   this.detail = detail;
-  this.status = owner == 'pending' ? Task.status.PENDING : Task.status.TODO;
+  this.status = Task.status.TODO;
   this.owner = owner;
   
   this.updated = 0;
@@ -163,8 +163,9 @@ Task.status = {
 };
 
 // CRUD for Task
-Task.create = function(owner, detail, push) {
+Task.create = function(owner, detail, status, push) {
   task = new Task(owner, detail);
+  task.status = status;
   
   _.persistent.save(task);
   

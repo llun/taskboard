@@ -327,258 +327,259 @@ _.init = function() {
         var joinList = [];
         
         // If user already login it should sync user.
-        now.syncUser(_.user, function syncuser(object) {
-        
-          $('#sync-status').text('Syncing');
-        
-          // How to handler error ?
-          if (!object.error) {
-          
-            // Fetch notifications
-            now.fetchNotifications(_.user.id, function fetchnotifications(status) {
-              if (!status.error) {
-              
-                _.notifications = [];
-                
-                var notifications = status.data;
-                notifications.reverse();
-                _.notifications = _.notifications.concat(notifications);
-                new NotificationsView(_.notifications).renders('#notification-list');
+        Step(
+          function begin() {
+            console.log ('begin');
+            now.syncUser(_.user, this);
+          },
+          function syncuser(object) {
+
+            $('#sync-status').text('Syncing');
+
+            // How to handler error ?
+            if (!object.error) {
+
+              // Fetch notifications
+              now.fetchNotifications(_.user.id, function fetchnotifications(status) {
+                if (!status.error) {
+
+                  _.notifications = [];
+
+                  var notifications = status.data;
+                  notifications.reverse();
+                  _.notifications = _.notifications.concat(notifications);
+                  new NotificationsView(_.notifications).renders('#notification-list');
+                }
+              });
+
+              joinList.push(_.user.id);
+
+              $('#logged-in-user').text(_.user.username);
+              $('#logged-in-image').attr('src', _.user.image);
+
+              $('#logged-in-menu').css('display', 'block');
+              $('#logged-in-status').css('display', 'block');
+
+              if (object.status == 'update') {
+                var data = object.data;
+                User.save(data);
+
+                _.user = User.get(data.id);
               }
-            });
-          
-            joinList.push(_.user.id);
-          
-            $('#logged-in-user').text(_.user.username);
-            $('#logged-in-image').attr('src', _.user.image);
-            
-            $('#logged-in-menu').css('display', 'block');
-            $('#logged-in-status').css('display', 'block');
-          
-            if (object.status == 'update') {
-              var data = object.data;
-              User.save(data);
-              
-              _.user = User.get(data.id);
-            }
-            
-            // Prepare project need to sync
-            var projects = _.user.projects;
-            var prepareProject = [];
-            var prepareIteration = [];
-            
-            for (var key in projects) {
-              var project = Project.get(projects[key]);
-              if (project && project.sync) {
-                prepareProject.push(project);
-                joinList.push(project.id);
-                
-                var iterations = project.iterations;
-                for (var key in iterations) {
-                  var iteration = Iteration.get(iterations[key]);
-                  if (iteration) {
-                    prepareIteration.push(iteration);
-                    joinList.push(iteration.id);
-                  }
-                  
-                }
-                
-                // End of prepare iteration.
-              }
-              
-              // End of prepare project.
-            }
-            
-            // Sync projects
-            now.syncModels(_.client, 'project', { owner: _.user.id }, prepareProject, 
-              function syncprojects(object) {
-            
-                if (object.status == 'update') {
-                  var projects = object.data;
-                  
-                  for (var key in projects) {
-                    var project = projects[key];
-                    Project.save(project);
-                    
-                    joinList.push(project.id);
-                  }
-                  
-                  var removed = object.removed;
-                  for (var key in removed) {
-                    _.persistent.remove(removed[key].id);
-                  }
-                  
-                }
-                
-                // List projects
-                var projects = _.user.projects;
-                for (var index = 0; index < projects.length; index++) {
-                  var project = Project.get(projects[index]);
-                  if (project) {
-                    var list = _.tmpl('project_list', project);
-                    $('#projects-list-menu').append(list);
-                  }
-                }
-                
-                // Fetch share projects
-                now.shares(_.user.id, function fetchshares(output) {
-                  _.shareProjects = [];
-                  
-                  var joinShareList = [];
-                
-                  var projects = output.projects;
-                  var iterations = output.iterations;
-                  var tasks = output.tasks;
-                  
-                  for (var index in projects) {
-                    _.shareProjects.push(projects[index].id);
-                    Project.save(projects[index]);
-                    
-                    joinShareList.push(projects[index].id);
-                  }
-                  
-                  for (var index in iterations) {
-                    Iteration.save(iterations[index]);
-                    
-                    joinShareList.push(iterations[index].id);
-                  }
-                  
-                  for (var index in tasks) {
-                    Task.save(tasks[index]);
-                  }
-                  
-                  if (_.shareProjects.length > 0) {
-                    $('#projects-list-menu').append(
-                      '<li id="share-project-divider" class="divider project-list-menu-devider"></li>');
-                    
-                    for (var index in _.shareProjects) {
-                      var project = Project.get(_.shareProjects[index]);
-                      var list = _.tmpl('share_project_list', project);
-                      $('#projects-list-menu').append(list);
+
+              // Prepare project need to sync
+              var projects = _.user.projects;
+              var prepareProject = [];
+              var prepareIteration = [];
+
+              for (var key in projects) {
+                var project = Project.get(projects[key]);
+                if (project && project.sync) {
+                  prepareProject.push(project);
+                  joinList.push(project.id);
+
+                  var iterations = project.iterations;
+                  for (var key in iterations) {
+                    var iteration = Iteration.get(iterations[key]);
+                    if (iteration) {
+                      prepareIteration.push(iteration);
+                      joinList.push(iteration.id);
                     }
+
                   }
-                  
-                  now.joinGroups(_.client, joinShareList);
-                  
-                });
-                
-                // Sync iterations
-                now.syncModels(_.client, 'iteration', { owner: _.user.id }, prepareIteration, 
-                  function synciterations(object) {
-                
+
+                  // End of prepare iteration.
+                }
+
+                // End of prepare project.
+              }
+
+              // Sync projects
+              now.syncModels(_.client, 'project', { owner: _.user.id }, prepareProject, this);
+
+            } else {
+
+              _.persistent.clear();
+              location.reload();
+
+            }
+          },
+          function syncprojects(object) {
+
+            if (object.status == 'update') {
+              var projects = object.data;
+
+              for (var key in projects) {
+                var project = projects[key];
+                Project.save(project);
+
+                joinList.push(project.id);
+              }
+
+              var removed = object.removed;
+              for (var key in removed) {
+                _.persistent.remove(removed[key].id);
+              }
+
+            }
+
+            // List projects
+            var projects = _.user.projects;
+            for (var index = 0; index < projects.length; index++) {
+              var project = Project.get(projects[index]);
+              if (project) {
+                var list = _.tmpl('project_list', project);
+                $('#projects-list-menu').append(list);
+              }
+            }
+
+            // Fetch share projects
+            now.shares(_.user.id, function fetchshares(output) {
+              _.shareProjects = [];
+
+              var joinShareList = [];
+
+              var projects = output.projects;
+              var iterations = output.iterations;
+              var tasks = output.tasks;
+
+              for (var index in projects) {
+                _.shareProjects.push(projects[index].id);
+                Project.save(projects[index]);
+
+                joinShareList.push(projects[index].id);
+              }
+
+              for (var index in iterations) {
+                Iteration.save(iterations[index]);
+
+                joinShareList.push(iterations[index].id);
+              }
+
+              for (var index in tasks) {
+                Task.save(tasks[index]);
+              }
+
+              if (_.shareProjects.length > 0) {
+                $('#projects-list-menu').append(
+                  '<li id="share-project-divider" class="divider project-list-menu-devider"></li>');
+
+                for (var index in _.shareProjects) {
+                  var project = Project.get(_.shareProjects[index]);
+                  var list = _.tmpl('share_project_list', project);
+                  $('#projects-list-menu').append(list);
+                }
+              }
+
+              now.joinGroups(_.client, joinShareList);
+
+            });
+
+            // Sync iterations
+            now.syncModels(_.client, 'iteration', { owner: _.user.id }, prepareIteration, this);
+          },
+          function synciterations(object) {
+
+            if (object.status == 'update') {
+              var iterations = object.data;
+
+              for (var key in iterations) {
+                var iteration = iterations[key];
+                Iteration.save(iteration);
+
+                joinList.push(iteration.id);
+              }
+
+              var removed = object.removed;
+              for (var key in removed) {
+                _.persistent.remove(removed[key].id);
+              }
+            }
+
+            now.joinGroups(_.client, joinList);
+
+            // List iterations
+            var countSync = 0;
+            var iterations = _.project.iterations.slice(0).reverse()
+            for (var index = 0; index < iterations.length; index++) {
+              var iteration = Iteration.get(iterations[index]);
+              if (iteration) {
+
+                var list = _.tmpl('iteration_list', iteration);
+                $('#iterations-list-menu').append(list);
+
+                var prepareTasks = [];
+                var tasks = iteration.tasks;  
+                for (var key in tasks) {
+                  var task = Task.get(tasks[key]);
+                  if (task) {
+                    prepareTasks.push(task);
+                  }
+                }
+
+                // Sync tasks
+                now.syncModels(_.client, 'task', { owner: iteration.id }, prepareTasks, 
+                  function synctasks(object) {
                     if (object.status == 'update') {
-                      var iterations = object.data;
-                      
-                      for (var key in iterations) {
-                        var iteration = iterations[key];
-                        Iteration.save(iteration);
-                        
-                        joinList.push(iteration.id);
+
+                      var tasks = object.data;
+
+                      for (var key in tasks) {
+                        var task = tasks[key];
+                        Task.save(task);
+
+                        if (object.owner == _.project.currentIteration() &&
+                            $('#' + task.id).length === 0) {
+                          task = Task.get(task.id);
+
+                          $('#' + task.status).append(_.tmpl('task', task));
+                          $('#' + task.id).attr('draggable', true);
+                        }
                       }
-                      
+
                       var removed = object.removed;
                       for (var key in removed) {
                         _.persistent.remove(removed[key].id);
                       }
+
                     }
-                    
-                    now.joinGroups(_.client, joinList);
-                    
-                    // List iterations
-                    var countSync = 0;
-                    var iterations = _.project.iterations.slice(0).reverse()
-                    for (var index = 0; index < iterations.length; index++) {
-                      var iteration = Iteration.get(iterations[index]);
-                      if (iteration) {
-                      
-                        var list = _.tmpl('iteration_list', iteration);
-                        $('#iterations-list-menu').append(list);
-                      
-                        var prepareTasks = [];
-                        var tasks = iteration.tasks;  
-                        for (var key in tasks) {
-                          var task = Task.get(tasks[key]);
-                          if (task) {
-                            prepareTasks.push(task);
-                          }
+
+                    countSync++;
+                    if (countSync == iterations.length) {
+                      $('#notification-menu').show();
+                      $('#sync-status').text('Online');
+
+                      if (_.oldHash) {
+                        var shouldRedirectToOldHash = false;
+
+                        // Parse login
+                        if (/^#user\/login/i.test(_.oldHash)) {
+                          shouldRedirectToOldHash = true
+                        } 
+                        // Parse board
+                        else if (/^#board\/pending$/.test(_.oldHash)) {
+                          shouldRedirectToOldHash = true
                         }
-                        
-                        // Sync tasks
-                        now.syncModels(_.client, 'task', { owner: iteration.id }, prepareTasks, 
-                          function synctasks(object) {
-                        
-                            if (object.status == 'update') {
-                            
-                              var tasks = object.data;
-                              
-                              for (var key in tasks) {
-                                var task = tasks[key];
-                                Task.save(task);
+                        // Parse show project
+                        else if (/^#project\/show/i.test(_.oldHash)) {
+                          shouldRedirectToOldHash = true
+                        }
 
-                                if (object.owner == _.project.currentIteration() &&
-                                    $('#' + task.id).length === 0) {
-                                  task = Task.get(task.id);
+                        if (shouldRedirectToOldHash) {
+                          window.location.hash = _.oldHash;
+                        }
 
-                                  $('#' + task.status).append(_.tmpl('task', task));
-                                  $('#' + task.id).attr('draggable', true);
-                                }
-                              }
-                              
-                              var removed = object.removed;
-                              for (var key in removed) {
-                                _.persistent.remove(removed[key].id);
-                              }
-                              
-                            }
-                          
-                            countSync++;
-                            if (countSync == iterations.length) {
-                              $('#notification-menu').show();
-                              $('#sync-status').text('Online');
-                              
-                              if (_.oldHash) {
-                                var shouldRedirectToOldHash = false;
-
-                                // Parse login
-                                if (/^#user\/login/i.test(_.oldHash)) {
-                                  shouldRedirectToOldHash = true
-                                } 
-                                // Parse board
-                                else if (/^#board\/pending$/.test(_.oldHash)) {
-                                  shouldRedirectToOldHash = true
-                                }
-                                // Parse show project
-                                else if (/^#project\/show/i.test(_.oldHash)) {
-                                  shouldRedirectToOldHash = true
-                                }
-
-                                if (shouldRedirectToOldHash) {
-                                  window.location.hash = _.oldHash;
-                                }
-
-                              }
-                            }
-                          
-                          });
-                      
-                      } else {
-                        countSync++;
                       }
-                      
                     }
-                    
                   });
-              
-            });
-            
-          } else {
-          
-            _.persistent.clear();
-            location.reload();
-          
-          }
-        
-        });
+
+              } else {
+                countSync++;
+              }
+
+            }
+          });
+
       }
       
       $('#sync-status').text('Online');
