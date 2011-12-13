@@ -326,6 +326,44 @@ _.init = function() {
         
         var joinList = [];
         
+        var syncpendings = function (project) {
+          // Sync pendings
+          var preparePendings = [];
+          for (var key in project.pendings) {
+            var task = Task.get(key);
+            if (task) {
+              preparePendings.push(Task.get(key));
+            }
+          }
+          
+          now.syncModels(_.client, 'task', { owner: project.id }, preparePendings, 
+            function synctasks(object) {
+              if (object.status == 'update') {
+
+                var tasks = object.data;
+
+                for (var key in tasks) {
+                  var task = tasks[key];
+                  Task.save(task);
+
+                  if (object.owner == _.project.id &&
+                      $('#' + task.id).length === 0) {
+                    task = Task.get(task.id);
+
+                    $('#' + task.status).append(_.tmpl('task', task));
+                    $('#' + task.id).attr('draggable', true);
+                  }
+                }
+
+                var removed = object.removed;
+                for (var key in removed) {
+                  _.persistent.remove(removed[key].id);
+                }
+
+              }
+            });
+        }
+        
         // If user already login it should sync user.
         Step(
           function begin() {
@@ -430,7 +468,10 @@ _.init = function() {
               if (project) {
                 var list = _.tmpl('project_list', project);
                 $('#projects-list-menu').append(list);
+                
+                syncpendings(project);
               }
+              
             }
 
             // Fetch share projects
@@ -448,6 +489,8 @@ _.init = function() {
                 Project.save(projects[index]);
 
                 joinShareList.push(projects[index].id);
+                
+                syncpendings(projects[index]);
               }
 
               for (var index in iterations) {
