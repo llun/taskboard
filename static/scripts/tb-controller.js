@@ -255,6 +255,18 @@ _.table = {
     var iteration = Iteration.get(_.project.currentIteration());
     
     $('.task').remove();
+    for (var taskID in iteration.tasks) {
+    
+      if (iteration.tasks[taskID]) {
+        var task = Task.get(taskID);
+        if (task && !task.delete) {
+          new TaskView(task).append('#' + task.status).update();
+        }
+        
+      }
+      
+    }
+    
     $('#iteration-name').text(iteration.name);
     
     new IterationsMenuView(_.project).renders('#iterations-list-menu');

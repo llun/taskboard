@@ -354,20 +354,33 @@ var Project = function (name, iteration) {
   this.endIteration = function endIteration() {
     var iteration = Iteration.get(_self.currentIteration());
     iteration.end = new Date();
-    Iteration.save(iteration, true);
+    
+    var move = [];
     
     for (var key in iteration.tasks) {
       var task = Task.get(key);
-      if (task) {
-        task.status = Task.status.DONE;
-        Task.save(task, true);
+      if (task && task.status != Task.status.DONE) {
+        move.push(key);
+        delete iteration.tasks[key];
       }
     }
+    
+    Iteration.save(iteration, true);
     
     iteration = Iteration.create('Iteration ' + (_self.iterations.length + 1), true);
     _self.iterations.push(iteration.id);
     
     Project.save(_self, true);
+    
+    for (var index in move) {
+      var task = Task.get(move[index]);
+      task.owner = iteration.id;
+      Task.save(task, true);
+      
+      iteration.tasks[task.id] = true;
+    }
+    
+    Iteration.save(iteration, true);
   }
   
   this.cancelIteration = function cancelIteration() {

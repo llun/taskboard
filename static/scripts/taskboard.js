@@ -362,7 +362,6 @@ _.init = function() {
         // If user already login it should sync user.
         Step(
           function begin() {
-            console.log ('begin');
             now.syncUser(_.user, this);
           },
           function syncuser(object) {
@@ -701,15 +700,15 @@ _.init = function() {
               $('.task').remove();
               for (var taskID in iteration.tasks) {
               
-                  if (iteration.tasks[taskID]) {
-                    var task = Task.get(taskID);
-                    if (task && !task.delete) {
-                      new TaskView(task).append('#' + task.status).update();
-                    }
-                    
+                if (iteration.tasks[taskID]) {
+                  var task = Task.get(taskID);
+                  if (task && !task.delete) {
+                    new TaskView(task).append('#' + task.status).update();
                   }
                   
                 }
+                
+              }
               
             }
           

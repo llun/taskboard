@@ -54,7 +54,7 @@ var IterationsMenuView = function (project) {
   }
   
   this.renders = function(parent) {
-    $('.iteration-list-item').remove();
+    $('.iteration-list-menu-item').remove();
     
     for (var index in this.tmpls) {
       $(parent).append(this.tmpls[index]);
