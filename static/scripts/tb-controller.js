@@ -131,6 +131,18 @@ _.table = {
     }
     
     if (id) {
+      
+      $('#remove-task').val(id);
+      $('#delete-task-modal').show();
+      
+    }
+    
+  },
+  'task/remove/confirm': function() {
+    
+    var id = $('#remove-task').val();
+    
+    if (id) {
 
       var task = Task.get(id);
       
@@ -141,6 +153,8 @@ _.table = {
         
         Project.save(project, true);
       } else {
+        var iteration = Iteration.get(task.owner);
+        
         iteration.removeTask(id);
         Iteration.save(iteration, true);
       }
@@ -148,6 +162,7 @@ _.table = {
       console.log ('client(remove): ' + id);
       
       $('#' + id).remove();
+      $('#remove-task').val('');
       
       window.location.hash = '';
       
