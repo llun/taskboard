@@ -240,6 +240,8 @@ _.table = {
         // Hide new task and end iteration button
         $('#iteration-actions').hide();
         $('#iteration-name-edit').hide();
+        $('.task').removeAttr('draggable');
+        
         $('.task-actions').hide();
       }
       
