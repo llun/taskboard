@@ -257,14 +257,7 @@ _.table = {
     $('.task').remove();
     $('#iteration-name').text(iteration.name);
     
-    $('.iteration-list-menu-item').remove();
-    
-    var iterations = _.project.iterations.slice(0).reverse()
-    for (var index = 0; index < iterations.length; index++) {
-      var iteration = Iteration.get(iterations[index]);
-      var list = _.tmpl('iteration_list', iteration);
-      $('#iterations-list-menu').append(list);
-    }
+    new IterationsMenuView(_.project).renders('#iterations-list-menu');
     
     window.location.hash = '';
   },
@@ -353,13 +346,7 @@ _.table = {
         $('#iteration-name-edit').show();
       }
       
-      $('.iteration-list-menu-item').remove();
-      var iterations = _.project.iterations.slice(0).reverse();
-      for (var index in iterations) {
-        var iteration = Iteration.get(iterations[index]);
-        var list = _.tmpl('iteration_list', iteration);
-        $('#iterations-list-menu').append(list);
-      }
+      new IterationsMenuView(_.project).renders('#iterations-list-menu');
     
     }
   
@@ -553,7 +540,7 @@ _.table = {
       
       if (!data.error) {
         $('.project-list-menu-item').remove();
-      
+              
         $('#logged-in-menu').css('display', 'block');
         $('#logged-out-menu').hide();
         
@@ -581,23 +568,17 @@ _.table = {
             
             if (project) {
             
-              var list = _.tmpl('project_list', project);
-              $('#projects-list-menu').append(list);
-            
               if (project.id == user.defaultProject && !project.sync) {
                 project.sync = true;
               }
               
               if (project.sync) {
-                joinGroups.push(project.id);
               
                 // Prepare iteration sync to server
                 var iterations = project.iterations;
                 for (var key in iterations) {
                   var iteration = Iteration.get(iterations[key]);
                   if (iteration) {
-                  
-                    joinGroups.push(iteration.id);
                   
                     iteration.owner = user.id;
                     Iteration.save(iteration, true);
@@ -633,21 +614,11 @@ _.table = {
         for (var key in data.projects) {
           var project = data.projects[key];
           Project.save(project);
-          
-          var list = _.tmpl('project_list', project);
-          $('#projects-list-menu').append(list);
-          
-          joinGroups.push(project.id);
         }
         
         for (var key in data.iterations) {
           var iteration = data.iterations[key];
           Iteration.save(iteration);
-          
-          var list = _.tmpl('iteration_list', iteration);
-          $('#iterations-list-menu').append(list);
-          
-          joinGroups.push(iteration.id);
         }
         
         for (var key in data.tasks) {
@@ -655,121 +626,11 @@ _.table = {
           Task.save(task);
         }
         
-        _.user = User.get(user.id);
-        _.project = Project.get(_.user.defaultProject);
-        
         var current = _.persistent.get('current');
         current.key = user.id;
         _.persistent.save(current);
         
-        var iteration = Iteration.get(_.project.currentIteration());
-        $('.project-name').text(_.project.name);
-        $('#iteration-name').text(iteration.name);
-        
-        for (var taskID in iteration.tasks) {
-        
-          if (iteration.tasks[taskID]) {
-            var task = Task.get(taskID);
-            if (task && !task.delete) {
-              new TaskView(task).append('#' + task.status).update();
-            }
-              
-          }
-            
-        }
-        
-        now.joinGroups(_.client, joinGroups, function() {
-          $('#logged-in-status').css('display', 'block');
-          
-          $('#logged-in-user').text(user.username);
-          $('#logged-in-image').attr('src', user.image);
-          
-          $('#notification-menu').show();
-          $('#sync-status').text('Online');
-        });
-        
-        // Fetch share projects
-        now.shares(_.user.id, function (output) {
-          console.log (output);
-          _.shareProjects = [];
-          
-          var joinShareList = [];
-        
-          var projects = output.projects;
-          var iterations = output.iterations;
-          var tasks = output.tasks;
-          
-          for (var index in projects) {
-            _.shareProjects.push(projects[index].id);
-            Project.save(projects[index]);
-            
-            joinShareList.push(projects[index].id);
-          }
-          
-          for (var index in iterations) {
-            Iteration.save(iterations[index]);
-            
-            joinShareList.push(iterations[index].id);
-          }
-          
-          for (var index in tasks) {
-            Task.save(tasks[index]);
-          }
-          
-          if (_.shareProjects.length > 0) {
-            $('#projects-list-menu').append('<li class="divider project-list-menu-devider"></li>');
-            
-            for (var index in _.shareProjects) {
-              var project = Project.get(_.shareProjects[index]);
-              var list = _.tmpl('share_project_list', project);
-              $('#projects-list-menu').append(list);
-            }
-          }
-          
-          now.joinGroups(_.client, joinShareList);
-          
-        });
-        
-        // Fetch notifications
-        now.fetchNotifications(_.user.id, function (status) {
-          if (!status.error) {
-          
-            _.notifications = [];
-            
-            var notifications = status.data;
-            notifications.reverse();
-            _.notifications = _.notifications.concat(notifications);
-            
-            $('.notification-list-item').remove();
-            
-            if (_.notifications.length > 0) {
-              for (var index in _.notifications) {
-                var notification = _.notifications[index];
-                if (notification.type == 'invite') {
-                  $('#notification-list').append(_.tmpl('notification_list', 
-                    { index: index,
-                      message: notification.from + 
-                               ' invite you to join ' + 
-                               notification.project }));
-                }
-              }
-              
-              $('#notification-list').append('<li class="divider notification-list-item"></li>');
-              $('#notification-list').append('<li class="notification-list-item">' +
-                '<a href="#share/all">See all notifications</a></li>');
-                
-              $('#notification-status').addClass('alert');
-              $('#notification-status').text(_.notifications.length);
-            } else {
-              $('#notification-list').append(_.tmpl('notification_list', 
-                { action: '', message: 'No notification'}));
-              $('#notification-status').removeClass('alert');
-            }
-            
-          }
-        });
-        
-        window.location.hash = '';
+        window.location.href = '/';
         
       }
     });

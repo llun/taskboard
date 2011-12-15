@@ -40,6 +40,28 @@ var TaskView = function (task) {
   
 }
 
+var IterationsMenuView = function (project) {
+  
+  this.tmpls = [];
+  
+  var iterations = project.iterations.slice(0).reverse()
+  for (var index = 0; index < iterations.length; index++) {
+    var iteration = Iteration.get(iterations[index]);
+    if (iteration) {
+      var list = _.tmpl('iteration_list', iteration);
+      this.tmpls.push(list);
+    }
+  }
+  
+  this.renders = function(parent) {
+    $('.iteration-list-item').remove();
+    
+    for (var index in this.tmpls) {
+      $(parent).append(this.tmpls[index]);
+    }
+  }
+}
+
 var NotificationsView = function (notifications) {
 
   this.tmpls = [];

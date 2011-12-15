@@ -294,12 +294,7 @@ _.init = function() {
         }
         
         // List iterations
-        var iterations = _.project.iterations.slice(0).reverse()
-        for (var index = 0; index < iterations.length; index++) {
-          var iteration = Iteration.get(iterations[index]);
-          var list = _.tmpl('iteration_list', iteration);
-          $('#iterations-list-menu').append(list);
-        }
+        new IterationsViewMenu(_.project).renders('#iterations-list-menu');
         
         if (_.oldHash) {
           var shouldRedirectToOldHash = false;
@@ -543,13 +538,13 @@ _.init = function() {
 
             // List iterations
             var countSync = 0;
-            var iterations = _.project.iterations.slice(0).reverse()
+            var iterations = _.project.iterations;
+            
+            new IterationsMenuView(_.project).renders('#iterations-list-menu');
+            
             for (var index = 0; index < iterations.length; index++) {
               var iteration = Iteration.get(iterations[index]);
               if (iteration) {
-
-                var list = _.tmpl('iteration_list', iteration);
-                $('#iterations-list-menu').append(list);
 
                 var prepareTasks = [];
                 var tasks = iteration.tasks;  
@@ -601,10 +596,6 @@ _.init = function() {
                         } 
                         // Parse board
                         else if (/^#board\/pending$/.test(_.oldHash)) {
-                          shouldRedirectToOldHash = true
-                        }
-                        // Parse show project
-                        else if (/^#project\/show/i.test(_.oldHash)) {
                           shouldRedirectToOldHash = true
                         }
 
@@ -879,12 +870,7 @@ _.init = function() {
     }
     
     // List iterations
-    var iterations = _.project.iterations.slice(0).reverse()
-    for (var index = 0; index < iterations.length; index++) {
-      var iteration = Iteration.get(iterations[index]);
-      var list = _.tmpl('iteration_list', iteration);
-      $('#iterations-list-menu').append(list);
-    }
+    new IterationsMenuView(_.project).renders('#iterations-list-menu');
     
     // Update login menu
     $('#logging-in-menu').hide();
