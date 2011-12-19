@@ -558,7 +558,12 @@ _.table = {
     $('#update-modal').hide();
     
     applicationCache.swapCache();
-    window.location.reload();
+    window.location.href = '/';
+  },
+  
+  // Profile controllers
+  'profile/show': function (hash) {
+    $('#profile-modal').show()
   },
   
   // User controllers

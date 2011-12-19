@@ -273,7 +273,7 @@ _.init = function() {
       if (!_.ready) {
         _.ready = true;
       } else {
-        window.location.reload();
+        window.location.href = '/';
       }
     
       _.client = now.core.clientId;
@@ -294,7 +294,7 @@ _.init = function() {
         }
         
         // List iterations
-        new IterationsViewMenu(_.project).renders('#iterations-list-menu');
+        new IterationsMenuView(_.project).renders('#iterations-list-menu');
         
         if (_.oldHash) {
           var shouldRedirectToOldHash = false;
@@ -880,7 +880,8 @@ _.init = function() {
       $('#logged-in-user').text(_.user.username);
     
       $('#logged-in-menu').css('display', 'block');
-      $('#log-out-menu').remove();
+      $('#logged-in-menu-actions').remove();
+      $('#user-icon').removeClass('dropdown-toggle');
       
       if (_.project.sync) {
         $('#end-iteration-button').attr('disabled', true);
@@ -892,14 +893,16 @@ _.init = function() {
   // Online/Offline event
   $(window).bind('online', function online(e) {
     console.log ('Online');
-    window.location.reload()
+    window.location.href = '/';
   });
   
   $(window).bind('offline', function offline(e) {
     console.log ('Offline');
     $('#sync-status').text('Offline');
     $('#notification-menu').hide();
-    $('#log-out-menu').remove();
+    
+    $('#logged-in-menu-actions').remove();
+    $('#user-icon').removeClass('dropdown-toggle');
     
     if (_.project.sync) {
       $('#end-iteration-button').attr('disabled', true);
