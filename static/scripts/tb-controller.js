@@ -564,6 +564,8 @@ _.table = {
   // Profile controllers
   'profile/show': function (hash) {
     $('#profile-modal').show()
+    
+    $('#edit-username').val(_.user.username);
   },
   
   // User controllers
