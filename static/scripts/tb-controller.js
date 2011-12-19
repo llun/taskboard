@@ -95,11 +95,15 @@ _.table = {
       var iteration = Iteration.get(_.project.currentIteration());
       if (task.status == 'pending') {
         // Move to pending tasks
-        delete iteration.tasks[task.id];
+        if (iteration.tasks && iteration.tasks[task.id]) {
+          delete iteration.tasks[task.id];
+        }
         project.pendings[task.id] = true;
       } else {
         // Move to current iteration tasks
-        delete project.pendings[task.id];
+        if (project.pendings && project.pendings[task.id]) {
+          delete project.pendings[task.id];
+        }
         iteration.tasks[task.id] = true;
       }
       
