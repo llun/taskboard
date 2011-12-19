@@ -98,6 +98,10 @@ _.table = {
         if (iteration.tasks && iteration.tasks[task.id]) {
           delete iteration.tasks[task.id];
         }
+        
+        if (!project.pendings) {
+          project.pendings = {};
+        }
         project.pendings[task.id] = true;
       } else {
         // Move to current iteration tasks
