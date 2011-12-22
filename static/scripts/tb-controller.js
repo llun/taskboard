@@ -130,6 +130,9 @@ _.table = {
     }
     
   },
+  'task/hide/done': function () {
+
+  },
   'task/remove': function(hash) {
     
     var id = null;    

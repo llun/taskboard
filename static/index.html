@@ -49,10 +49,10 @@
         
         <div class="task-actions">
           <a href="#task/remove/<%=id%>" class="delete">
-            <img src="images/trash.png" />
+            <img src="images/delete.png" />
           </a>
           <a href="#task/edit/<%=id%>" class="edit">
-            <img src="images/wrench.png" />
+            <img src="images/gear.png" />
           </a>
         </div>
         
@@ -201,7 +201,7 @@
           
           <div class="span4 columns project-head">
             <h2 class="project-name">Project name</h2> 
-            <a href="#project/edit" id="project-edit"><img src="images/wrench.png" /></a>
+            <a href="#project/edit" id="project-edit"><img src="images/gear.png" /></a>
           </div>
           
           <div id="iteration-actions" class="span4 offset8 columns">
@@ -217,7 +217,7 @@
           
           <div class="span4 columns iteration-head">
             <h4 id="iteration-name">Iteration name</h4>
-            <a href="#iteration/edit" id="iteration-name-edit"><img src="images/wrench.png" /></a>
+            <a href="#iteration/edit" id="iteration-name-edit"><img src="images/gear.png" /></a>
           </div>
           
           
@@ -234,7 +234,12 @@
               <th class="black header task-type">Todo</th>
               <th class="blue header task-type">In progress</th>
               <th class="orange header task-type">Verify</th>
-              <th class="green header task-type">Done</th>
+              <th class="green header task-type">
+                Done
+                <a href="#task/hide/done" class="hide-icon">
+                  <img src="images/eye.png" />
+                </a>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -269,7 +274,7 @@
           
           <div class="span4 columns project-head">
             <h2 class="project-name">Project name</h2> 
-            <a href="#project/edit"><img src="images/wrench.png" /></a>
+            <a href="#project/edit"><img src="images/gear.png" /></a>
           </div>
           
           <div class="span6 offset4 columns">

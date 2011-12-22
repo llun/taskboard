@@ -70,6 +70,8 @@ ul.user-menu {
 .delete img{height:18px}
 .delete:hover{filter:alpha(opacity=40);opacity:0.4;}
 
+.hide-icon img {height: 11px; padding-left: 3px; filter:alpha(opacity=10);opacity:0.1;}
+
 .project-head h2, .iteration-head h4 { display: inline; cursor: pointer; }
 .project-head img, .iteration-head img { 
   height: 13px; 
