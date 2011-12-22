@@ -1,5 +1,5 @@
 CACHE MANIFEST
-#Version 0.6.0b4
+#Version 0.6.0b5
 #2011-12-11
 
 CACHE:
@@ -16,11 +16,12 @@ scripts/taskboard.js
 css/bootstrap.min.css
 css/taskboard.css
 
+images/delete.png
+images/eye.png
+images/gear.png
 images/github.png
-images/trash.png
 images/twitter.png
 images/user.png
-images/wrench.png
 
 nowjs/now.js
 socket.io/socket.io.js
