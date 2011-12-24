@@ -162,8 +162,6 @@
                 <span id="logged-in-user">username</span>
               </a>
               <ul id="logged-in-menu-actions" class="dropdown-menu">
-                <li id="profile-menu"><a href="#profile/show">Profile</a></li>
-                <li class="divider project-list-menu-divider"></li>
                 <li id="log-out-menu"><a href="#user/logout">Logout</a></li>
               </ul>
             </li>
@@ -236,9 +234,9 @@
               <th class="orange header task-type">Verify</th>
               <th class="green header task-type">
                 Done
-                <a href="#task/hide/done" class="hide-icon">
-                  <img src="images/eye.png" />
-                </a>
+                <small class="action">
+                  <a href="#task/show/done">show</a>,<a href="#task/hide/done">hide</a>
+                </small>
               </th>
             </tr>
           </thead>

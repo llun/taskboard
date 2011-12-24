@@ -158,6 +158,16 @@ table .header::after{
   display: none;
 }
 
+table .action {
+  font-size: 82%;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+table .action a{
+  color: #4cb252;
+}
+
 table td.wall{vertical-align: top; background-color: #EEE;}
 table td.wall.over{background-color: #CCC;}
 

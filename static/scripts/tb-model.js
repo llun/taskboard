@@ -190,6 +190,7 @@ Task.get = function(id) {
     task.sync = object.sync;
     task.updated = object.updated;
     task.modified = object.modified;
+    task.hide = object.hide;
   }
   
   return task;

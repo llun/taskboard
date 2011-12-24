@@ -130,8 +130,33 @@ _.table = {
     }
     
   },
+  'task/show/done': function () {
+    var iteration = Iteration.get(_.iteration);
+    for (var key in iteration.tasks) {
+      var task = Task.get(key);
+      if (task.status == 'done') {
+        task.hide = false;
+        Task.save(task, true);
+        
+        $('#' + task.id).show();
+      }
+    }
+    
+    window.location.hash = '';
+  },
   'task/hide/done': function () {
-
+    var iteration = Iteration.get(_.iteration);
+    for (var key in iteration.tasks) {
+     var task = Task.get(key);
+     if (task.status == 'done') {
+       task.hide = true;
+       Task.save(task, true);
+       
+       $('#' + task.id).hide();
+     }
+    }
+    
+    window.location.hash = '';
   },
   'task/remove': function(hash) {
     

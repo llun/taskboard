@@ -15,6 +15,12 @@ var TaskView = function (task) {
     $('#' + task.id + '_responders').text(task.getResponders().toString());
     $('#' + task.id + '_tags').text(task.getTags().toString());
     
+    if (task.hide) {
+      $('#' + task.id).hide();
+    } else {
+      $('#' + task.id).show();
+    }
+    
     if (!_.user.anonymous) {
       var responders = task.getResponders();
       var found = false;
