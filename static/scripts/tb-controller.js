@@ -342,7 +342,7 @@ _.table = {
   'iteration/save': function () {
   
     // Validate input
-    var pattern = /^[\w\d ]+$/i;
+    var pattern = /^[^\n]+$/i;
     var name = $('#edit-iteration-name').val();
     
     if (pattern.test(name)) {    
@@ -488,7 +488,7 @@ _.table = {
     var name = $('#new-project-name').val();
     var isSync = $('#new-project-sync-option').attr('checked') ? true : false;
     
-    var pattern = /^[\w\d ]+$/;
+    var pattern = /^[^\n]+$/;
     if (pattern.test(name)) {
     
       var createdProject = _.user.createProject(name, isSync);
@@ -540,7 +540,7 @@ _.table = {
   },
   'project/save': function () {
     // Validate input
-    var pattern = /^[\w\d ]+$/i;
+    var pattern = /^[^\n]+$/i;
     var name = $('#edit-project-name').val();
     
     if (pattern.test(name)) {
