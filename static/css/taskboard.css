@@ -236,6 +236,7 @@ table td.wall.over{background-color: #CCC;}
   line-height: 18px;
   padding-top: 2px;
   color: #BBBBBB;
+  word-wrap: break-word;
 }
 
 .highlight {
