@@ -52,7 +52,9 @@ var _getService = function (name) {
     } else if (config.version == '2.0') {
       service = new oauth2(config.id,
                            config.secret,
-                           config.base);
+                           config.base,
+                           config.authorize,
+                           config.access_token);
     }
     
     _services[name] = service;
@@ -312,6 +314,95 @@ var services = {
   'facebook/authen': function (request, response, store) {
     response.writeHead(200, {});
     response.end('Hello, world');
+  },
+
+  'menome': function (request, response, store) {
+
+    var loginQuery = url.parse(request.url, true).query;
+    if (loginQuery.invite == _loadConfig().key) {
+
+      var config = _loadConfig()['menome'];
+      var service = _getService('menome');
+      response.writeHead(302, {
+        //'Location': config.base + "&client_id=" + config.id
+        'Location': service.getAuthorizeUrl({ response_type: "code" })
+      });
+      response.end();
+
+    } else {
+      response.writeHead(302, {
+        'Location': '/'
+      });
+      response.end();
+    }  
+
+  },
+
+  'menome/callback': function (request, response, store) {
+    var code = url.parse(request.url, true).query.code;
+
+    var service = _getService('menome');
+
+    step(
+      function init() {
+        service.getOAuthAccessToken(code, null, this);
+      },
+      function gotAccessToken(error, access_token, refresh_token) {
+        if (!error) {
+          service.get('https://menomeapi.sunburn.in.th/1/user/user.json', access_token, this);    
+        } else {
+          response.writeHead(302, {
+            'Location': '/'
+          });
+          response.end();
+        }
+      },
+      function gotUser(error, result) {
+
+        if (!error) {
+          var user = JSON.parse(result);
+          _log.trace(user);
+
+          var users = model.get('user', store.getClient());      
+          users.find({username: user.id}, 
+            function (items) {
+
+              if (items.length == 0) {
+                _log.debug ('Create user: ' + user.id);
+                // Create user and return to index
+                users.create({ 
+                  username: user.id,
+                  image: user.avatar,
+                  updated: 0,
+                  anonymous: false }, 
+                  function (error, user) {
+                    _log.trace (user);
+
+                    response.writeHead(302, {
+                      'Location': '/index.html#user/login/' + user._id });
+                    response.end('');                               
+                  });
+              } else {
+                // Get first user and return to index
+                _log.debug (items[0]);
+
+                response.writeHead(302, {
+                  'Location': '/index.html#user/login/' + items[0]._id });
+                response.end('');                               
+              }
+
+            });
+            // End verify credentials   
+        } else {
+          response.writeHead(302, {
+            'Location': '/'
+          });
+          response.end();
+        }
+
+
+      });
+
   },
 
   'authenticate': function (request, response, store) {

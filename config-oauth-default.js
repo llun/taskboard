@@ -28,6 +28,17 @@ var config = {
     
     callbackAuthen: 'http://localhost:8080/oauth/facebook/authen'
   },
+
+  menome: {
+    id: '',
+    secret: '',
+    base: 'https://menomeapi.sunburn.in.th/1/',
+    authorize: '/auth/authorize',
+    access_token: '/auth/token?grant_type=authorization_code',
+    version: '2.0',
+
+    callback: 'http://localhost:8080/oauth/menome/callback'
+  },
   
   key: ''
 
