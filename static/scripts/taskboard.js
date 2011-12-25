@@ -250,6 +250,12 @@ _.init = function() {
     }
   });
   
+  $('.modal').submit(function (event) {
+    if (event.target.action.length == 0) {
+      return false;
+    }
+  });
+  
   // Board actions
   $('#new-task-button').click (function () {
     window.location.hash = '#task/new';
