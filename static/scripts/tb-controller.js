@@ -263,10 +263,11 @@ _.table = {
       
       $('.search').val('Search');
     
+      var previous = _.iteration;
       var isCurrent = id == _.project.currentIteration();
       _.iteration = id;
     
-      $('.task').remove();
+      $('.task.' + previous).remove();
       var iteration = Iteration.get(id);
       for (var taskID in iteration.tasks) {
   
@@ -378,12 +379,22 @@ _.table = {
     
       var user = _.user;
       
+      var previous = _.project.id;
       var project = Project.get(id);
       var iteration = Iteration.get(project.currentIteration());
       
       _.project = project;
       
-      $('.task').remove();
+      $('.task.' + previous).remove();
+      
+      for (var key in project.pendings) {
+        var pendingTask = Task.get(key);
+        if (pendingTask) {
+          if (pendingTask && !pendingTask.delete) {
+            new TaskView(pendingTask).append('#pending').update();
+          }
+        }
+      }
       
       $('.project-name').text(project.name);
       $('#iteration-name').text(iteration.name);
