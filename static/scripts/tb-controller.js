@@ -304,11 +304,13 @@ _.table = {
     $('#end-iteration-modal').show();
   },
   'iteration/end/confirm': function() {
+    var pastIteration = _.project.currentIteration();
+    
     _.project.endIteration();
-    
     var iteration = Iteration.get(_.project.currentIteration());
+    _.iteration = iteration.id;
     
-    $('.task').remove();
+    $('.task.' + pastIteration).remove();
     for (var taskID in iteration.tasks) {
     
       if (iteration.tasks[taskID]) {
