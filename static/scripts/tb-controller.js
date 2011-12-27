@@ -387,7 +387,7 @@ _.table = {
       
       _.project = project;
       
-      $('.task.' + previous).remove();
+      $('.task').remove();
       
       for (var key in project.pendings) {
         var pendingTask = Task.get(key);
