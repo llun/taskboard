@@ -408,25 +408,12 @@ _.init = function() {
               // Prepare project need to sync
               var projects = _.user.projects;
               var prepareProject = [];
-              var prepareIteration = [];
 
               for (var key in projects) {
                 var project = Project.get(projects[key]);
                 if (project && project.sync) {
                   prepareProject.push(project);
                   joinList.push(project.id);
-
-                  var iterations = project.iterations;
-                  for (var key in iterations) {
-                    var iteration = Iteration.get(iterations[key]);
-                    if (iteration) {
-                      prepareIteration.push(iteration);
-                      joinList.push(iteration.id);
-                    }
-
-                  }
-
-                  // End of prepare iteration.
                 }
 
                 // End of prepare project.
@@ -461,6 +448,7 @@ _.init = function() {
 
             }
 
+            var prepareIteration = [];
             // List projects
             var projects = _.user.projects;
             for (var index = 0; index < projects.length; index++) {
@@ -470,6 +458,17 @@ _.init = function() {
                 $('#projects-list-menu').append(list);
                 
                 syncpendings(project);
+                
+                var iterations = project.iterations;
+                for (var key in iterations) {
+                  var iteration = Iteration.get(iterations[key]);
+                  if (iteration) {
+                    prepareIteration.push(iteration);
+                    joinList.push(iteration.id);
+                  }
+
+                }
+
               }
               
             }
@@ -483,7 +482,7 @@ _.init = function() {
               var projects = output.projects;
               var iterations = output.iterations;
               var tasks = output.tasks;
-
+              
               for (var index in projects) {
                 _.shareProjects.push(projects[index].id);
                 Project.save(projects[index]);
@@ -522,7 +521,6 @@ _.init = function() {
             now.syncModels(_.client, 'iteration', { owner: _.user.id }, prepareIteration, this);
           },
           function synciterations(object) {
-
             if (object.status == 'update') {
               var iterations = object.data;
 
@@ -543,7 +541,17 @@ _.init = function() {
 
             // List iterations
             var countSync = 0;
-            var iterations = _.project.iterations;
+            var iterations = [];
+            
+            // List projects
+            var projects = _.user.projects;
+            for (var index = 0; index < projects.length; index++) {
+              var project = Project.get(projects[index]);
+              if (project) {
+                iterations = iterations.concat(project.iterations);
+              }
+              
+            }
             
             new IterationsMenuView(_.project).renders('#iterations-list-menu');
             
@@ -564,7 +572,7 @@ _.init = function() {
                 now.syncModels(_.client, 'task', { owner: iteration.id }, prepareTasks, 
                   function synctasks(object) {
                     if (object.status == 'update') {
-
+                      
                       var tasks = object.data;
 
                       for (var key in tasks) {

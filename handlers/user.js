@@ -209,7 +209,6 @@ var UserHandler = {
           }
         },
         function listShares(items) {
-        
           var shareProjects = [];
           var count = 0;
         
@@ -223,7 +222,6 @@ var UserHandler = {
         
         },
         function listIterations(items) {
-        
           output.projects = items;
           var shareIterations = [];
         
@@ -238,7 +236,6 @@ var UserHandler = {
         
         },
         function listTasks(items) {
-          
           output.iterations = items;
           var shareIterations = [];
           
