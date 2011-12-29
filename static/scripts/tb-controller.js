@@ -134,7 +134,7 @@ _.table = {
     var iteration = Iteration.get(_.iteration);
     for (var key in iteration.tasks) {
       var task = Task.get(key);
-      if (task.status == 'done') {
+      if (task && task.status == 'done') {
         task.hide = false;
         Task.save(task, true);
         
@@ -148,7 +148,7 @@ _.table = {
     var iteration = Iteration.get(_.iteration);
     for (var key in iteration.tasks) {
      var task = Task.get(key);
-     if (task.status == 'done') {
+     if (task && task.status == 'done') {
        task.hide = true;
        Task.save(task, true);
        
