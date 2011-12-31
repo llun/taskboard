@@ -241,7 +241,10 @@ var UserHandler = {
             }
           }
           
-          iterations.find({ $or: shareIterations }, this);
+          _log.trace ('Share projects: ' + util.inspect(output));
+          if (shareIterations.length > 0) {
+            iterations.find({ $or: shareIterations }, this);
+          }
         
         },
         function listTasks(items) {

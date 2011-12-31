@@ -516,7 +516,7 @@ _.table = {
         $('#end-iteration-button').removeAttr('disabled');
       }
 
-      window.location.hash = '#project/show/' + createdProject.id;
+      window.location.hash = '';
       
     } else {
     

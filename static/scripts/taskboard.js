@@ -158,7 +158,8 @@ _.init = function() {
               }
               
               now.joinGroups(_.client, joinShareList);
-              new ProjectsMenuView(_.user.projects, _.shareProjects).renders('#project-list-menu');
+              
+              new ProjectsMenuView(_.user.projects, _.shareProjects).renders('#projects-list-menu');
               
             }
           
