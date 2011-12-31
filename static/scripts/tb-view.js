@@ -74,8 +74,10 @@ var ProjectsMenuView = function (projects, shareProjects) {
   this.tmpls.push('<li class="divider project-list-menu-divider"></li>');
   for (var index in projects) {
     var project = Project.get(projects[index]);
-    var list = _.tmpl('project_list', project);
-    this.tmpls.push(list);
+    if (project) {
+      var list = _.tmpl('project_list', project);
+      this.tmpls.push(list);
+    }
   }
   
   if (shareProjects && shareProjects.length > 0) {
@@ -83,8 +85,10 @@ var ProjectsMenuView = function (projects, shareProjects) {
     
     for (var index in shareProjects) {
       var project = Project.get(shareProjects[index]);
-      var list = _.tmpl('share_project_list', project);
-      this.tmpls.push(list);
+      if (project) {
+        var list = _.tmpl('share_project_list', project);
+        this.tmpls.push(list);
+      }
     }
   }
   

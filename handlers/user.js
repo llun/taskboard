@@ -244,6 +244,9 @@ var UserHandler = {
           _log.trace ('Share projects: ' + util.inspect(output));
           if (shareIterations.length > 0) {
             iterations.find({ $or: shareIterations }, this);
+          } else {
+            output.result = false;
+            callback(output);
           }
         
         },

@@ -664,29 +664,40 @@ _.init = function() {
           
             if (serverProject.delete) {
 
-              var defaultProject = _.user.defaultProject;
-              var projectIndex = _.user.projects.indexOf(serverProject.id);
-              var head = _.user.projects.slice(0, projectIndex);
-              var tail = _.user.projects.slice(projectIndex+1);
+              if (serverProject.owner == _.user.id) {
+                var defaultProject = _.user.defaultProject;
+                var projectIndex = _.user.projects.indexOf(serverProject.id);
+                var head = _.user.projects.slice(0, projectIndex);
+                var tail = _.user.projects.slice(projectIndex+1);
 
-              var projects = head.concat(tail);
-              _.user.projects = projects;
-              if (projects.length == 0) {
-                // Create new project and mark it as default
-                var createdProject = _.user.createProject('Project 1', true);
-                _.user.defaultProject = createdProject.id;
-              } else if (defaultProject == serverProject.id) {
-                // Change default project to the first project in list.
-                var defaultProject = projects[0];
-                _.user.defaultProject = defaultProject;
+                var projects = head.concat(tail);
+                _.user.projects = projects;
+                if (projects.length == 0) {
+                  // Create new project and mark it as default
+                  var createdProject = _.user.createProject('Project 1', true);
+                  _.user.defaultProject = createdProject.id;
+                } else if (defaultProject == serverProject.id) {
+                  // Change default project to the first project in list.
+                  var defaultProject = projects[0];
+                  _.user.defaultProject = defaultProject;
+                }
+                User.save(_.user, true);
+              } else {
+                var projects = _.shareProjects;
+                
+                var projectIndex = projects.indexOf(serverProject.id);
+                
+                var head = projects.slice(0, projectIndex);
+                var tail = projects.slice(projectIndex+1);
+                
+                _.shareProjects = head.concat(tail);
               }
-              User.save(_.user, true);
 
               // Delete project.
               _.persistent.remove(serverProject.id);
 
               // Change current view to default project.
-              new ProjectsMenuView(projects, _.shareProjects).renders('#projects-list-menu');
+              new ProjectsMenuView(_.user.projects, _.shareProjects).renders('#projects-list-menu');
               
               if (_.project.id == serverProject.id) {
                 _.table['project/show']('#project/show/' + _.user.defaultProject);
