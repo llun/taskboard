@@ -206,6 +206,9 @@ var UserHandler = {
         function getUser(item) {
           if (item) {
             shares.find({ owner: item.username }, this);
+          } else {
+            output.result = false;
+            callback(output);
           }
         },
         function listShares(items) {
@@ -218,6 +221,9 @@ var UserHandler = {
           
           if (shareProjects.length > 0) {
             projects.find({ $or: shareProjects }, this);
+          } else {
+            output.result = false;
+            callback(output);
           }
         
         },
@@ -248,6 +254,7 @@ var UserHandler = {
           
         },
         function aggregate(items) {
+          output.result = true;
           output.tasks = items;
           callback(output);
         });

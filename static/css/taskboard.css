@@ -3,6 +3,10 @@
   cursor: move;
 }
 
+.btn.left {
+  float: left;
+}
+
 body {
   padding-top: 50px;
 }

@@ -505,30 +505,7 @@ _.table = {
     if (pattern.test(name)) {
     
       var createdProject = _.user.createProject(name, isSync);
-      
-      $('.project-list-menu-item').remove();
-      $('.share-project-list-menu-item').remove();
-      $('.project-list-menu-divider').remove();
-      
-      $('#projects-list-menu').append('<li class="divider project-list-menu-devider"></li>');
-      for (var index in _.user.projects) {
-        var projectID = _.user.projects[index];
-        var project = Project.get(projectID);
-        
-        var list = _.tmpl('project_list', project);
-        $('#projects-list-menu').append(list);
-      }
-      
-      if (_.shareProjects && _.shareProjects.length > 0) {
-        $('#projects-list-menu').append('<li class="divider project-list-menu-devider"></li>');
-        
-        for (var index in _.shareProjects) {
-          var project = Project.get(_.shareProjects[index]);
-          var list = _.tmpl('share_project_list', project);
-          $('#projects-list-menu').append(list);
-        }
-      }
-      
+      new ProjectsMenuView(_.user.projects, _.shareProjects).renders('#projects-list-menu');
       
       $('#new-project-modal').hide();      
       $('#new-project-save-button').attr('href', '#project/create?' + new Date().getTime());
@@ -589,6 +566,38 @@ _.table = {
       $('#edit-project-save-button').attr('href', '#project/save?'+ (new Date()).getTime());
     }
     
+  },
+  'project/delete': function () {
+    $('.application-modal').hide();
+    $('.task-modal').hide();
+    
+    $('#delete-project-modal').show();
+  },
+  'project/delete/confirm': function () {
+    $('.application-modal').hide();
+    $('.task-modal').hide();
+    
+    var project = _.project;
+    
+    var projectIndex = _.user.projects.indexOf(project.id);
+    var head = _.user.projects.slice(0, projectIndex);
+    var tail = _.user.projects.slice(projectIndex+1);
+    
+    var projects = head.concat(tail);
+    if (projects.length == 0) {
+      // Create new project and mark it as default
+    } else if (_.user.defaultProject == project.id) {
+      // Change default project to the first project in list.
+      var defaultProject = projects[0];
+    }
+    
+    // Delete project.
+    
+    // Change current view to default project.
+    
+    $('#delete-project-modal').hide();
+    
+    window.location.hash = '';
   },
   
   // Update controllers

@@ -68,6 +68,37 @@ var IterationsMenuView = function (project) {
   }
 }
 
+var ProjectsMenuView = function (projects, shareProjects) {
+  this.tmpls = [];
+  
+  this.tmpls.push('<li class="divider project-list-menu-devider"></li>');
+  for (var index in projects) {
+    var project = Project.get(projects[index]);
+    var list = _.tmpl('project_list', project);
+    this.tmpls.push(list);
+  }
+  
+  if (shareProjects && shareProjects.length > 0) {
+    this.tmpls.push('<li class="divider project-list-menu-devider"></li>');
+    
+    for (var index in shareProjects) {
+      var project = Project.get(shareProjects[index]);
+      var list = _.tmpl('share_project_list', project);
+      this.tmpls.push(list);
+    }
+  }
+  
+  this.renders = function (parent) {
+    $('.project-list-menu-divider').remove();
+    $('.project-list-menu-item').remove();
+    $('.share-project-list-menu-item').remove();
+    
+    for (var index in this.tmpls) {
+      $(parent).append(this.tmpls[index]);
+    }
+  }
+}
+
 var NotificationsView = function (notifications) {
 
   this.tmpls = [];

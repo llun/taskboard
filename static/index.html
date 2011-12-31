@@ -602,16 +602,52 @@
         </div>
         
         <div class="modal-footer">
+          
           <a id="edit-project-save-button" href="#project/save" class="btn primary">
             Save
           </a>
+          
           <a id="edit-project-cancel-button" href="#close" class="btn secondary">
+            Cancel
+          </a>
+          
+          <a id="delete-project-button" href="#project/delete" class="btn danger left">
+            Delete
+          </a>
+          
+        </div>
+      </form>
+    </div>
+    <!-- End edit project modal -->
+    
+    <!-- Delete project modal -->
+    <div id="delete-project-modal" class="application-modal">
+      <div class="modal-backdrop"></div>
+    
+      <form class="modal ">
+        <div class="modal-header">
+          <h3>Delete project</h3>
+        </div>
+        <div class="modal-body">
+
+          <div class="clearfix">
+            <p>
+              Do you really want to delete project?
+            </p>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <a id="delete-project-confirm-button" href="#project/delete/confirm" class="btn danger">
+            Delete
+          </a>
+          <a id="delete-project-cancel-button" href="#close" class="btn secondary">
             Cancel
           </a>
         </div>
       </form>
     </div>
-    <!-- End edit project modal -->
+    <!-- Logout modal -->
     
     <!-- Edit iteration modal -->
     <div id="edit-iteration-modal" class="application-modal">

@@ -143,6 +143,7 @@ _.init = function() {
               var joinShareList = [ project.id ];
               
               Project.save(project);
+              _.shareProjects.push(project.id);
               
               for (var index in iterations) {
                 var iteration = iterations[index];
@@ -157,21 +158,7 @@ _.init = function() {
               }
               
               now.joinGroups(_.client, joinShareList);
-              
-              if (_.shareProjects.length > 0) {
-              
-                var list = _.tmpl('share_project_list', project);
-                $('#projects-list-menu').append(list);
-              
-              } else {
-              
-                $('#projects-list-menu').append(
-                  '<li id="share-project-divider" class="divider project-list-menu-devider"></li>');
-                
-                var list = _.tmpl('share_project_list', project);
-                $('#projects-list-menu').append(list);
-              
-              }
+              new ProjectsMenuView(_.user.projects, _.shareProjects).renders('#project-list-menu');
               
             }
           
@@ -454,9 +441,6 @@ _.init = function() {
             for (var index = 0; index < projects.length; index++) {
               var project = Project.get(projects[index]);
               if (project) {
-                var list = _.tmpl('project_list', project);
-                $('#projects-list-menu').append(list);
-                
                 syncpendings(project);
                 
                 var iterations = project.iterations;
@@ -477,43 +461,36 @@ _.init = function() {
             now.shares(_.user.id, function fetchshares(output) {
               _.shareProjects = [];
 
-              var joinShareList = [];
+              if (output.result) {
+                var joinShareList = [];
 
-              var projects = output.projects;
-              var iterations = output.iterations;
-              var tasks = output.tasks;
-              
-              for (var index in projects) {
-                _.shareProjects.push(projects[index].id);
-                Project.save(projects[index]);
+                var projects = output.projects;
+                var iterations = output.iterations;
+                var tasks = output.tasks;
 
-                joinShareList.push(projects[index].id);
-                
-                syncpendings(projects[index]);
-              }
+                for (var index in projects) {
+                  _.shareProjects.push(projects[index].id);
+                  Project.save(projects[index]);
 
-              for (var index in iterations) {
-                Iteration.save(iterations[index]);
+                  joinShareList.push(projects[index].id);
 
-                joinShareList.push(iterations[index].id);
-              }
-
-              for (var index in tasks) {
-                Task.save(tasks[index]);
-              }
-
-              if (_.shareProjects.length > 0) {
-                $('#projects-list-menu').append(
-                  '<li id="share-project-divider" class="divider project-list-menu-devider"></li>');
-
-                for (var index in _.shareProjects) {
-                  var project = Project.get(_.shareProjects[index]);
-                  var list = _.tmpl('share_project_list', project);
-                  $('#projects-list-menu').append(list);
+                  syncpendings(projects[index]);
                 }
-              }
 
-              now.joinGroups(_.client, joinShareList);
+                for (var index in iterations) {
+                  Iteration.save(iterations[index]);
+
+                  joinShareList.push(iterations[index].id);
+                }
+
+                for (var index in tasks) {
+                  Task.save(tasks[index]);
+                }
+                
+                now.joinGroups(_.client, joinShareList);
+              }
+              
+              new ProjectsMenuView(_.user.projects, _.shareProjects).renders('#projects-list-menu');
 
             });
 
@@ -643,8 +620,7 @@ _.init = function() {
             Project.save(serverProject);
             now.joinGroups(_.client, [serverProject.id]);
             
-            var list = _.tmpl('project_list', serverProject);
-            $('#projects-list-menu').append(list);
+            new ProjectsMenuView(_.user.projects, _.shareProjects).renders('#projects-list-menu');
           }
         },
         iteration: function (client, serverIteration) {

@@ -443,15 +443,17 @@ Project.save = function (project, push) {
   }
 }
 Project.remove = function (id) {
-  _.persistent.remove(id);
+  var project = Project.get(id);
   
-  var removed = _.persistent.get('removed');
-  if (!removed) {
-    removed = { id: 'removed', list: [] };
+  project.updated++;
+  project.modified = new Date().getTime();
+  project.delete = true;
+  
+  if (push) {
+    if (navigator.onLine && now.syncModel) {
+      now.syncModel(_.client, project);
+    }
   }
-  
-  removed.list.push(id);
-  _.persistent.save(removed)
 }
 
 /**
