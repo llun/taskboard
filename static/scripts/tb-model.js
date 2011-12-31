@@ -425,6 +425,7 @@ Project.get = function (id) {
     project.modified = object.modified;
     project.members = object.members;
     project.pendings = object.pendings;
+    project.delete = object.delete;
   }
   
   return project;

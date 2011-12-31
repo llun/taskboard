@@ -71,7 +71,7 @@ var IterationsMenuView = function (project) {
 var ProjectsMenuView = function (projects, shareProjects) {
   this.tmpls = [];
   
-  this.tmpls.push('<li class="divider project-list-menu-devider"></li>');
+  this.tmpls.push('<li class="divider project-list-menu-divider"></li>');
   for (var index in projects) {
     var project = Project.get(projects[index]);
     var list = _.tmpl('project_list', project);
@@ -79,7 +79,7 @@ var ProjectsMenuView = function (projects, shareProjects) {
   }
   
   if (shareProjects && shareProjects.length > 0) {
-    this.tmpls.push('<li class="divider project-list-menu-devider"></li>');
+    this.tmpls.push('<li class="divider project-list-menu-divider"></li>');
     
     for (var index in shareProjects) {
       var project = Project.get(shareProjects[index]);

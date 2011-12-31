@@ -661,43 +661,77 @@ _.init = function() {
                        
           if (client != _.client) {
           
-            var clientProject = Project.get(serverProject.id);
-            if (serverProject.updated > clientProject.updated ||
-                serverProject.modified != clientProject.modified) {
-              Project.save(serverProject);
-            }
-            
-            clientProject = Project.get(serverProject.id);
-            $('#project-menu-' + clientProject.id).text(clientProject.name);
-            
-            if (_.project.id == clientProject.id) {
-              
-              $('.share-user-list-icon').remove();
-              var members = clientProject.members;
-              for (var index in members) {
-                var member = members[index];
-                member.id = clientProject.id;
+            if (serverProject.delete) {
 
-                $('#share-user-list-icons').append(_.tmpl('share_list', member));
+              var defaultProject = _.user.defaultProject;
+              var projectIndex = _.user.projects.indexOf(serverProject.id);
+              var head = _.user.projects.slice(0, projectIndex);
+              var tail = _.user.projects.slice(projectIndex+1);
+
+              var projects = head.concat(tail);
+              if (projects.length == 0) {
+                // Create new project and mark it as default
+                var createdProject = _.user.createProject('Project 1', true);
+                _.user.defaultProject = createdProject.id;
+              } else if (defaultProject == serverProject.id) {
+                // Change default project to the first project in list.
+                var defaultProject = projects[0];
+                _.user.defaultProject = defaultProject;
+              }
+              _.user.projects = projects;
+              User.save(_.user, true);
+
+              // Delete project.
+              _.persistent.remove(serverProject.id);
+
+              // Change current view to default project.
+              new ProjectsMenuView(projects, _.shareProjects).renders('#projects-list-menu');
+              
+              if (_.project.id == serverProject.id) {
+                _.table['project/show']('#project/show/' + _.user.defaultProject);
               }
               
-              $('.project-name').text(clientProject.name);
-              _.project = clientProject;
+            } else {
               
-              var iteration = Iteration.get(_.project.currentIteration());
-              $('#iteration-name').text(iteration.name);
-              
-              $('.task').remove();
-              for (var taskID in iteration.tasks) {
-              
-                if (iteration.tasks[taskID]) {
-                  var task = Task.get(taskID);
-                  if (task && !task.delete) {
-                    new TaskView(task).append('#' + task.status).update();
-                  }
-                  
+              var clientProject = Project.get(serverProject.id);
+              if (serverProject.updated > clientProject.updated ||
+                  serverProject.modified != clientProject.modified) {
+                Project.save(serverProject);
+              }
+
+              clientProject = Project.get(serverProject.id);
+              $('#project-menu-' + clientProject.id).text(clientProject.name);
+
+              if (_.project.id == clientProject.id) {
+
+                $('.share-user-list-icon').remove();
+                var members = clientProject.members;
+                for (var index in members) {
+                  var member = members[index];
+                  member.id = clientProject.id;
+
+                  $('#share-user-list-icons').append(_.tmpl('share_list', member));
                 }
-                
+
+                $('.project-name').text(clientProject.name);
+                _.project = clientProject;
+
+                var iteration = Iteration.get(_.project.currentIteration());
+                $('#iteration-name').text(iteration.name);
+
+                $('.task').remove();
+                for (var taskID in iteration.tasks) {
+
+                  if (iteration.tasks[taskID]) {
+                    var task = Task.get(taskID);
+                    if (task && !task.delete) {
+                      new TaskView(task).append('#' + task.status).update();
+                    }
+
+                  }
+
+                }
+
               }
               
             }
