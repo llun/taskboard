@@ -586,14 +586,22 @@ _.table = {
     var projects = head.concat(tail);
     if (projects.length == 0) {
       // Create new project and mark it as default
+      var createdProject = _.user.createProject('Project 1', true);
+      _.user.defaultProject = createdProject.id;
     } else if (_.user.defaultProject == project.id) {
       // Change default project to the first project in list.
       var defaultProject = projects[0];
+      _.user.defaultProject = defaultProject;
     }
+    _.user.projects = projects;
+    User.save(_.user, true);
     
     // Delete project.
+    Project.remove(project.id, true);
     
     // Change current view to default project.
+    new ProjectsMenuView(projects, _.shareProjects).renders('#projects-list-menu');
+    _.table['project/show']('#project/show/' + _.user.defaultProject);
     
     $('#delete-project-modal').hide();
     

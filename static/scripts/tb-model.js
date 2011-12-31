@@ -442,7 +442,7 @@ Project.save = function (project, push) {
     now.syncModel(_.client, project);
   }
 }
-Project.remove = function (id) {
+Project.remove = function (id, push) {
   var project = Project.get(id);
   
   project.updated++;
