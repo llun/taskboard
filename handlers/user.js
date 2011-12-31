@@ -228,13 +228,16 @@ var UserHandler = {
         
         },
         function listIterations(items) {
-          output.projects = items;
+          output.projects = [];
           var shareIterations = [];
         
           for (var index in items) {
             var project = items[index];
-            for (var key in project.iterations) {
-              shareIterations.push({ id: project.iterations[key] });
+            if (!project.delete) {
+              output.projects.push(project);
+              for (var key in project.iterations) {
+                shareIterations.push({ id: project.iterations[key] });
+              }
             }
           }
           
