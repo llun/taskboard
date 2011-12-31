@@ -584,6 +584,7 @@ _.table = {
     var tail = _.user.projects.slice(projectIndex+1);
     
     var projects = head.concat(tail);
+    _.user.projects = projects;
     if (projects.length == 0) {
       // Create new project and mark it as default
       var createdProject = _.user.createProject('Project 1', true);
@@ -593,7 +594,6 @@ _.table = {
       var defaultProject = projects[0];
       _.user.defaultProject = defaultProject;
     }
-    _.user.projects = projects;
     User.save(_.user, true);
     
     // Delete project.
