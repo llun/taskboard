@@ -193,8 +193,17 @@ _.init = function() {
 
     var pattern = new RegExp(searchText, 'i');
     var iteration = Iteration.get(_.iteration);
+    
+    var tasks = [];
     for (var taskID in iteration.tasks) {
-      var task = Task.get(taskID);
+      tasks.push(taskID);
+    }
+    for (var taskID in _.project.pendings) {
+      tasks.push(taskID);
+    }
+    
+    for (var index in tasks) {
+      var task = Task.get(tasks[index]);
       if (task) {
         var detail = task.getDetail(true);
         if (pattern.test(detail)) {
@@ -205,9 +214,10 @@ _.init = function() {
         }
       }
     }
+    
   }
   
-  $('#search').focus(function searchfocus(event) {
+  $('.search').focus(function searchfocus(event) {
     $(event.target).val('');
     _filterFunction()
   }).focusout(function searchfocusout(event) {
