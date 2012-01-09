@@ -7,6 +7,16 @@
   float: left;
 }
 
+a.iterations-list-menu {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid black;
+  font-size: 0px;
+  vertical-align: middle;
+  width: 0px;
+  height: 0px;
+}
+
 body {
   padding-top: 50px;
 }
