@@ -115,15 +115,6 @@
           <h3><a class="brand" href="#">Taskboard</a></h3>
           <ul class="nav">
           
-            <!-- Board -->
-            <li id="table-menu" class="active">
-              <a href="#board/task">Task</a>
-            </li>
-            
-            <li id="pending-menu">
-              <a href="#board/pending">Pending</a>
-            </li>
-            
             <!-- Project menu -->
             <li id="projects-menu" class="dropdown">
               <a href="#" class="dropdown-toggle">Projects</a>
@@ -132,11 +123,14 @@
                 <li class="divider project-list-menu-divider"></li>
               </ul>
             </li>
+          
+            <!-- Board -->
+            <li id="table-menu" class="active">
+              <a href="#board/task">Task</a>
+            </li>
             
-            <!-- Iteration menu -->
-            <li id="iterations-menu" class="dropdown">
-              <a href="#" class="dropdown-toggle">Iterations</a>
-              <ul id="iterations-list-menu" class="dropdown-menu"></ul>
+            <li id="pending-menu">
+              <a href="#board/pending">Pending</a>
             </li>
             
           </ul>
@@ -217,6 +211,10 @@
             <h4 id="iteration-name">Iteration name</h4>
             <a href="#" class="iterations-list-menu"></a>
             <a href="#iteration/edit" id="iteration-name-edit"><img src="images/gear.png" /></a>
+            
+            <div id="iteration-list-div">
+              <ul id="iterations-list-menu"></ul>
+            </div>
           </div>
           
           

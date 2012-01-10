@@ -157,6 +157,42 @@ ul.user-menu {
   display: none;
 }
 
+div.iteration-head:hover #iteration-list-div {
+  display: block;
+}
+
+#iteration-list-div {
+  display: none;
+  background: white;
+  
+  position: absolute;
+  top: 115px;
+  width: 120px;
+  padding: 5px 0px;
+  
+  border: 2px solid #404040;
+  border-radius: 4px;
+}
+
+#iterations-list-menu {
+  font-size: 14px;
+  list-style: none;
+  margin: 0;
+}
+
+#iterations-list-menu a {
+  text-decoration: none;
+}
+
+#iterations-list-menu li {
+  padding: 5px;
+}
+
+#iterations-list-menu li:hover {
+  background: #EEE;
+  cursor: pointer;
+}
+
 table .task-type{width: 25%;}
 
 table .black{color:#000;border-bottom-color:#000;}
