@@ -138,7 +138,7 @@
             </li>
             
             <!-- Dropbox -->
-            <li id="table-menu">
+            <li id="dropbox-menu">
               <a href="#dropbox/show">Dropbox</a>
             </li>
             
@@ -318,33 +318,55 @@
         <!-- Project row -->
         <div class="row">
           
-          <div class="span4 columns project-head">
+          <div class="span12 columns project-head">
             <h2 class="project-name">Project name</h2> 
             <a href="#project/edit"><img src="images/gear.png" /></a>
           </div>
           
-          <div class="span6 offset4 columns">
-            <input type="search" value="Search" class="search span6" />
-          </div>
-          
-          <div id="pending-actions" class="span2 columns">
-            <a class="btn primary" href="#pending/new">New Task</a>
+          <div id="pending-actions" class="span4 columns">
+            <a class="btn" href="#dropbox/folder/create">New Folder</a>
+            <a class="btn" href="#dropbox/file/upload">Upload File</a>
           </div>
                   
         </div>
         <!-- End project row -->
         
-        <table id="pending-table" class="zebra-stripped">
+        <table id="files-table" class="zebra-stripped">
           <thead>
             <tr>
-              <th class="black header task-type">Pending</th>
+              <th class="dropbox-name">Dropbox > Documents</th>
+              <th class="dropbox-size">Size</th>
+              <th class="dropbox-modified">Modified</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td id="pending" class="wall">
-                <!-- Task will live here -->
+              <td>
+                <img src="images/box.png" class="dropbox-type">Folder 1
               </td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>
+                <img src="images/notepad.png" class="dropbox-type">Test 1
+              </td>
+              <td>10 KB</td>
+              <td>17 Jan 2012</td>
+            </tr>
+            <tr>
+              <td>
+                <img src="images/notepad.png" class="dropbox-type">Test 2
+              </td>
+              <td>16 KB</td>
+              <td>18 Jan 2012</td>
+            </tr>
+            <tr>
+              <td>
+                <img src="images/notepad.png" class="dropbox-type">Test 3
+              </td>
+              <td>6 KB</td>
+              <td>13 Jan 2012</td>
             </tr>
           </tbody>
         </table>

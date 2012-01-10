@@ -750,17 +750,32 @@ _.table = {
   'board/task': function (hash) {
     $('#table-menu').addClass('active');
     $('#pending-menu').removeClass('active');
+    $('#dropbox-menu').removeClass('active');
   
     $('#table-view').show();
     $('#pending-view').hide();
+    $('#dropbox-view').hide();
   },
   
   'board/pending': function (hash) {
     $('#table-menu').removeClass('active');
     $('#pending-menu').addClass('active');
+    $('#dropbox-menu').removeClass('active');
     
     $('#table-view').hide();
     $('#pending-view').show();
+    $('#dropbox-view').hide();
+  },
+  
+  // Dropbox action
+  'dropbox/show': function (hash) {
+    $('#table-menu').removeClass('active');
+    $('#pending-menu').removeClass('active');
+    $('#dropbox-menu').addClass('active');
+    
+    $('#table-view').hide();
+    $('#pending-view').hide();
+    $('#dropbox-view').show();
   },
   
   // Share

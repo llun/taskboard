@@ -16,10 +16,12 @@ scripts/taskboard.js
 css/bootstrap.min.css
 css/taskboard.css
 
+images/box.png
 images/delete.png
 images/eye.png
 images/gear.png
 images/github.png
+images/notepad.png
 images/twitter.png
 images/user.png
 
