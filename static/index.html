@@ -133,6 +133,15 @@
               <a href="#board/pending">Pending</a>
             </li>
             
+            <li id="pending-menu">
+              <a href="#board/archive">Archive</a>
+            </li>
+            
+            <!-- Dropbox -->
+            <li id="table-menu">
+              <a href="#dropbox/show">Dropbox</a>
+            </li>
+            
           </ul>
           
           <!-- User & Online menu -->
@@ -302,6 +311,46 @@
         
       </div>
       <!-- End pending view -->
+      
+      <!-- Begin dropbox view -->
+      <div id="dropbox-view">
+      
+        <!-- Project row -->
+        <div class="row">
+          
+          <div class="span4 columns project-head">
+            <h2 class="project-name">Project name</h2> 
+            <a href="#project/edit"><img src="images/gear.png" /></a>
+          </div>
+          
+          <div class="span6 offset4 columns">
+            <input type="search" value="Search" class="search span6" />
+          </div>
+          
+          <div id="pending-actions" class="span2 columns">
+            <a class="btn primary" href="#pending/new">New Task</a>
+          </div>
+                  
+        </div>
+        <!-- End project row -->
+        
+        <table id="pending-table" class="zebra-stripped">
+          <thead>
+            <tr>
+              <th class="black header task-type">Pending</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="pending" class="wall">
+                <!-- Task will live here -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+      </div>
+      <!-- End dropbox view -->
       
       <div class="row">
         
