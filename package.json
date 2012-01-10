@@ -7,7 +7,7 @@
   "dependencies": {
     "log4js": "latest",
     "mime": "latest",
-    "mongodb": "0.9.7-1.4",
+    "mongodb": "latest",
     "now": "latest",
     "oauth": "latest",
     "step": "latest"

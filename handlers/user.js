@@ -13,7 +13,7 @@ var UserHandler = {
       _log.debug ('request session: ' + id);
       
       var client = store.getClient();
-      var ObjectID = client.bson_serializer.ObjectID;
+      var ObjectID = require('mongodb').ObjectID;
     
       var users = _model.get('user', store.getClient());
       var output = {};
@@ -87,7 +87,7 @@ var UserHandler = {
       callback = callback || function () {};
     
       var client = store.getClient();
-      var ObjectID = client.bson_serializer.ObjectID;
+      var ObjectID = require('mongodb').ObjectID;
     
       var users = _model.get('user', store.getClient());
       users.get(new ObjectID(user.id), function (item) {
@@ -156,7 +156,7 @@ var UserHandler = {
       var notifications = [];
     
       var client = store.getClient();
-      var ObjectID = client.bson_serializer.ObjectID;
+      var ObjectID = require('mongodb').ObjectID;
     
       var users = _model.get('user', client);
       var invites = _model.get('invite', client);
@@ -189,7 +189,7 @@ var UserHandler = {
     everyone.shares = function (user, callback) {
     
       var client = store.getClient();
-      var ObjectID = client.bson_serializer.ObjectID;
+      var ObjectID = require('mongodb').ObjectID;
     
       var users = _model.get('user', client);
       var projects = _model.get('project', client);
@@ -283,7 +283,7 @@ var UserHandler = {
       var local = {};
       
       var client = store.getClient();
-      var ObjectID = client.bson_serializer.ObjectID;
+      var ObjectID = require('mongodb').ObjectID;
       
       var projects = _model.get('project', client);
       var users = _model.get('user', client);
@@ -347,7 +347,7 @@ var UserHandler = {
     everyone.kick = function (project, user, callback) {
       
       var client = store.getClient();
-      var ObjectID = client.bson_serializer.ObjectID;
+      var ObjectID = require('mongodb').ObjectID;
       
       var local = {};
       
@@ -455,7 +455,7 @@ var UserHandler = {
     everyone.accept = function (invite, callback) {
     
       var client = store.getClient();
-      var ObjectID = client.bson_serializer.ObjectID;
+      var ObjectID = require('mongodb').ObjectID;
     
       var projects = _model.get('project', client);
       var invites = _model.get('invite', client);
@@ -548,7 +548,7 @@ var UserHandler = {
     everyone.reject = function (invite, callback) {
     
       var client = store.getClient();
-      var ObjectID = client.bson_serializer.ObjectID;
+      var ObjectID = require('mongodb').ObjectID;
     
       var projects = _model.get('project', client);
       var invites = _model.get('invite', client);
