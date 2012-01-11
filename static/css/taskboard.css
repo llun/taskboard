@@ -149,13 +149,9 @@ ul.user-menu {
   display: block;
 }
 
-#table-view {
-  display: block;
-}
-
-#pending-view {
-  display: none;
-}
+#table-view { display: block; }
+#pending-view { display: none; }
+#dropbox-view { display: none; }
 
 div.iteration-head:hover #iteration-list-div {
   display: block;
@@ -193,17 +189,9 @@ div.iteration-head:hover #iteration-list-div {
   cursor: pointer;
 }
 
-th.dropbox-name {
-  width: 70%;
-}
-
-th.dropbox-size {
-  width: 10%;
-}
-
-th.dropbox-modified {
-  width: 20%;
-}
+th.dropbox-name { width: 70%; }
+th.dropbox-size { width: 10%; }
+th.dropbox-modified { width: 20%; }
 
 .dropbox-type {
   width: 14px;
