@@ -262,6 +262,15 @@ _.init = function() {
   $('#end-iteration-button').click (function () {
     window.location.hash = '#iteration/end';
   });
+  
+  $('#edit-project-dropbox').click(function (e) {
+    var checkbox = $(e.target);
+    if (checkbox.attr('checked')) {
+      window.location.href = '/oauth/dropbox';
+    } else {
+      // Disable dropbox menu
+    }
+  });
 
   // Update event
   $(applicationCache).bind('updateready', function updateready(e) {

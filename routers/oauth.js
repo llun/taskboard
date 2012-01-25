@@ -69,36 +69,27 @@ var services = {
   'twitter': function (request, response, store) {
   
     var loginQuery = url.parse(request.url, true).query;
-    if (loginQuery.invite == _loadConfig().key) {
-    
-      var service = _getService('twitter');          
-      service.getOAuthRequestToken(
-        function (error, oauth_token, oauth_token_secret, results) {
-          if(error) {
-            _log.debug(error);
-      			response.writeHead(200, {});
-      			response.end('error');
-      		} else { 
-      		
-      		  var config = _loadConfig()['twitter'];
-      		  _log.trace (oauth_token + ', ' + oauth_token_secret);
-      		  
-      		  _tokens[oauth_token] = oauth_token_secret;
-      		  
-      			// redirect the user to authorize the token
-      			response.writeHead(302, {
-      			  'Location': 'https://api.twitter.com/oauth/authenticate?oauth_token=' + oauth_token
-      			});
-      			response.end();
-      	  }
-      	});
-    
-    } else {
-      response.writeHead(302, {
-        'Location': '/'
-      });
-      response.end();
-    }
+    var service = _getService('twitter');          
+    service.getOAuthRequestToken(
+      function (error, oauth_token, oauth_token_secret, results) {
+        if(error) {
+          _log.debug(error);
+    			response.writeHead(200, {});
+    			response.end('error');
+    		} else { 
+    		
+    		  var config = _loadConfig()['twitter'];
+    		  _log.trace (oauth_token + ', ' + oauth_token_secret);
+    		  
+    		  _tokens[oauth_token] = oauth_token_secret;
+    		  
+    			// redirect the user to authorize the token
+    			response.writeHead(302, {
+    			  'Location': 'https://api.twitter.com/oauth/authenticate?oauth_token=' + oauth_token
+    			});
+    			response.end();
+    	  }
+    	});
        
   },
   
@@ -281,39 +272,76 @@ var services = {
   
   },
   
-  'facebook': function (request, response, store) {
+  'dropbox': function (request, response, store) {
   
     var loginQuery = url.parse(request.url, true).query;
-    if (loginQuery.invite == _loadConfig().key) {
-    
-      var md5 = crypto.createHash('md5');
-      md5.update(new Date().getTime().toString());
-      var digest = md5.digest('hex');
-      
-      _fbStates[digest] = true;
-    
-      var config = _loadConfig()['facebook'];
-      var redirect = 'https://www.facebook.com/dialog/oauth?client_id=' +
-                     config.id + '&redirect_url=' + 
-                     encodeURIComponent(config.callbackAuthen) + '&state=' +
-                     digest;
-      response.writeHead(302, {
-        'Location': redirect
-      });
-      response.end();
-    
-    } else {
-      response.writeHead(302, {
-        'Location': '/'
-      });
-      response.end();
-    }
-    
+    var service = _getService('dropbox');          
+    service.getOAuthRequestToken(
+      function (error, oauth_token, oauth_token_secret, results) {
+        if(error) {
+          _log.debug(error);
+    			response.writeHead(200, {});
+    			response.end('error');
+    		} else { 
+    		
+    		  var config = _loadConfig()['dropbox'];
+    		  _log.trace (oauth_token + ', ' + oauth_token_secret);
+    		  _log.trace (config.callback);
+    		  
+    		  _tokens[oauth_token] = oauth_token_secret;
+    		  
+    			// redirect the user to authorize the token
+    			response.writeHead(302, {
+    			  'Location': 'https://www.dropbox.com/1/oauth/authorize?oauth_token=' + oauth_token +
+    			              '&oauth_callback=' + config.callback
+    			});
+    			response.end();
+    	  }
+    	});
+       
   },
   
-  'facebook/authen': function (request, response, store) {
-    response.writeHead(200, {});
-    response.end('Hello, world');
+  'dropbox/callback': function (request, response, store) {
+  
+    var service = _getService('dropbox');
+    step(
+      function () {
+      
+        _log.trace (request.url);
+        
+        var twitterCallback = url.parse(request.url, true).query;
+        
+        _log.trace (twitterCallback);
+        
+        var token = twitterCallback.oauth_token;
+        var verifier = twitterCallback.oauth_verifier;
+        
+        var secret = _tokens[token];
+        
+        _log.trace (token + ', ' + secret + ', ' + verifier);
+        service.getOAuthAccessToken(token, secret, verifier, this);
+        
+        delete _tokens[token];
+      
+      },
+      function (error, oauth_token, oauth_token_secret, results) {
+        _log.trace (error);
+        _log.trace (results);
+        
+        if (!error) {
+        
+          response.writeHead(200, {});
+          response.end('Hello, World');
+        
+        } else {
+          response.writeHead(302, {
+            'Location': '/'
+          });
+          response.end();
+        }
+      }
+    );
+      
   },
 
   'menome': function (request, response, store) {
