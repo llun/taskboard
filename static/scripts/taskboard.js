@@ -314,15 +314,19 @@ _.init = function() {
 
           // Parse login
           if (/^#user\/login/i.test(_.oldHash)) {
-            shouldRedirectToOldHash = true
+            shouldRedirectToOldHash = true;
           } 
           // Parse board
           else if (/^#board\/pending$/.test(_.oldHash)) {
-            shouldRedirectToOldHash = true
+            shouldRedirectToOldHash = true;
           }
           // Parse show project
           else if (/^#project\/show/i.test(_.oldHash)) {
-            shouldRedirectToOldHash = true
+            shouldRedirectToOldHash = true;
+          }
+          // Parse dropbox authorize
+          else if (/^#dropbox\/authorize\/\d+/i.test(_.oldHash)) {
+            shouldRedirectToOldHash = true;
           }
 
           if (shouldRedirectToOldHash) {

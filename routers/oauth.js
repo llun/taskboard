@@ -309,12 +309,12 @@ var services = {
       
         _log.trace (request.url);
         
-        var twitterCallback = url.parse(request.url, true).query;
+        var dropboxCallback = url.parse(request.url, true).query;
         
-        _log.trace (twitterCallback);
+        _log.trace (dropboxCallback);
         
-        var token = twitterCallback.oauth_token;
-        var verifier = twitterCallback.oauth_verifier;
+        var token = dropboxCallback.oauth_token;
+        var verifier = dropboxCallback.oauth_verifier;
         
         var secret = _tokens[token];
         
@@ -329,9 +329,11 @@ var services = {
         _log.trace (results);
         
         if (!error) {
-        
-          response.writeHead(200, {});
-          response.end('Hello, World');
+
+          response.writeHead(302, {
+            'Location': '/#dropbox/authorize/' + results.uid
+          });
+          response.end();
         
         } else {
           response.writeHead(302, {
