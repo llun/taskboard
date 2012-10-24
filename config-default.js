@@ -1,4 +1,7 @@
 var config = {
+  // Default server host
+  host: localhost,
+  
   // Default server port
   port: 8080,
   

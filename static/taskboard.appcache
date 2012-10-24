@@ -1,6 +1,6 @@
 CACHE MANIFEST
-#Version 0.6.1
-#2011-12-31
+#Version 0.6.2
+#2012-10-24
 
 CACHE:
 index.html
@@ -22,9 +22,6 @@ images/gear.png
 images/github.png
 images/twitter.png
 images/user.png
-
-nowjs/now.js
-socket.io/socket.io.js
 
 NETWORK:
 *
